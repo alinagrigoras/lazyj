@@ -1,0 +1,15 @@
+Manifest-Version: 1.0.2
+Class-Path: activation.jar jcommon.jar jfreechart.jar jsdk.jar 
+  mail.jar mysql.jar oreilly.jar postgresql.jar ymsg.jar
+Name: lazyj/
+Sealed: true
+Specification-Title: LazyJ API
+Specification-Version: 1.0
+Specification-Vendor: CostinG
+Implementation-Title: lazyj
+Implementation-Version: build01
+Implementation-Vendor: CostinG
+Implementation-URL: http://lazyj.sourceforge.net/download/lazyj.jar
+Author: Costin Grigoras
+Copyright: Costin Grigoras
+License: LGPL (http://www.gnu.org/licenses/lgpl.html)

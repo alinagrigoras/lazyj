@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title>LazyJ</title>
+  <link href="http://lazyj.sourceforge.net/"/>
+
+  <updated>2007-11-23T00:00:00.000Z</updated>
+  <author>
+    <name>Costin Grigoras</name>
+    <email>costing@gmail.com</email>
+  </author>
+  <id>http://lazyj.sourceforge.net/</id>
+  <subtitle>LazyJ news, releases</subtitle>
+
+  <entry>
+    <id>3</id>
+    <title type="html">LazyJ 1.0.4</title>
+    <link rel="alternate" href="http://lazyj.sourceforge.net/"/>
+    <published>2007-12-11T00:00:00.000Z</published>
+    <updated>2007-12-11T00:00:00.000Z</updated>
+    <summary type="html">LazyJ 1.0.4 was released on 11.12.2007</summary>
+    <content type="html"> 
+        <![CDATA[
+	    <b>LazyJ 1.0.4</b> was released on 11.12.2007. You can always download the latest version from <a href="http://lazyj.sourceforge.net/download/lazyj.jar">here</a>.<br>
+	    <br>
+	    Full changelog is <a href="http://lazyj.sourceforge.net/CHANGELOG">here</a>.<br>
+	    <br>
+	    Short summary of changes:<ul>
+	    	<li>A new package, lazyj.widgets, was added. It should make building of SELECT elements easier, whether you want
+	    		to load the options as a list or as a tree from the database or you want to build them by hand.
+	    	</li>
+	    	<li>Bugfix: lazyj.mail.MailDate: incorrect timezone sign.
+	    </ul>
+        ]]>
+    </content>
+    <category term="Java WEB RAD framework"/>
+  </entry>
+
+  <entry>
+    <id>2</id>
+    <title type="html">LazyJ 1.0.3</title>
+    <link rel="alternate" href="http://lazyj.sourceforge.net/"/>
+    <published>2007-11-23T00:00:00.000Z</published>
+    <updated>2007-11-23T00:00:00.000Z</updated>
+    <summary type="html">LazyJ 1.0.3 was released on 23.11.2007</summary>
+    <content type="html"> 
+        <![CDATA[
+	    <b>LazyJ 1.0.3</b> was released on 23.11.2007. You can always download the latest version from <a href="http://lazyj.sourceforge.net/download/lazyj.jar">here</a>.<br>
+	    <br>
+	    Full changelog is <a href="http://lazyj.sourceforge.net/CHANGELOG">here</a>.<br>
+	    <br>
+	    Short summary of changes:<ul>
+	    	<li>New notifications framework with email and Y!M already implemented.</li>
+	    	<li>New type of cache that expires the entries after a preset interval.</li>
+	    	<li>Made all the classes in lazyj.cache generics.</li>
+	    	<li>Implement PostgreSQL arrays encoding and decoding in DBFunctions.</li>
+	    	<li>Some minor bugs fixed, a bit of refactoring and more documentation to the classes.</li>
+	    </ul>
+        ]]>
+    </content>
+    <category term="Java WEB RAD framework"/>
+  </entry>
+
+  <entry>
+    <id>1</id>
+    <title type="html">LazyJ 1.0.2</title>
+    <link rel="alternate" href="http://lazyj.sourceforge.net/"/>
+    <published>2007-11-07T00:00:00.000Z</published>
+    <updated>2007-11-07T00:00:00.000Z</updated>
+    <summary type="html">LazyJ 1.0.2 was released on 07.11.2007 / Initial Freshmeat release</summary>
+    <content type="html">
+        <![CDATA[
+	    <b>LazyJ 1.0.2</b> was released on 07.11.2007. You can always download the latest version from <a href="http://lazyj.sourceforge.net/download/lazyj.jar">here</a>.<br>
+	    <br>
+	    Full changelog is <a href="http://lazyj.sourceforge.net/CHANGELOG">here</a>.<br>
+	    <br>
+	    As of now we consider the product mature enough to be exposed to the public. Here is the <a href="http://freshmeat.net/projects/lazyj/?branch_id=72062&release_id=265318">initial Freshmeat release</a> and
+	    the <a href="http://freshmeat.net/projects/lazyj/">Freshmeat project home page</a>.
+	    <br>
+	    <br>
+	    Looking forward to hearing from you,<br>
+	    .costin &amp; Alina
+        ]]>
+    </content>
+    <category term="Java WEB RAD framework"/>
+  </entry>
+</feed>

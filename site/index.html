@@ -1,0 +1,107 @@
+<html>
+    <head>
+    <title>LazyJ - probably the fastest Java web templates in the world :)</title>
+    <link rel="stylesheet" type="text/css" href="NiftyLayout.css" media="screen">
+    <script type="text/javascript" src="niftycube.js"></script>
+    <script type="text/javascript" src="niftyLayout.js"></script>
+    <link rel="alternate" type="application/atom+xml" title="LazyJ Releases" href="/atom.xml">
+    </head>
+    <body>
+    <div id="header">
+	<h1>LazyJ</h1>
+	    <div id="menu">
+		<ul id="nav">
+		    <li id="home" class="activelink"><a href="/">Home</a></li>
+		    <li id="who"><a target="lazyjdoc" href="/doc/">API</a></li>
+		    <li id="prod"><a href="/download/lazyj.jar">Download</a></li>
+		    <li id="cont"><a href="mailto:costing{at}gmail{dot}com?Subject=LazyJ">Contact us</a></li>
+		</ul>
+	    </div>
+	</div>
+    <div id="container">
+    <div id="content">
+	<h2>LazyJ</h2>
+	
+	<b>LazyJ</b> is a rapid development framework for Java WEB applications. It includes:<ul>
+        <li>a very <a target="lazyjdoc" href="/doc/lazyj/page/BasePage.html">fast template engine</a> that caches precompiled templates</li>
+        <li><a target="lazyjdoc" href="/doc/lazyj/ExtendedServlet.html">response caching</a> and <a target="lazyjdoc" href="/doc/lazyj/cache/Cache.html">data caching</a> engines</li>
+        <li><a target="lazyjdoc" href="/doc/lazyj/DBFunctions.html">database wrapper</a> with connection pooling and shortcuts for common used functions</li>
+        <li>database-backed <a target="lazyjdoc" href="/doc/lazyj/DBSession.html">sessions</a></li>
+        <li><a target="lazyjdoc" href="/doc/lazyj/ExtendedServlet.html#getMaxRunTime()">time-bounded servlet execution</a></li>
+        <li>easy <a target="lazyjdoc" href="/doc/lazyj/RequestWrapper.html#initMultipartRequest(java.lang.String,%20int)">file uploading</a> from servlets or JSPs</li>
+        <li>notification framework (<a target="lazyjdoc" href="/doc/lazyj/notifications/EmailSender.html">email</a> and <a target="lazyjdoc" href="/doc/lazyj/notifications/YMSender.html">Yahoo! Messenger</a> already implemented)</li>
+        <li>HTML widgets (for example <a target="lazyjdoc" href="/doc/lazyj/widgets/Select.html">select</a> 
+        	built from a <a target="lazyjdoc" href="/doc/lazyj/widgets/Tree.html">tree</a> of categories or a db-based list of options)</li>
+        <li>many other nice features.</li>
+    </ul>
+    Consult the <a target="lazyjdoc" href="/doc/"><b>API</b></a> for more details. Sample code will come soon.
+    <br>
+    <br>
+    <b>Download</b> the package (sources included), <a href="CHANGELOG">changelog</a>:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<a href="/download/lazyj.jar">lazyj.jar</a> (1.0.4 / 2007-12-11)
+    <br>
+
+    <br>
+    If you want to compile the package you also need the Servlet API, you can use the one provided with you web server 
+    (eg. <a target=_blank href="http://tomcat.apache.org/">Tomcat</a>) or download the <a target=_blank href="http://java.sun.com/products/servlet/archive.html">reference API specifications</a>.<br>
+    <br>
+    <b>Developers</b>:<ul>
+        <li><a href="mailto:costing[at]gmail[dot]com">Costin Grigoras</a> (<a target=_blank href="http://monalisa.cern.ch/blog/author/costing/">blog</a>)</li>
+        <li><a href="mailto:alina[dot]grigorash[at]gmail[dot]com">Alina Grigoras</a> (<a target=_blank href="http://monalisa.cern.ch/blog/author/alina/">blog</a>)</li>
+    </ul>
+    <br>
+    LazyJ is released under <a href="http://www.gnu.org/licenses/lgpl.html" target=_blank>LGPL</a> license.
+    </div>
+    <div id="side">
+        <p>
+	    <b>Requirements</b>:<ul>
+    	    <li><a target=_blank href="http://servlets.com/cos/">Oreilly servlet extensions</a>
+    	    	(for handling file uploads)
+    	    </li>
+    	</ul>
+    	</p>
+    	<p>
+    	<b>Optional packages:</b><ul>
+    	    <li><a target=_blank href="http://java.sun.com/products/javamail/downloads/index.html">JavaMail API 1.4</a> and
+    	   		<a target=_blank href="http://java.sun.com/products/javabeans/jaf/downloads/index.html">JavaBeans Activation Framework 1.1</a> 
+    	    	<br>
+    	    	(for handling mail attachments)
+    	    </li>
+    	    <li>
+    	    	<a target=_blank href="http://jymsg9.sourceforge.net/">jYMSG9</a><br>
+    	    	(if you want to use YM notifications)
+    	    </li>
+		</ul>
+	    </p>
+	    <p><b>Recommended packages</b>:<ul>
+    		<li><a target=_blank href="http://www.jfree.org/jfreechart/download.html">JFreeChart</a><br>an excelent charting library</li>
+    		<li><a target=_blank href="http://findbugs.sourceforge.net/">FindBugs</a><br>helps in writing correct &amp; efficient code</li>
+	    </ul>
+	    <p>
+		<b>JDBC connectors</b>:<ul>
+		    <li><a target=_blank href="http://jdbc.postgresql.org/download.html">PostgreSQL</a></li>
+		    <li><a target=_blank href="http://dev.mysql.com/downloads/connector/j/5.0.html">MySQL Connector/J</a></li>
+		</ul>
+	    </p>
+	    <p>
+		<b>Usage in the real world</b>:<ul>
+	            <li><a target=_blank href="http://www.soft4phones.com/">soft4phones.com</a></li>
+	            <li><a target=_blank href="http://www.anidescoala.ro/">anidescoala.ro</a></li>
+	            <li><a target=_blank href="http://pcalimonitor.cern.ch/">pcalimonitor.cern.ch</a></li>
+	        </ul>
+	    </p>
+    </div>
+    
+    <div id="footer">
+        <p>Copyright @ 2007 LazyJ.sf.net</p>
+    </div>
+</div>
+    
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2970758-1";
+urchinTracker();
+</script>
+</body>
+</html>

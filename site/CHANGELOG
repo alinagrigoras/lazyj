@@ -1,0 +1,259 @@
+1.0.5:
+	2008-10-15
+	lazyj.mail.Sendmail
+		- fix: sending emails from Windows (PrintWriter.println() adds system-dependent end-of-line)
+		- add: PrintWriter charset support, defaulting to UTF8
+
+	2008-10-14
+	lazyj.mail.Sendmail
+		- add setDebug(boolean) to print all traffic with the mail server
+
+	2008-07-19:
+	lazyj.cache.ExpirationCache
+		- improvement: make use of a single thread that watches a single global expiration queue in order to avoid spawning too many threads
+
+	2008-07-13:
+	lazyj.cache.GenericLastValuesCache:
+		- add: methods to refresh one entry only
+	lazyj.cache.ExpirationCache:
+		- add: removal and overwriting methods for particular keys
+
+	2008-07-12:
+	lazyj.cache.GenericLastValuesCache:
+		- fix: clear the null cache at refresh()
+	lazyj.DBFunctions
+		- add: two additional methods to quickly check if we are using a PostgreSQL or a MySQL driver
+	lazyj.ExtProperties:
+		- add: allow building from an InputStream directly
+		- enhancement: don't bother to remember the extra set values in case we don't have a file backing anyway
+
+	2008-06-27:
+	lazyj.cache.GenericLastValuesCache:
+		- improvement: remember the keys for which there was a null return from resolve(), don't ask again
+
+	2008-06-25:
+	lazyj.page.BasePage
+		- add: support for writing to a Writer, in addition to writing to an OutputStream
+
+	2008-06-15:
+	lazyj.ExtProperties:
+		- enhancement: notify clients when a value is changed
+	lazyj.Utils:
+		- add: getLazyjConfigFolder() to find out where the configuration files are, trying a few default folders
+
+	2008-06-13:
+	lazyj.TemplateParser
+	lazyj.BasePage:
+		- performance: from parsing time determine the exact formatter to use, only for regexp ones keep resolving them at run time
+
+	2008-06-12:
+	lazyj.StringFactory:
+		- performance: rely on String.intern() to keep a single instance of the strings, apparently it does the job better than WeakHashMap (less memory requirements)
+
+	2008-06-06:
+	lazyj.page.BasePage:
+		- fix: add "ddot" as an exact tag
+	lazyj.*
+		- add: "lazyj." prefix to several thread names to easily spot the framework threads in a jstack dump
+		
+	2008-06-05:
+	lazyj.ExtendedServlet:
+		- fix: correctly determine the context and the servlet in the context of Servlet API 2.1+
+		- fix: return the thread name back to the original one at exit, so that Tomcat internal threads show up nicely in the jstack dump
+	lazyj.LRUMap:
+		- performance: initial size=32 instead of allocating from the start enough memory to hold max count of elements
+
+	2008-05-27:
+	lazyj.mail.FileTypes:
+		- improvement: updated the MIME types list
+
+	2008-05-23:
+	lazyj.Utils:
+		- add: stringToBool() that attempts to guess the boolean value of a String, in different formats  
+
+	2008-05-13:
+	lazyj.Utils:
+		- enhancement: make download() return the contents of the URL if the target file name is null
+	lazyj.mail.Sendmail:
+		- performance: build the headers using a StringBuilder instead of string concatenation
+	lazyj.*
+		- fix: a few minor changes suggested by Findbugs
+
+	2008-04-09:
+	lazyj.Utils:
+		- enhancement: change toBaseCharacters() to recognize special HTML characters and convert them as well
+
+	2008-03-27:
+	lazyj.DateFileWatchdog:
+		- fix: stop watching a file when the watcher is destroyed
+	lazyj.LRUMap:
+		- enhancement: negative sizes = unlimited number of entries
+	lazyj.page.BasePage:
+		- improvement: use the generic caching mechanism to keep pre-compiled TemplateParser objects
+	lazyj.page.TemplateParser:
+		- fix: correctly clear the "db" list when reloading the template from disk
+
+	2008-03-26:
+	lazyj.page.BasePage & lazyj.page.TemplateParser
+		- performance: using BasePage.comment() will actually remove the commented section, skipping the processing
+		  of the included tags as well
+		- performance: other small optimizations for speed and memory consumption
+
+	2008-03-23:
+	lazyj.Utils:
+		- add: new method to download content from any URL to a local file
+
+	2008-03-07:
+	lazyj.DBFunctions:
+		- API change: signature of encodeArray()
+	lazyj.mail.Sendmail
+		- add: two new functions to override SMTP protocol strings with arbitrary values: setHELO() and setMAILFROM()
+
+	2008-01-18:
+	lazyj.page.BasePage:
+		- improvement: make modify() use append() to do the dirty work, eliminate duplicate code
+	lazyj.page.TemplatePage
+		- add: new interface that defines a Page that can be dynamically modified
+	lazyj.page.Module
+		- fix: change function return types, to Page or TemplatePage, to break the cyclic references to BasePage
+	lazyj.*
+		- fix: a few other minor changes suggested by FindBugs 
+
+	2007-12-16:
+	lazyj.Format:
+		- improvement: display of large file sizes
+		- add: method that displays sizes starting from an arbitrary measurement unit
+		- add: method to display double values with a variable number of decimal places, depending on the value that is displayed
+
+	2007-12-14:
+	lazyj.jar file:
+		- fix: remove .svn folders from the archive
+	lazyj.mail.Sendmail:
+		- fix: double Return-Path line problem
+
+	2007-12-12:
+	lazyj.Utils:
+		- add: htmlToText(String) method to help generating the plain text version of an HTML email
+
+1.0.4:
+	2007-12-11:
+	lazyj.mail.MailDate:
+		- fix timezone offset sign
+
+	2007-11-27:
+	lazyj.widgets:
+		- new package for HTML widgets. For now it only offers to build list of options
+		  for "select" tags, as tree (hierarchical or full path) or as plain list, from DB queries. 
+
+1.0.3:
+    2007-11-23:
+	lazyj.ExtendedServlet:
+		- re-add setting thread name, now with client IP address as well, and thread state
+	lazyj.cache.Cache:
+		- consolidate 3 similar methods in a single one
+
+    2007-11-20:
+	lazyj.cache.ExpirationCache:
+		- new type of cache, putting a lifetime on each added entry, having also the option
+		  of limiting the number of entries kept in cache
+	lazyj.PageCache and lazyj.Utils:
+		- make use of the new ExpirationCache
+	lazyj.StringFactory:
+		- replace redundant code with LRUMap
+
+    2007-11-19:
+	lazyj.cache.*:
+		- generify all the classes in the cache package
+
+    2007-11-17:
+	lazyj.notifications.*
+		- introduced the notifications framework. For the beginning we implemented notifications
+		  through email and Y!Msg, but one can extend it to do anything else as well.
+
+    2007-11-13:
+	lazyj.DBSessions:
+		- reload parameters when the configuration file has changed
+
+    2007-11-13:
+	lazyj.DBFunctions
+	    - add encodeArray() method to produce PostgreSQL-compatible arrays as text representation
+
+    2007-11-11:
+	lazyj.DBFunctions:
+	    - added getStringArray(*) and getIntArray(*), to decode PostgreSQL arrays
+
+1.0.2:
+    2007-11-07:
+	Initial freshmeat announcement :)
+
+    2007-11-07:
+	lazyj.RequestWrapper:
+	    - utility class to make the framework usability available to JSP files too
+	lazyj.LRUMap:
+	    - utility class for keeping "hot" caches (less used entries are removed when
+    	      new entries show up)
+	lazyj.Utils:
+	    - make use of LRUCache to keep recently resolved IP addresses in a cache
+	lazyj.PageCache:
+	    - make the page caching available to JSPs
+	lazyj.CachingStructure:
+	    - add method to return the content as string, caching the return value as weak reference	
+
+    2007-10-25:
+	lazyj.DBSession:
+	    - use the default class loader first but fall back to the zone class loader if the class
+	      cannot be loaded from the database
+	    - test the database at the beginning, if it doesn't work disable database backing
+	lazyj.page.TemplateParser
+	    - same as above, for dynamic modules
+	lazyj.page.BasePage
+	    - make class non-abstract, in this default implementation files have to be given with full path
+	lazyj.Log:
+	    - use stderr to log messages that cannot be written to files
+	framework-wide:
+	    - use File.separator instead of hard-coded "/"
+
+    2007-08-10:
+	lazyj.DBSession:
+	    - skip writing to the database when the values are not changed
+	lazyj.StringFactory:
+	    - utility class to keep a single reference to common used strings,
+	      avoiding allocation of too much memory in some simple cases
+	lazyj.ExtendedServlet:
+	    - set the name of the thread to something useful (zone/servlet) to
+	      see something relevant in the logs in case of a killing
+
+    2007-08-08:
+	lazyj.CachingStructure:
+	    - nicer statistics display (full url to go to)
+	lazyj.ExtendedServlet:
+	    - fix case when we tried to cache empty responses / redirects
+	lazyj.PageCache:
+	    - make clear method static
+	lazyj.page.BasePage:
+	    - add method to clear the page templates cache
+
+    2007-08-06 :
+	lazyj.CachingStructure:
+	    - improved toString() display of the internal values
+	    - fix hits counting
+	    - compress with GZip the contents of the pages
+	    - keep the uncompressed data as weak references to allow JVM to free the memory if needed
+	    - add the content type next to the actual content
+	lazyj.ExtendedServlet:
+	    - fix the removing of temporary uploaded files
+	    - save the content type in the caching structures
+	    - add a counter for the total number of pages served by the framework
+	lazyj.Utils:
+	    - add GZip compression and uncompression routines
+	lazyj.PageCache:
+	    - add method to clean the page cache
+
+1.0.1:
+    2007-06-29 : 
+	lazyj.Log : Treat Thread parameters specially
+	lazyj.ThreadsMonitor : change the logging of a thread kill
+	lazyj.Utils : replace Sun JPEG encoders with Java 1.4 standard image API
+	lazyj.* : Multiple minor warnings from FindBugs fixed
+
+1.0.0: 2007-06-28 : we have something working, let's give it a name. This is when and how LazyJ was born :)

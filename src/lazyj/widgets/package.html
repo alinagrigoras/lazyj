@@ -1,0 +1,18 @@
+ <body>
+ 	This package is a collection of useful HTML helper objects. <br>
+ 	<br>	
+ 	Here is a sample implementation for building a tree:<br>
+ 	<br>
+ 	<pre>
+<b>// Make sure one of the root entries is first here!</b>
+DBFunctions db <span style="color:#000000">=</span> <span style="color:#000000; font-weight:bold">new</span> <span style="color:#010181">DBFunctions</span><span style="color:#000000">(</span>dbProp<span style="color:#000000">,</span> <span style="color:#ff0000">&quot;SELECT id,parent,name FROM tree ORDER BY id ASC;&quot;</span><span style="color:#000000">);</span>
+
+<span style="color:#000000; font-weight:bold">Set</span><span style="color:#000000">&lt;</span><span style="color:#000000; font-weight:bold">Integer</span><span style="color:#000000">&gt;</span> selected <span style="color:#000000">=</span> <span style="color:#000000; font-weight:bold">new</span> <span style="color:#000000; font-weight:bold">HashSet</span><span style="color:#000000">&lt;</span><span style="color:#000000; font-weight:bold">Integer</span><span style="color:#000000">&gt;();</span>
+
+selected<span style="color:#000000">.</span><span style="color:#010181">add</span><span style="color:#000000">(</span><span style="color:#2928ff">1</span><span style="color:#000000">);</span>
+
+Select<span style="color:#000000">&lt;</span><span style="color:#000000; font-weight:bold">Integer</span><span style="color:#000000">,</span> <span style="color:#000000; font-weight:bold">String</span><span style="color:#000000">&gt;</span> select <span style="color:#000000">=</span> <span style="color:#000000; font-weight:bold">new</span> Select<span style="color:#000000">&lt;</span><span style="color:#000000; font-weight:bold">Integer</span><span style="color:#000000">,</span> <span style="color:#000000; font-weight:bold">String</span><span style="color:#000000">&gt;(</span>Tree<span style="color:#000000">.</span><span style="color:#010181">getDefaultTree</span><span style="color:#000000">(</span>db<span style="color:#000000">).</span><span style="color:#010181">getOptions</span><span style="color:#000000">(),</span> selected<span style="color:#000000">);</span>
+	</pre>
+	@since 1.0.4
+</body>
+ 

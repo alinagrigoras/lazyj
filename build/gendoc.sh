@@ -4,6 +4,8 @@ cd `dirname $0`/../src
 
 mkdir ../doc &>/dev/null
 
+export JAVA_HOME=${JAVA_HOME:-/usr}
+
 find lazyj -type f -name \*.java | xargs $JAVA_HOME/bin/javadoc \
     -d ../doc \
     -classpath ../lib/jsdk.jar:../lib/oreilly.jar:../lib/mail.jar:../lib/ymsg.jar \

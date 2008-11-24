@@ -2,6 +2,8 @@
 
 cd `dirname $0`/classes
 
+JAVA_HOME=${JAVA_HOME:-/usr}
+
 $JAVA_HOME/bin/jar -cmf ../manifest ../lazyj.jar lazyj || exit 1
 cd ../..
 find src -name \*.java -o -name \*.html | xargs $JAVA_HOME/bin/jar -uf build/lazyj.jar || exit 1

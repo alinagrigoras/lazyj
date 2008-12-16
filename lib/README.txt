@@ -11,4 +11,4 @@ jfreechart.jar	jcommon.jar	JFreeChart 1.0.2							http://www.jfree.org/jfreechar
 jcommon.jar			JCommon 1.0.5								http://www.jfree.org/jfreechart/download.html
 mail.jar	activation.jar	JavaMail API 1.4							http://java.sun.com/products/javamail/downloads/index.html
 activation.jar			JavaBeans Activation Framework 1.1					http://java.sun.com/products/javabeans/jaf/downloads/index.html
-ymsg.jar			Yahoo! Msg. API								http://jymsg9.sourceforge.net/
+ymsg.jar			Yahoo! Msg. API	0.64_alpha						http://jymsg9.sourceforge.net/

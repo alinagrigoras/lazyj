@@ -222,7 +222,7 @@ public final class ExtProperties extends Observable implements Observer {
 	public String parseOption(final String sKey, final String sValue, final String sDefault, final boolean bProcessQueries) {
 		int i = 0;
 
-		StringBuffer sbVal = new StringBuffer();
+		StringBuilder sbVal = new StringBuilder();
 		
 		String sVal = sValue;
 		

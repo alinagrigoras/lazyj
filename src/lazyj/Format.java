@@ -377,7 +377,7 @@ public final class Format {
 		if (s==null || sWhat==null || sWhat.length()==0)
 			return s;
 
-		StringBuffer sb = null;
+		StringBuilder sb = null;
 
 		final int iWhatLen = sWhat.length();
 		final int iWithLen = sWith.length();
@@ -389,7 +389,7 @@ public final class Format {
 		while ((i = s.indexOf(sWhat, iOld)) >= 0) {
 			if (sb == null) {
 				final int diff = (iWhatLen - iWithLen) * (iOldReplacements1 * 2 + iOldReplacements2 + 1) / 3;
-				sb = new StringBuffer(s.length() + (diff > 0 ? diff : 0));
+				sb = new StringBuilder(s.length() + (diff > 0 ? diff : 0));
 			}
 
 			if (iOld<i)

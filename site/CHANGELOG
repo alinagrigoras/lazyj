@@ -1,4 +1,8 @@
 1.0.6:
+	2009-01-01:
+	lazyj.Utils
+		- override UTF8->ASCII conversion of a few quotes favored by M$ office
+		
 	2008-12-23:
 	lazyj.{Format,ExtProperties}
 		- use StringBuilder instead of StringBuffer

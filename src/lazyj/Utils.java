@@ -556,6 +556,20 @@ public final class Utils {
 				}
 			}
 			
+			// some weird quotes that are not properly converted by the normalizer
+			switch (c){
+				case '\u2019':
+					sb.append('\'');
+					continue;
+				case '\u201C':
+				case '\u201D':
+					sb.append('"');
+					continue;
+				case '\u2026':
+					sb.append("...");
+					continue;
+			}
+			
 			String sLetter = new String(new char[] { c });
 
 			sLetter = Normalizer.normalize(sLetter, Normalizer.Form.NFD);

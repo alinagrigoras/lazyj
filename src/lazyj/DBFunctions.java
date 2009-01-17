@@ -99,24 +99,22 @@ public class DBFunctions {
 	 * Create a connection to the database using the parameters in this properties file. The
 	 * following keys are extracted:<br>
 	 * <ul>
-	 * <li><b>driver</b> : org.postgresql.Driver, com.mysql.jdbc.Driver ...</li>
-	 * <li><b>host</b> : server's ip address, defaults to 127.0.0.1</li>
-	 * <li><b>port</b> : tcp port to connect to on the <i>host</i>, if it is missing the standard
-	 * port for each database type is used</li>
-	 * <li><b>database</b> : name of the database to connect to </li>
-	 * <li><b>user</b> : supply this account name when connecting</li>
-	 * <li><b>password</b> : password for the account</li>
+	 * <li><b>driver</b> : (required) one of org.postgresql.Driver, com.mysql.jdbc.Driver or com.microsoft.jdbc.sqlserver.SQLServerDriver</li>
+	 * <li><b>host</b> : (optional) server's ip address, defaults to 127.0.0.1</li>
+	 * <li><b>port</b> : (optional) tcp port to connect to on the <i>host</i>, if it is missing the default port for each database type is used</li>
+	 * <li><b>database</b> : (required) name of the database to connect to</li>
+	 * <li><b>user</b> : (recommended) supply this account name when connecting</li>
+	 * <li><b>password</b> : (recommended) password for the account</li>
 	 * </ul>
 	 * Any other keys will be passed as arguments to the driver. You might be interested in:<br>
 	 * <ul>
 	 * <li><a href="http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-configuration-properties.html" target=_blank>MySQL</a>:
 	 * <ul>
-	 * <li><b>connectTimeout</b> : timeout in milliseconds for a new connection, default is 0
-	 * (infinite)</li>
+	 * <li><b>connectTimeout</b> : timeout in milliseconds for a new connection, default is 0 infinite)</li>
 	 * <li><b>useCompression</b> : true/false, default false</li>
 	 * </ul>
 	 * </li>
-	 * <li><a href="http://jdbc.postgresql.org/documentation/82/connect.html" target=_blank>PostgreSQL</a>:
+	 * <li><a href="http://jdbc.postgresql.org/documentation/83/connect.html" target=_blank>PostgreSQL</a>:
 	 *   <ul>
 	 *     <li><b>ssl</b> : present=true for now</li>
 	 *     <li><b>charSet</b> : string</li>
@@ -271,12 +269,12 @@ public class DBFunctions {
 	 * <code><pre>
 	 * // set the connection parameters <br>
 	 * ExtProperties dbProp = new ExtProperties(); 
-	 * dbProp.set("driver", "org.postgresql.Driver"); 
-	 * dbProp.set("host", "127.0.0.1"); 
-	 * dbProp.set("port", "5432"); 
-	 * dbProp.set("database", "somedb"); 
-	 * dbProp.set("user", "username"); 
-	 * dbProp.set("password", "*****"); 
+	 * dbProp.set("driver", "org.postgresql.Driver");	// mandatory
+	 * dbProp.set("database", "somedb"); 				// mandatory
+	 * dbProp.set("host", "127.0.0.1");					// defaults to 127.0.0.1 if missing
+	 * dbProp.set("port", "5432");						// DB-dependend default if missing
+	 * dbProp.set("user", "username"); 					// recommended
+	 * dbProp.set("password", "*****"); 				// recommended
 	 * // you can also set here various other configuration options that the JDBC driver will look at
 	 * 
 	 * DBFunctions db = new DBFunctions(prop);
@@ -375,27 +373,44 @@ public class DBFunctions {
 				return;
 			}
 
+			/*
+			 * See here for JDBC URL examples:
+			 * http://www.petefreitag.com/articles/jdbc_urls/
+			 */
+			
 			try {
-				String connection = "jdbc:";
+				final StringBuilder connection = new StringBuilder("jdbc:");
 
-				if (driver.indexOf("mysql") >= 0)
-					connection += "mysql:";
-				else if (driver.indexOf("postgres") >= 0)
-					connection += "postgresql:";
+				final boolean isMySQL = driver.indexOf("mysql") >= 0;
+				final boolean isPostgreSQL = driver.indexOf("postgres") >= 0;
+				final boolean isMSSQL = driver.indexOf("sqlserver") >= 0; 
+				
+				if (isMySQL)
+					connection.append("mysql:");
+				else if (isPostgreSQL)
+					connection.append("postgresql:");
+				else if (isMSSQL)
+					connection.append("microsoft:sqlserver:");
 				else {
 					// UNKNOWN DRIVER
 					this.iBusy = 3;
 					return;
 				}
 
-				connection += "//" + prop.gets("host", "127.0.0.1");
+				connection.append("//").append(prop.gets("host", "127.0.0.1"));
 
-				if (prop.gets("port").length() > 0)
-					connection += ":" + prop.gets("port");
+				final String sPort = prop.gets("port"); 
+				
+				if (sPort.length() > 0)
+					connection.append(':').append(sPort);
 
-				connection += "/" + prop.gets("database");
+				if (isMySQL || isPostgreSQL)
+					connection.append('/').append(prop.gets("database"));
+				else
+				if (isMSSQL)
+					connection.append(";databaseName=").append(prop.gets("database"));
 
-				this.conn = DriverManager.getConnection(connection, prop.getProperties());
+				this.conn = DriverManager.getConnection(connection.toString(), prop.getProperties());
 				this.iBusy = 1;
 			} catch (SQLException e) {
 				this.iBusy = 3;

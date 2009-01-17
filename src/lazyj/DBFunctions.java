@@ -198,8 +198,9 @@ public class DBFunctions {
 	 * If you already have the full JDBC connection URL, connect like this
 	 * 
 	 * @param driverClass JDBC driver class name
-	 * @param jdbcURL
-	 * @param configProperties
+	 * @param jdbcURL full JDBC connection URL
+	 * @param configProperties extra configuration options
+	 * @see #DBFunctions(ExtProperties)
 	 */
 	public DBFunctions(final String driverClass, final String jdbcURL, final Properties configProperties){
 		this.driver = driverClass;
@@ -208,6 +209,21 @@ public class DBFunctions {
 		this.uniqueKey = jdbcURL;
 	}
 
+	/**
+	 * If you already have the full JDBC connection URL, connect like this.
+	 * 
+	 * @param driverClass JDBC driver class name
+	 * @param jdbcURL full JDBC connection URL
+	 * @param configProperties extra configuration options
+	 * @param sQuery query to execute 
+	 * @see #DBFunctions(ExtProperties)
+	 */	
+	public DBFunctions(final String driverClass, final String jdbcURL, final Properties configProperties, final String sQuery){
+		this(driverClass, jdbcURL, configProperties);
+		
+		query(sQuery);
+	}
+	
 	/**
 	 * From the current connections try to find out if there is any one of them that is free
 	 * 
@@ -240,6 +256,9 @@ public class DBFunctions {
 	 * @return unique key
 	 */
 	private String getKey() {
+		if (this.prop == null)
+			return this.jdbcConnectionString;
+		
 		return this.prop.getProperty("driver", "") + "/" + 
 				this.prop.getProperty("host", "127.0.0.1") + "/" + 
 				this.prop.getProperty("port", "") + "/" + 
@@ -254,7 +273,7 @@ public class DBFunctions {
 	 * @return true if the connection is done to a PostgreSQL database
 	 */
 	public boolean isPostgreSQL(){
-		return this.prop!=null && this.prop.getProperty("driver", "").toLowerCase(Locale.getDefault()).indexOf("postgres")>=0;
+		return this.jdbcConnectionString.indexOf("postgres")>=0;
 	}
 	
 	/**
@@ -263,7 +282,7 @@ public class DBFunctions {
 	 * @return true if the connection is done to a MySQL database
 	 */
 	public boolean isMySQL(){
-		return this.prop!=null && this.prop.getProperty("driver", "").toLowerCase(Locale.getDefault()).indexOf("mysql")>=0;
+		return this.jdbcConnectionString.indexOf("mysql")>=0;
 	}
 	
 	/**

@@ -18,6 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class Log {
 
+	/**
+	 * logging settings
+	 */
 	private static final ExtProperties logProp;
 
 	/**
@@ -196,8 +199,14 @@ public final class Log {
 		return level <= getLevel(sComponent).intValue();
 	}
 
+	/**
+	 * Time formatting
+	 */
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+	/**
+	 * @return time
+	 */
 	private static final String getTime(){
 		synchronized (sdf){
 			return sdf.format(new Date());
@@ -283,6 +292,10 @@ public final class Log {
 		log(level, sComponent, sExtra.toString());
 	}
 
+	/**
+	 * @param sb
+	 * @param vst
+	 */
 	private static void append(final StringBuilder sb, final StackTraceElement[] vst){
 		for (StackTraceElement ste : vst)
 			sb.append("\n  ").append(ste.toString());		

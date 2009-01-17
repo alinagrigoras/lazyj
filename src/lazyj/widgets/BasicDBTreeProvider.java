@@ -14,8 +14,19 @@ import lazyj.DBFunctions;
  */
 public class BasicDBTreeProvider extends DBTreeProvider<Integer, String> {
 
+	/**
+	 * Column name where IDs are
+	 */
 	private final String sIDColumn;
+	
+	/**
+	 * Column name with pointers to parent entries
+	 */
 	private final String sParentColumn;
+	
+	/**
+	 * Column name with values to show
+	 */
 	private final String sValueColumn;
 	
 	/**

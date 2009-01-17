@@ -13,10 +13,19 @@ import java.util.concurrent.TimeUnit;
  */
 final class BoundedThreadContainer implements Delayed {
 
+	/**
+	 * Timestamp when this thread will have to die
+	 */
 	private final long	lExpires;
 
+	/**
+	 * Thread to watch
+	 */
 	private final Thread	t;
 
+	/**
+	 * What is the servlet path, for the logs to have some meaning
+	 */
 	private final String	sPath;
 
 	/**

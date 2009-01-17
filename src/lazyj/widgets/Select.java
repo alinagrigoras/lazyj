@@ -19,14 +19,29 @@ import lazyj.page.Page;
  */
 public class Select<K,V> implements Page {
 
+	/**
+	 * Options
+	 */
 	private final Collection<Option<K,V>> options;
 	
+	/**
+	 * Which of the above options are selected
+	 */
 	private final Set<K> selected;
 	
+	/**
+	 * Template for one option
+	 */
 	private final BasePage pOption;
 	
+	/**
+	 * How to indent options on lower levels
+	 */
 	private final String sIndent;
 	
+	/**
+	 * How to format an option in order to display it
+	 */
 	private final OptionFormatter formatter;
 	
 	/**

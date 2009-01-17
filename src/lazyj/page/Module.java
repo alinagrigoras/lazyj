@@ -152,6 +152,9 @@ public abstract class Module {
 		return hm;
 	}
 	
+	/**
+	 * Calling servlet. Useful for loading modules from servlet's zone.
+	 */
 	private ExtendedServlet callingServlet = null;
 	
 	/**

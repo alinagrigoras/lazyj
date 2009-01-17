@@ -10,10 +10,19 @@ package lazyj;
  * @see java.lang.String#intern()
  */
 public final class StringFactory {
+	/**
+	 * How many hits
+	 */
 	private static transient long		lCacheHit			= 0;
 
+	/**
+	 * How many misses
+	 */
 	private static transient long		lCacheMiss			= 0;
 
+	/**
+	 * How many strings were ignored
+	 */
 	private static transient long		lCacheIgnore		= 0;
 
 	/**

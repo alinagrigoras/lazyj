@@ -14,8 +14,7 @@ import lazyj.Format;
  * @since 2006-10-06
  */
 public final class MailDate implements Comparable<MailDate>{
-	private static final long	serialVersionUID	= 8642814691120965170L;
-
+	
 	/**
 	 * day of the month
 	 */
@@ -61,8 +60,14 @@ public final class MailDate implements Comparable<MailDate>{
 	 */
 	public String sLocalZone;
 
+	/**
+	 * mail date
+	 */
 	private Date				date;
 
+	/**
+	 * original string
+	 */
 	private String				sOrigDate;
 
 	/**
@@ -118,6 +123,9 @@ public final class MailDate implements Comparable<MailDate>{
 		}
 	}
 
+	/**
+	 * zero everything
+	 */
 	private void initLocalData() {
 		this.day = 0;
 		this.month = 0;
@@ -147,6 +155,11 @@ public final class MailDate implements Comparable<MailDate>{
 		this.sOrigDate = dParam.toString();
 	}
 
+	/**
+	 * Parse time of day
+	 * 
+	 * @param sHMS
+	 */
 	private void processHMS(String sHMS) {
 		StringTokenizer st = new StringTokenizer(sHMS, ": ");
 		try {
@@ -160,6 +173,11 @@ public final class MailDate implements Comparable<MailDate>{
 		}
 	}
 
+	/**
+	 * Other parser
+	 * 
+	 * @param data
+	 */
 	@SuppressWarnings("deprecation")
 	private void oldProcessor(final String data) {
 		try {

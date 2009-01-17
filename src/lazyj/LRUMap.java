@@ -19,10 +19,19 @@ import java.util.Map;
  * @since Oct 26, 2007 (1.0.2)
  */
 public class LRUMap<K, V> extends LinkedHashMap<K, V> {
+	/**
+	 * serial version
+	 */
 	private static final long	serialVersionUID	= 2470194500885712833L;
 
+	/**
+	 * default load factor
+	 */
 	private static final float	DEFAULT_FACTOR				= 0.75f;
 
+	/**
+	 * how many entries to allow
+	 */
 	private final int			iCacheSize;
 
 	/**

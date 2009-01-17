@@ -48,9 +48,20 @@ public abstract class DBOptionList<K,V> implements OptionProvider<K, V>{
 	 */
 	protected abstract V getValue(DBFunctions dbRow);
 	
+	/**
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private class DBOption implements Option<K, V>{
 
+		/**
+		 * Key
+		 */
 		private final K key;
+		
+		/**
+		 * Value
+		 */
 		private final V value;
 		
 		/**

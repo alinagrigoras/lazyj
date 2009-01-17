@@ -254,18 +254,39 @@ public final class Format {
 		}
 	}
 
+	/**
+	 * How to escape slashes
+	 */
 	private static final char[]	ESC_SLASH	= new char[] { '\\', '\\' };
 
+	/**
+	 * Simple quotes
+	 */
 	private static final char[]	ESC_QUOTE	= new char[] { '\'', '\'' };
 
+	/**
+	 * JS escaping of simple quotes
+	 */
 	private static final char[]	JS_QUOTE	= new char[] { '\\', '\'' };
 
+	/**
+	 * Double quotes
+	 */
 	private static final char[]	ESC_DQUOTE	= new char[] { '\\', '"' };
 
+	/**
+	 * \n
+	 */
 	private static final char[]	ESC_N		= new char[] { '\\', 'n' };
 
+	/**
+	 * \r
+	 */
 	private static final char[]	ESC_R		= new char[] { '\\', 'r' };
 
+	/**
+	 * char(0)
+	 */
 	private static final char[]	ESC_0		= new char[] { '\\', '0' };
 
 	/**
@@ -361,8 +382,14 @@ public final class Format {
 		return sb.toString();
 	}
 
+	/**
+	 * Short memory for number of replacements
+	 */
 	private static volatile int	iOldReplacements1	= 2;
 
+	/**
+	 * Another short memory for number of replacements
+	 */
 	private static volatile int	iOldReplacements2	= 2;
 
 	/**
@@ -434,6 +461,9 @@ public final class Format {
 		return replace(replace(text, "<br>", "\n"), "<BR>", "\n");
 	}
 
+	/**
+	 * Commonly used date formats
+	 */
 	private final static SimpleDateFormat[]	sdfFormats	= new SimpleDateFormat[] { 
 				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"), // 0
 				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), // 1
@@ -565,6 +595,9 @@ public final class Format {
 		return sdfFormats[5].format(d);
 	}
 
+	/**
+	 * Long date format
+	 */
 	private static final SimpleDateFormat sdfLongDate = new SimpleDateFormat("dd MMMM yyyy");
 	
 	/**
@@ -579,6 +612,9 @@ public final class Format {
 		}
 	}
 
+	/**
+	 * Short date format
+	 */
 	private static final SimpleDateFormat sdfShortDate = new SimpleDateFormat("dd MMM yyyy");
 	
 	/**
@@ -593,6 +629,9 @@ public final class Format {
 		}
 	}
 
+	/**
+	 * Only time
+	 */
 	private static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
 	
 	/**
@@ -757,6 +796,9 @@ public final class Format {
 		return sRez;
 	}
 	
+	/**
+	 * Hex chars
+	 */
 	private static final char[] hexTable = new char[]{'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 	
 	/**

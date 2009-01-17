@@ -1,11 +1,15 @@
 1.0.6:
+	2009-01-17:
+	lazyj.DBFunctions:
+		- api: public access to the raw JDBC connection
+
 	2009-01-01:
 	lazyj.Utils
-		- override UTF8->ASCII conversion of a few quotes favored by M$ office
+		- improvement: override UTF8->ASCII conversion of a few quotes favored by M$ office
 		
 	2008-12-23:
 	lazyj.{Format,ExtProperties}
-		- use StringBuilder instead of StringBuffer
+		- fix: use StringBuilder instead of StringBuffer
 
 1.0.5:
 	2008-10-15

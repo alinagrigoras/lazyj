@@ -79,6 +79,9 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	/** Current session */
 	public DBSession				dbs				= null;
 
+	/**
+	 * Request wrapper that does all the work
+	 */
 	private RequestWrapper			rw				= null;
 	
 	/**
@@ -215,6 +218,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * <li> if the page is in cache, send the cached content to the client
 	 * <li> if the page is not in cache, create a wrapper of the output stream, that will intercept the 
 	 * 		generated output and on close will save the contents in the cache for later reuse 
+	 * @return true if the page is to be executed, false if it was served from cache
 	 */
 	private boolean masterInit() {
 		final long lTimeout = getCacheTimeout(); 
@@ -289,12 +293,24 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @since always
 	 */
 	private final class StringBufferOutputStream extends OutputStream {
+		/**
+		 * Servlet original output stream
+		 */
 		private final OutputStream			origos;
 
+		/**
+		 * Request key
+		 */
 		private final String				sKey;
 
+		/**
+		 * Where to put the contents
+		 */
 		private final ByteArrayOutputStream	baos;
 
+		/**
+		 * For how long will we cache this newly generated contents
+		 */
 		private final long					lTimeout;
 		
 		

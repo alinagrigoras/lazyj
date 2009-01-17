@@ -16,6 +16,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public final class DateFileWatchdog extends Observable {
 
+	/**
+	 * Unique ID
+	 */
 	private static final AtomicLong SEQ = new AtomicLong(0);
 
 	/**
@@ -48,8 +51,17 @@ public final class DateFileWatchdog extends Observable {
 	 */
 	long seq;
 
+	/**
+	 * Lock
+	 */
 	private static final Object lock = new Object();
 
+	/**
+	 * A file watcher
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private static final class DFWEntry implements Delayed {
 		/**
 		 * When this entry will expire and the file will be checked for modifications
@@ -144,6 +156,12 @@ public final class DateFileWatchdog extends Observable {
 
 	}
 
+	/**
+	 * Manager
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private static final class DFWManager extends Thread {
 
 		/**
@@ -156,6 +174,9 @@ public final class DateFileWatchdog extends Observable {
 		 */
 		final ConcurrentHashMap<Long, DFWEntry>cmap = new ConcurrentHashMap<Long, DFWEntry>();
 
+		/**
+		 * Flag to tell it when to die
+		 */
 		private boolean hasToRun;
 
 		/**
@@ -181,6 +202,11 @@ public final class DateFileWatchdog extends Observable {
 			this.hasToRun = false;
 		}
 
+		/**
+		 * Check entry for changes
+		 * 
+		 * @param dfe
+		 */
 		private void checkEntry(final DFWEntry dfe) {
 			try {
 				final DateFileWatchdog dfw = dfe.dfw;

@@ -42,12 +42,26 @@ public final class ExtProperties extends Observable implements Observer {
 	private String sConfigFile = null;
 		
 	/** Constructor values, for reloading */
-	private String sConfDir, sFileName;
+	private String sConfDir;
 	
+	/**
+	 * File name inside the configuration directoy above.
+	 */
+	private String sFileName;
+	
+	/**
+	 * Inherited configuration options
+	 */
 	private ExtProperties pSuper;
 	
+	/**
+	 * Values set explicitly
+	 */
 	private HashMap<String, String> hmExtraSet = null;
 	
+	/**
+	 * Can we alter the contents?
+	 */
 	private boolean bReadOnly = false;
 	
 	/**
@@ -95,6 +109,9 @@ public final class ExtProperties extends Observable implements Observer {
 		reload();
 	}
 	
+	/**
+	 * Keep an eye on the underlying file
+	 */
 	private DateFileWatchdog dfw = null;
 	
 	/**
@@ -333,19 +350,7 @@ public final class ExtProperties extends Observable implements Observer {
 	 * @return a boolean
 	 */
 	public boolean getb(final String sKey, final boolean bDefault) {
-		final String s = gets(sKey, ""+bDefault);
-		
-		if (s.length()>0){
-			final char c = s.charAt(0);
-			
-			if (c=='t' || c=='T' || c=='y' || c=='Y' || c=='1')
-				return true;
-			
-			if (c=='f' || c=='F' || c=='n' || c=='N' || c=='0')
-				return false;
-		}
-		
-		return bDefault;
+		return Utils.stringToBool(gets(sKey), bDefault);
 	}
 	
 	/**

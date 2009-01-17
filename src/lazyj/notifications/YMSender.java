@@ -30,9 +30,24 @@ import lazyj.LRUMap;
  */
 public class YMSender extends Sender {
 
+	/**
+	 * Yahoo! account name
+	 */
 	private String sAccount = null;
+	
+	/**
+	 * Yahoo! account password
+	 */
 	private String sPassword = null;
+	
+	/**
+	 * List of Yahoo! messenger ids
+	 */
 	private Set<String> sDefaultTo = null;
+	
+	/**
+	 * Listen for incoming messages
+	 */
 	private ymsg.network.event.SessionListener listener = null;
 	
 	/**
@@ -59,10 +74,20 @@ public class YMSender extends Sender {
 		return this.sAccount.length()>0 && this.sPassword.length()>0 && getConnection()!=null;
 	}
 
+	/**
+	 * Unique key identifying this connection
+	 * 
+	 * @return key
+	 */
 	private String getKey(){
 		return this.sAccount+"/"+this.sPassword;
 	}
 	
+	/**
+	 * Get a new or recycled connection
+	 * 
+	 * @return connection
+	 */
 	private ymsg.network.Session getConnection(){
 		final String sKey = getKey();
 		
@@ -128,6 +153,14 @@ public class YMSender extends Sender {
 		return true;
 	}
 
+	/**
+	 * Send the message
+	 * 
+	 * @param sess
+	 * @param accounts
+	 * @param message
+	 * @return true if sending was ok
+	 */
 	private boolean reallySend(final ymsg.network.Session sess, final Set<String> accounts, final String message){
 		try{
 			for (String sDest: accounts)

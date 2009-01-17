@@ -14,6 +14,9 @@ import lazyj.Log;
  */
 public abstract class Sender {
 	
+	/**
+	 * Class loader for modules
+	 */
 	private ClassLoader loader;
 
 	/**

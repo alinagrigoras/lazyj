@@ -41,6 +41,9 @@ import java.util.concurrent.TimeUnit;
  * @since 2006-10-13
  */
 public final class DBSession implements Serializable, Delayed {
+	/**
+	 * Some serial version
+	 */
 	private static final long	serialVersionUID	= 1L;
 
 	/**
@@ -228,6 +231,11 @@ public final class DBSession implements Serializable, Delayed {
 		return this.sID;
 	}
 	
+	/**
+	 * @param s1
+	 * @param s2
+	 * @return true if the strings are equal or both are <code>null</code>
+	 */
 	private static boolean equals(final String s1, final String s2){
 		return s1 == null ? s2 == null : s1.equals(s2);
 	}
@@ -410,6 +418,12 @@ public final class DBSession implements Serializable, Delayed {
 	 */
 	static final DelayQueue<DBSession> dq = new DelayQueue<DBSession>();
 	
+	/**
+	 * Cleanup expired sessions
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private static final class SessionsCleaner extends Thread {
 		
 		/**
@@ -567,6 +581,10 @@ public final class DBSession implements Serializable, Delayed {
 		}
 	}
 
+	/**
+	 * @param sName
+	 * @return string as SQL string
+	 */
 	private static final String formatName(final String sName){
 		if (sName==null)
 			return "null";
@@ -679,7 +697,16 @@ public final class DBSession implements Serializable, Delayed {
 		}
 	}
 
+	/**
+	 * Object stream decoder
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private static final class MyObjectInputStream extends ObjectInputStream {
+		/**
+		 * Class loader, to be able to load objects even if they are in some servlet's zone
+		 */
 		private final ClassLoader loader;
 		
 		/**
@@ -709,6 +736,11 @@ public final class DBSession implements Serializable, Delayed {
 		}
 	}
 	
+	/**
+	 * @param s
+	 * @param loader
+	 * @return the session from DB
+	 */
 	private static DBSession decode(final String s, final ClassLoader loader) {
 		try {
 			final char[] vc2 = s.toCharArray();

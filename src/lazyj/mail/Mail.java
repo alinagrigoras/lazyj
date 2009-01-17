@@ -68,6 +68,9 @@ public class Mail extends MailHeader {
 	 */
 	public boolean			bOnlyPlain;
 
+	/**
+	 * Mail encapsulation (attachment) level
+	 */
 	private int				iLevel;
 	
 	/**
@@ -121,6 +124,7 @@ public class Mail extends MailHeader {
 	 * Internal constructor, used when the body contains other embedded mails.
 	 * 
 	 * @param sHeader
+	 * @param sBodyText 
 	 * @param level
 	 */
 	private Mail(final String sHeader, final String sBodyText, final int level) {
@@ -144,6 +148,12 @@ public class Mail extends MailHeader {
 		return (((this.lAttachments != null) && (!this.lAttachments.isEmpty())) || (this.sAttachedFiles.length() > 0));
 	}
 
+	/**
+	 * Remove mail encoding tags
+	 * 
+	 * @param sOrig
+	 * @return cleaned-up text
+	 */
 	private static String stripCodes(final String sOrig) {
 		if ((sOrig == null) || (sOrig.length() == 0))
 			return "";
@@ -225,10 +235,23 @@ public class Mail extends MailHeader {
 		return sbResult.toString();
 	}
 
+	/**
+	 * Get the text contents of this email
+	 * 
+	 * @param sHead
+	 * @param sBody
+	 * @return email text
+	 */
 	private static String getText(final String sHead, final String sBody) {
 		return new Attachment(sHead, sBody).getText();
 	}
 
+	/**
+	 * parse mail body
+	 * 
+	 * @param sOrig
+	 * @return true if everything went ok
+	 */
 	private boolean processBody(final String sOrig) {
 		String sMessageBody = sOrig;
 		

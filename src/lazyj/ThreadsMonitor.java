@@ -11,8 +11,14 @@ import java.util.concurrent.DelayQueue;
  * @since 2006-10-04
  */
 public final class ThreadsMonitor extends Thread {
+	/**
+	 * Thread watch queue
+	 */
 	private static final DelayQueue<BoundedThreadContainer> queue = new DelayQueue<BoundedThreadContainer>();
 	
+	/**
+	 * The monitoring thread
+	 */
 	private static final ThreadsMonitor monitor;
 	
 	static{
@@ -20,6 +26,9 @@ public final class ThreadsMonitor extends Thread {
 		monitor.start();
 	}
 	
+	/**
+	 * Set thread name
+	 */
 	private ThreadsMonitor() {
 		super("lazyj.ThreadsMonitor - killing runaway servlets");
 		setDaemon(true);

@@ -33,8 +33,14 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	 */
 	final V value;
 	
+	/**
+	 * Children
+	 */
 	private List<Tree<K,V>> children = null;
 	
+	/**
+	 * Entries on the same level
+	 */
 	private List<Tree<K,V>> brothers = null;
 	
 	/**
@@ -84,6 +90,10 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		}
 	}
 
+	/**
+	 * @param key
+	 * @param value
+	 */
 	private Tree(final K key, final V value){
 		this.key = key;
 		this.value = value;
@@ -152,7 +162,14 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		return ret;		
 	}
 	
+	/**
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private class TreeOption implements Option<K,V>{
+		/**
+		 * level
+		 */
 		private final int iLevel;
 		
 		/**
@@ -176,6 +193,10 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		
 	}
 	
+	/**
+	 * @param iLevel
+	 * @return options
+	 */
 	private Collection<Option<K,V>> getOptions(final int iLevel){
 		final Collection<Option<K, V>> ret = new ArrayList<Option<K,V>>();
 		
@@ -190,10 +211,25 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		return ret;
 	}
 	
+	/**
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private class FullPathOption implements Option<K,String>{
 		
+		/**
+		 * level
+		 */
 		private final int iLevel;
+		
+		/**
+		 * key
+		 */
 		private final K keyInternal;
+		
+		/**
+		 * value
+		 */
 		private final String valueInternal;
 		
 		/**
@@ -221,6 +257,12 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		
 	}
 	
+	/**
+	 * @param iLevel
+	 * @param sPrefix
+	 * @param sSeparator
+	 * @return options with full path
+	 */
 	private Collection<Option<K,String>> getOptionsFullPath(final int iLevel, final String sPrefix, final String sSeparator){
 		final Collection<Option<K, String>> ret = new ArrayList<Option<K, String>>();
 		

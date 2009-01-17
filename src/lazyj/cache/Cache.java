@@ -41,10 +41,10 @@ public class Cache extends Thread {
 		/**
 		 * The only constructor
 		 * 
-		 * @param ce
+		 * @param element
 		 */
-		public Container(final CacheElement<?, ?> ce){
-			this.ce = ce;
+		public Container(final CacheElement<?, ?> element){
+			this.ce = element;
 		}
 		
 		/**
@@ -219,6 +219,9 @@ public class Cache extends Thread {
 		return new TreeSet<String>(htRegistry.keySet());
 	}
 
+	/**
+	 * Set thread name
+	 */
 	private Cache() {
 		super("lazyj.cache.Cache refresh thread");
 	}

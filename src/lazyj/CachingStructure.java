@@ -39,8 +39,14 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 	 */
 	public int				iAccesses	= 0;
 		
+	/**
+	 * Content length, in bytes
+	 */
 	private final int		iOriginalLength;
 	
+	/**
+	 * Whether or not the content is kept compressed in memory
+	 */
 	private final boolean	isCompressed;
 	
 	/**
@@ -48,8 +54,14 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 	 */
 	public final String		sContentType;
 	
+	/**
+	 * Keep a weak reference to the uncompressed contents 
+	 */
 	private WeakReference<byte[]> 	wrUncompressed = null;
 	
+	/**
+	 * Keep a week reference to the contents as String
+	 */
 	private WeakReference<String>	wrStringContent = null;
 
 	/**

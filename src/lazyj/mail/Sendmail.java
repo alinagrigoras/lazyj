@@ -64,14 +64,29 @@ public class Sendmail {
 	 */
 	public final static int		SENT_ERROR			= 2;
 
+	/**
+	 * Complete email address of the sender
+	 */
 	private String					sFullUserEmail;
 
+	/**
+	 * Boundary to use
+	 */
 	private String					sBoundary;
 
+	/**
+	 * Socket on which we are talking to the SMTP server
+	 */
 	private Socket					sock				= null;
 
+	/**
+	 * Write to SMTP server
+	 */
 	private PrintWriter			sock_out			= null;
 
+	/**
+	 * Read from SMTP server
+	 */
 	private BufferedReader			sock_in				= null;
 
 	/**
@@ -99,6 +114,9 @@ public class Sendmail {
 	 */
 	private int					iPort;
 
+	/**
+	 * What is an CRLF ?
+	 */
 	private static final String CRLF = "\r\n";
 	
 	/**
@@ -180,6 +198,9 @@ public class Sendmail {
 		return adr.iterator();
 	}
 	
+	/**
+	 * Override for HELO
+	 */
 	private String sHELOOverride = null;
 	
 	/**
@@ -201,6 +222,9 @@ public class Sendmail {
 		return sOld;
 	}
 
+	/**
+	 * Override for Mail From
+	 */
 	private String sMAILFROMOverride = null;
 	
 	/**
@@ -224,6 +248,9 @@ public class Sendmail {
 		return sOld;
 	}
 	
+	/**
+	 * Is debugging enabled ?
+	 */
 	private boolean bDebug = false;
 	
 	/**
@@ -235,6 +262,11 @@ public class Sendmail {
 		this.bDebug = bDebug;
 	}
 	
+	/**
+	 * Send something to the server
+	 * 
+	 * @param sText
+	 */
 	private void print(final String sText){
 		if (this.bDebug)
 			System.err.println("Sendmail: text > "+sText);
@@ -243,10 +275,21 @@ public class Sendmail {
 		this.sock_out.flush();
 	}
 	
+	/**
+	 * Send text + new line
+	 * 
+	 * @param sLine
+	 */
 	private void println(final String sLine){
 		print(sLine+CRLF);
 	}
 	
+	/**
+	 * Read SMTP server response
+	 * 
+	 * @return server response
+	 * @throws IOException
+	 */
 	private String readLine() throws IOException {
 		final String sLine = this.sock_in.readLine();
 		
@@ -367,6 +410,9 @@ public class Sendmail {
 		return true;
 	}
 
+	/**
+	 * A random number generator
+	 */
 	private static final Random	r = new Random(System.currentTimeMillis());
 
 	/**

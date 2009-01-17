@@ -55,9 +55,20 @@ import lazyj.page.BasePage;
  * @author costing
  * @since 2006-10-04
  */
+/**
+ * @author costing
+ * @since Jan 17, 2009
+ */
 public final class Utils {
 
+	/**
+	 * Have we already tried to see where the configuration is located ?
+	 */
 	private static boolean bLazyjConfigFolderDetermined = false;
+	
+	/**
+	 * Configuration folder
+	 */
 	private static String sLazyjConfigFolder = null;
 	
 	/**
@@ -696,6 +707,9 @@ public final class Utils {
 		}
 	}
 	
+	/**
+	 * Host name resolving cache
+	 */
 	private static final ExpirationCache<String, String> ipCache = new ExpirationCache<String, String>(1024);	
 	
 	/**
@@ -764,26 +778,59 @@ public final class Utils {
 		return sIP;
 	}
 	
+	/**
+	 * HTML comments
+	 */
 	private static final Pattern PATTERN_HTML_COMMENT = Pattern.compile("<!--.*?-->", Pattern.DOTALL);
 	
+	/**
+	 * JavaScript tags
+	 */
 	private static final Pattern PATTERN_HTML_SCRIPT = Pattern.compile("<script.*?</script.*?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	
+	/**
+	 * Style tags
+	 */
 	private static final Pattern PATTERN_HTML_STYLE = Pattern.compile("<style.*?</style.*?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	
+	/**
+	 * HTML Head element
+	 */
 	private static final Pattern PATTERN_HTML_HEAD = Pattern.compile("<head.*?</head.*?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	
+	/**
+	 * Many spaces as one
+	 */
 	private static final Pattern PATTERN_HTML_SPACES = Pattern.compile("\\s+", Pattern.DOTALL);
 	
+	/**
+	 * What counts as new line
+	 */
 	private static final Pattern PATTERN_HTML_BR = Pattern.compile("<(ul|br|/li|/option|/div|table|/tr).*?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	
+	/**
+	 * Any HTML tag
+	 */
 	private static final Pattern PATTERN_HTML_TAG = Pattern.compile("<.*?>", Pattern.DOTALL);
 	
+	/**
+	 * What to put as bullets
+	 */
 	private static final Pattern PATTERN_HTML_BULL = Pattern.compile("<(li|option).*?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	
+	/**
+	 * Special HTML characters 
+	 */
 	private static final Pattern PATTERN_HTML_SPECIAL = Pattern.compile("&.*?;", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	
+	/**
+	 * New lines, possibly surrounded by spaces
+	 */
 	private static final Pattern PATTERN_HTML_LINES = Pattern.compile("\\s*\n\\s*"); 
 	
+	/**
+	 * Left and right trim
+	 */
 	private static final Pattern PATTERN_HTML_TRIM = Pattern.compile("(^\\s+)|(\\s+$)");
 	
 	/**

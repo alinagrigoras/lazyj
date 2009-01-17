@@ -83,6 +83,12 @@ public class Header {
 		this.sBoundary = getBoundary();
 	}
 
+	/**
+	 * Process one line of text
+	 * 
+	 * @param s
+	 * @return <code>true</code> if ok
+	 */
 	private boolean processLine(String s) {
 		if (s == null || s.length() <= 0)
 			return false;
@@ -180,6 +186,11 @@ public class Header {
 		return this.sCompleteHeader;
 	}
 
+	/**
+	 * Get the current section boundary
+	 * 
+	 * @return boundary
+	 */
 	private String getBoundary() {
 		String b = getValue("boundary");
 

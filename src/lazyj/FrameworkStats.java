@@ -50,6 +50,10 @@ public final class FrameworkStats {
 		}
 	}
 	
+	/**
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private static final class StringCounter implements Comparable<StringCounter> {
 		/**
 		 * String to count
@@ -113,6 +117,9 @@ public final class FrameworkStats {
 		}
 	}
 
+	/**
+	 * Accessed pages
+	 */
 	private static final LinkedList<AccessedPage>	lAccessedPages	= new LinkedList<AccessedPage>();
 	
 	/**
@@ -130,6 +137,11 @@ public final class FrameworkStats {
 		}
 	}
 		
+	/**
+	 * @param count
+	 * @param type
+	 * @return all the pages
+	 */
 	private static final Vector<String> getStatistics(final int count, final int type){
 		final Vector<AccessedPage> vTemp = new Vector<AccessedPage>();
 

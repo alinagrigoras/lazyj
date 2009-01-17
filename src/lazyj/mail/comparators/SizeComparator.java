@@ -1,7 +1,6 @@
 package lazyj.mail.comparators;
 
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import lazyj.mail.MailHeader;
@@ -12,9 +11,7 @@ import lazyj.mail.MailHeader;
  * @author costing
  * @since 2006-10-13
  */
-public class SizeComparator implements Comparator<MailHeader>, Serializable {
-	private static final long	serialVersionUID	= -8034438995683019954L;
-
+public class SizeComparator implements Comparator<MailHeader> {
 	/**
 	 * Sorting method : by the size of the mail 
 	 * 

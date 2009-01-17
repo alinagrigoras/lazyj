@@ -20,6 +20,9 @@ import com.oreilly.servlet.MultipartRequest;
  */
 public final class RequestWrapper {
 
+	/**
+	 * The actual servlet request that we are wrapping around
+	 */
 	private final HttpServletRequest request;
 	
 	/** Object used for file uploading. See {@link #initMultipartRequest(String, int)}. */

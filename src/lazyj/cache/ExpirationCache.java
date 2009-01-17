@@ -37,6 +37,14 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	 */
 	static final DelayQueue<QueueEntry<?, ?>> queue = new DelayQueue<QueueEntry<?, ?>>();  
 	
+	/**
+	 * An entry in the cache, a key-value pair with an expiration time
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 * @param <K>
+	 * @param <V>
+	 */
 	private static final class QueueEntry<K, V> implements Delayed, Comparable<Delayed>{
 		
 		/**
@@ -122,6 +130,12 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 		}
 	}
 	
+	/**
+	 * Removes expired elements from the expiration queue
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private static final class ExpiryThread extends Thread{
 		/**
 		 * Default constructor
@@ -164,6 +178,9 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 		}
 	}
 	
+	/**
+	 * Expiration thread handle
+	 */
 	private static final ExpiryThread tExpirator = new ExpiryThread();
 
 	static{

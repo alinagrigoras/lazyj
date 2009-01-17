@@ -229,6 +229,9 @@ public class BasePage implements TemplatePage {
 	 */
 	public final Set<String> sComments 							= new HashSet<String>(8);
 
+	/**
+	 * The actual template behind this page
+	 */
 	private TemplateParser tp;
 	
 	/**
@@ -240,6 +243,11 @@ public class BasePage implements TemplatePage {
 
 	}
 
+	/**
+	 * Constructor with template
+	 * 
+	 * @param parser
+	 */
 	private BasePage(final TemplateParser parser){
 		this.tp = parser;
 	}
@@ -542,6 +550,12 @@ public class BasePage implements TemplatePage {
 		BASE_PAGE_DIR = sDir;
 	}
 	
+	/**
+	 * A dummy page
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 */
 	private static class InternalPage extends BasePage {
 		/**
 		 * Implement abstract method to return a fixed folder from which you would include templates by default
@@ -655,6 +669,9 @@ public class BasePage implements TemplatePage {
 		registerRegexpTag("strip([,a-z]*)", new Strip());
 	}
 	
+	/**
+	 * Cache last used tags, not to resolve them again too soon
+	 */
 	private static final GenericLastValuesCache<String, StringFormat> formattingClass = new GenericLastValuesCache<String, StringFormat>(){
 		private static final long	serialVersionUID	= 1L;
 
@@ -697,6 +714,9 @@ public class BasePage implements TemplatePage {
 		return exactTags.get(StringFactory.get(sTag.toLowerCase(Locale.getDefault())));
 	}
 	
+	/**
+	 * The servlet that is calling us. Useful for dealing with dynamic modules in servlet's zone.
+	 */
 	private ExtendedServlet callingServlet = null;
 	
 	/**

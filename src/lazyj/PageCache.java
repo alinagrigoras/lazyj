@@ -34,10 +34,16 @@ public final class PageCache extends ExpirationCache<String, CachingStructure>{
 			CachingStructure.bonus.remove(key);
 	}
 
+	/**
+	 * page caching
+	 */
 	private PageCache(){
 		super(10000);
 	}
 	
+	/**
+	 * singleton
+	 */
 	private static final PageCache instance = new PageCache();
 	
 	/**

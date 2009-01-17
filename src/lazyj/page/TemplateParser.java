@@ -29,16 +29,34 @@ import lazyj.Utils;
  */
 final class TemplateParser implements Observer {
 	
+	/**
+	 * Page elements, either strings or tags
+	 */
 	private LinkedList<Object> llElements;
 	
+	/**
+	 * Keep an eye on the underlying template file
+	 */
 	private DateFileWatchdog dfw;
 	
+	/**
+	 * File name on disk
+	 */
 	private final String sFileName;
 	
+	/**
+	 * How big was the previous output, to generate a large enough object from the start
+	 */
 	private volatile int iPrevSize;
 	
+	/**
+	 * Database tags
+	 */
 	private HashSet<String> hsDBTags = new HashSet<String>();
 
+	/**
+	 * Is everything ok?
+	 */
 	private boolean bOk;
 	
 	/**
@@ -106,6 +124,12 @@ final class TemplateParser implements Observer {
 		return this.bOk;
 	}
 	
+	/**
+	 * Parse this text
+	 * 
+	 * @param sText
+	 * @return true if parsing was ok
+	 */
 	@SuppressWarnings("unchecked")
 	private boolean parse(final String sText){
 		if (sText == null)

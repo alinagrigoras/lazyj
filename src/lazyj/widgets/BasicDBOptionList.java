@@ -14,7 +14,14 @@ import lazyj.DBFunctions;
  */
 public class BasicDBOptionList extends DBOptionList<String, String> {
 
+	/**
+	 * Column name representing the keys
+	 */
 	private final String sKeyColumn;
+	
+	/**
+	 * Column name where values are
+	 */
 	private final String sValueColumn;
 	
 	/**

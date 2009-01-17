@@ -10,6 +10,9 @@ import java.util.HashMap;
  */
 public final class FileTypes {
 
+	/**
+	 * All file extensions
+	 */
 	private static final HashMap<String, String>	d = new HashMap<String, String>(500, 0.95f); 
 
 	static {

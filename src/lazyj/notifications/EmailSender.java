@@ -25,12 +25,34 @@ import lazyj.mail.Sendmail;
  */
 public class EmailSender extends Sender {
 
+	/**
+	 * Default mail sender
+	 */
 	private String sDefaultFrom = null;
+	
+	/**
+	 * Default list of recipients
+	 */
 	private Set<String> sDefaultTo = new TreeSet<String>();
+	
+	/**
+	 * Default subject line
+	 */
 	private String sDefaultSubject = null;
+	
+	/**
+	 * Default mail body
+	 */
 	private String sDefaultMessage = null;
 	
+	/**
+	 * SMTP server to use
+	 */
 	private String sServerHost = "127.0.0.1";
+	
+	/**
+	 * Port on which the SMTP server listens on
+	 */
 	private int iServerPort = 25;
 	
 	/* (non-Javadoc)

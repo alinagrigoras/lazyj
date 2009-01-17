@@ -34,10 +34,19 @@ import lazyj.Log;
  */
 public final class Notifier implements Observer {
 
+	/**
+	 * Configuration options
+	 */
 	private final ExtProperties propConfig;
 	
+	/**
+	 * What are the actual notification methods
+	 */
 	private final ArrayList<Sender> senders = new ArrayList<Sender>();
 	
+	/**
+	 * Class loader for the modules
+	 */
 	private ClassLoader loader = null;
 	
 	/**
@@ -64,6 +73,9 @@ public final class Notifier implements Observer {
 		reload();
 	}
 	
+	/**
+	 * Re-parse configuration
+	 */
 	private synchronized final void reload(){
 		this.senders.clear();
 		
@@ -81,7 +93,7 @@ public final class Notifier implements Observer {
 	/**
 	 * @param prop
 	 * @param idx
-	 * @return
+	 * @return sender class for this configuration index
 	 */
 	private Sender getSender(final ExtProperties prop, final int idx) {
 		final String sClass = prop.gets("sender_"+idx+".class");

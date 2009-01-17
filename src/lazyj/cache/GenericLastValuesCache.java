@@ -42,8 +42,14 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 		return true;
 	}
 	
+	/**
+	 * Actual cache contents
+	 */
 	private final Map<K, V> cache = Collections.synchronizedMap(new LRUMap<K, V>(getMaximumSize()));
 	
+	/**
+	 * Cache for <code>null</code> values (only retains the key name)
+	 */
 	private Map<K, K> nullCache = null;
 	
 	public V get(final K key) {

@@ -40,12 +40,24 @@ public class DBFunctions {
 	 */
 	static final Object												oConnLock			= new Object();
 
+	/**
+	 * Was this the first row ?
+	 */
 	private boolean													first;
 
+	/**
+	 * Flag to indicate if the last query was an update or a select one
+	 */
 	private boolean													bIsUpdate;
 
+	/**
+	 * Current database connection
+	 */
 	private DBConnection											dbc;
 
+	/**
+	 * Current ResultSet
+	 */
 	private ResultSet												rsRezultat;
 
 	/**
@@ -63,6 +75,9 @@ public class DBFunctions {
 	 */
 	static volatile long											lClosedOnFinalize	= 0;
 
+	/**
+	 * Total number of executed queries
+	 */
 	private static volatile long									lQueryCount			= 0;
 
 	/**
@@ -137,6 +152,12 @@ public class DBFunctions {
 		query(sQuery);
 	}
 
+	/**
+	 * From the current connections try to find out if there is any one of them that is free
+	 * 
+	 * @param sConn
+	 * @return a free connection, or null
+	 */
 	private final DBConnection getFreeConnection(final String sConn) {
 		synchronized (oConnLock) {
 			LinkedList<DBConnection> ll = hmConn.get(sConn);
@@ -157,6 +178,11 @@ public class DBFunctions {
 		return null;
 	}
 
+	/**
+	 * Build a unique key
+	 * 
+	 * @return unique key
+	 */
 	private String getKey() {
 		return this.prop.gets("driver") + "/" + this.prop.gets("host", "127.0.0.1") + "/" + this.prop.gets("port") + "/" + this.prop.gets("database") + "/" + this.prop.gets("user") + "/" + this.prop.gets("password");
 	}
@@ -179,6 +205,12 @@ public class DBFunctions {
 		return this.prop!=null && this.prop.gets("driver").toLowerCase(Locale.getDefault()).indexOf("mysql")>=0;
 	}
 	
+	/**
+	 * Initialize a database connection. First it will try to take a free one from the pool. If there is no free connection it will
+	 * try to establish a new one, only if there are less than 50 connections to this particular database in total. 
+	 * 
+	 * @return <code>true</code> if the connection was established and <code>this.dbc</code> can be used, <code>false</code> if not.
+	 */
 	private final boolean connect() {
 		final String sConn = getKey();
 
@@ -212,13 +244,96 @@ public class DBFunctions {
 
 		return false;
 	}
+	
+	/**
+	 * Get a raw database connection wrapper. Remember to <b>always</b> {@link DBConnection#free()} or {@link DBConnection#close()} at the end of the section where you use it!
+	 * 
+	 * @return database connection wrapper or <code>null</code> if a connection cannot be established
+	 * @see DBConnection
+	 */
+	public final DBConnection getConnection(){
+		if (connect())
+			return this.dbc;
+		
+		return null;
+	}
 
 	static {
 		System.setProperty("PGDATESTYLE", "ISO");
 	}
 
-	private static final class DBConnection {
+	/**
+	 * Wrapper around a raw database connection. You cannot create this object directly and you <b>must</b> free the connections properly otherwise
+	 * you will run in big trouble.<br>
+	 * <br>
+	 * Here is a sample code:<br>
+	 * <br>
+	 * <code><pre>
+	 * // set the connection parameters <br>
+	 * ExtProperties dbProp = new ExtProperties(); 
+	 * dbProp.set("driver", "org.postgresql.Driver"); 
+	 * dbProp.set("host", "127.0.0.1"); 
+	 * dbProp.set("port", "5432"); 
+	 * dbProp.set("database", "somedb"); 
+	 * dbProp.set("user", "username"); 
+	 * dbProp.set("password", "*****"); 
+	 * // you can also set here various other configuration options that the JDBC driver will look at
+	 * 
+	 * DBFunctions db = new DBFunctions(prop);
+	 * 
+	 * DBFunctions.DBConnection conn = db.getConnection();
+	 * 
+	 * if (conn==null) return;
+	 * 
+	 * Statement stat = null;
+	 * ResultSet rs = null;
+	 * 
+	 * try{
+	 *      stat = conn.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	 *      stat.execute(someQuery, Statement.NO_GENERATED_KEYS);
+	 *      
+	 *      rs = stat.getResultSet();
+	 *      
+	 *      // ..................
+	 *      
+	 *      rs.close();
+	 *      rs = null;
+	 *      
+	 *      stat.close();
+	 *      stat = null;
+	 * }
+	 * catch (Exception e){ ... }
+	 * <b>finally</b>{
+	 * 		if (rs!=null){
+	 * 			// close
+	 * 			try{
+	 * 				rs.close();
+	 * 			}
+	 * 			catch (Exception e){
+	 * 			}
+	 * 		}
+	 * 		
+	 * 		if (stat!=null){
+	 * 			try{
+	 * 				stat.close();
+	 * 			}
+	 * 			catch (Exception e){
+	 * 			}
+	 * 		}
+	 * 		
+	 * 		<b>conn.free();</b>
+	 * }
+	 * </pre></code>
+	 * 
+	 * @author costing
+	 * @since Jan 17, 2009
+	 * @see DBFunctions#DBFunctions(ExtProperties)
+	 */
+	public static final class DBConnection {
 
+		/**
+		 * Actual JDBC connection
+		 */
 		private Connection		conn;
 
 		/**
@@ -231,17 +346,18 @@ public class DBFunctions {
 		 */
 		long					lLastAccess;
 
+		/**
+		 * Connection key
+		 */
 		private final String	sConn;
 
 		/**
-		 * Establish a new connection
+		 * Establish a new connection. Cannot be called directly, you have to use {@link DBFunctions#getConnection()} for example.
 		 * 
-		 * @param prop
-		 *            connection properties
-		 * @param _sConn
-		 *            connection key
+		 * @param prop    connection properties
+		 * @param _sConn  connection key
 		 */
-		public DBConnection(final ExtProperties prop, final String _sConn) {
+		DBConnection(final ExtProperties prop, final String _sConn) {
 			this.conn = null;
 			this.iBusy = 0;
 
@@ -287,7 +403,7 @@ public class DBFunctions {
 		}
 
 		/**
-		 * Get the established connection
+		 * Get the established JDBC connection for direct access to the database.
 		 * 
 		 * @return the JDBC connection
 		 */
@@ -347,7 +463,7 @@ public class DBFunctions {
 				try {
 					this.conn.close();
 				} catch (Exception e) {
-					System.err.println("DB2: cannot close " + this.sConn + " because : " + e + " (" + e.getMessage() + ")");
+					System.err.println("DBConnection: cannot close " + this.sConn + " because : " + e + " (" + e.getMessage() + ")");
 				}
 
 				this.conn = null;
@@ -366,7 +482,7 @@ public class DBFunctions {
 					this.conn.close();
 					lClosedOnFinalize++;
 				} catch (Exception e) {
-					System.err.println("DB2: cannot close " + this.sConn + " on finalize because : " + e + " (" + e.getMessage() + ")");
+					System.err.println("DBConnection: cannot close " + this.sConn + " on finalize because : " + e + " (" + e.getMessage() + ")");
 				}
 			}
 		}
@@ -478,11 +594,15 @@ public class DBFunctions {
 
 	}
 
+	/**
+	 * Cleanup thread
+	 */
 	private static CleanupThread	tCleanup	= null;
 
 	static {
 		startThread();
 	}
+	
 
 	/**
 	 * Start the cleanup thread. Should not be called externally since it is called automatically at
@@ -504,6 +624,7 @@ public class DBFunctions {
 	 * Signal the thread that it's time to stop. You should only call this when the JVM is about to
 	 * shut down, and not even then it's necessary to do so.
 	 */
+	
 	static public final synchronized void stopThread() {
 		if (tCleanup != null) {
 			tCleanup.bShouldStop = true;
@@ -511,6 +632,9 @@ public class DBFunctions {
 		}
 	}
 
+	/**
+	 * How many rows were changed by the last update query
+	 */
 	private int	iUpdateCount	= -1;
 
 	/**
@@ -518,15 +642,25 @@ public class DBFunctions {
 	 * 
 	 * @return number of changed rows, can be negative if the query was not an update one
 	 */
+	
+	/**
+	 * Get the number of rows affected by the last SQL update query.
+	 * 
+	 * @return number of rows
+	 */
 	public final int getUpdateCount() {
 		return this.iUpdateCount;
 	}
 
+	/**
+	 * Last SQL Statement
+	 */
 	private Statement	stat	= null;
 
 	/**
 	 * Override the default destructor to properly close any resources in use.
 	 */
+
 	@Override
 	protected void finalize() {
 		if (this.rsRezultat != null) {
@@ -546,12 +680,13 @@ public class DBFunctions {
 		}
 	}
 
+	
 	/**
 	 * Execute a query.
 	 * 
-	 * @param sQuery
-	 *            SQL query to execute
-	 * @return true if the query succeeded, false if there was an error
+	 * @param sQuery SQL query to execute
+	 * @return <code>true</code> if the query succeeded, <code>false</code> if there was an error (connection or syntax).
+	 * @see DBFunctions#query(String, boolean)
 	 */
 	public boolean query(final String sQuery) {
 		return query(sQuery, false);
@@ -678,6 +813,7 @@ public class DBFunctions {
 			al.addAndGet(System.currentTimeMillis() - lStartTime);
 		}
 	}
+	
 
 	/**
 	 * Get the number of rows that were selected by the previous query.
@@ -713,6 +849,7 @@ public class DBFunctions {
 			return -1;
 		}
 	}
+	
 
 	/**
 	 * Get the current position in the result set
@@ -728,6 +865,7 @@ public class DBFunctions {
 			return -1;
 		}
 	}
+	
 	
 	/**
 	 * Jump an arbitrary number of rows.
@@ -750,6 +888,7 @@ public class DBFunctions {
 		}
 	}
 	
+	
 	/**
 	 * Jump to an absolute position in the result set
 	 * 
@@ -770,6 +909,7 @@ public class DBFunctions {
 			return false;
 		}
 	}
+	
 	
 	/**
 	 * Jump to the next row in the result
@@ -798,28 +938,33 @@ public class DBFunctions {
 
 		return false;
 	}
-
+	
 	/**
-	 * Get the string value of a column. By default will return "" if there is any problem (column
+	 * Get the contents of a column from the current row based on its name. By default will return "" if there is any problem (column
 	 * missing, value is null ...)
 	 * 
-	 * @param sColumnName
-	 *            column name
-	 * @return the value for the column with the same name from the current row
+	 * @param sColumnName column name
+	 * @return value, defaulting to ""
+	 *  
+	 * @see #gets(String, String)
+	 * @see #gets(int)
+	 * @see #gets(int, String)
 	 */
 	public final String gets(final String sColumnName) {
 		return gets(sColumnName, "");
 	}
-
+	
 	/**
-	 * Get the string value of a column. It will return the given default if there is any problem
+	 * Get the contents of a column from the current row based on its name. It will return the given default if there is any problem
 	 * (column missing, value is null ...)
 	 * 
-	 * @param sColumnName
-	 *            column name
-	 * @param sDefault
-	 *            default value to return on error cases
-	 * @return the value for the column with the same name from the current row
+	 * @param sColumnName column name
+	 * @param sDefault default value to return if the column doesn't exist or is <code>null</code>
+	 * @return value for the column with the same name from the current row
+	 * 
+	 * @see #gets(String)
+	 * @see #gets(int)
+	 * @see #gets(int, String)
 	 */
 	public final String gets(final String sColumnName, final String sDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -841,19 +986,32 @@ public class DBFunctions {
 	 *            column number (1 = first column of the result set)
 	 * @return the value for the column
 	 */
+
+	/**
+	 * Get the contents of a column from the current row based on its position
+	 * 
+	 * @param iColumn column count
+	 * @return value
+	 * 
+	 * @see #gets(String)
+	 * @see #gets(String, String)
+	 * @see #gets(int, String)
+	 */
 	public final String gets(final int iColumn) {
 		return gets(iColumn, "");
 	}
 
 	/**
-	 * Get the string value of a column. It will return the given default if there is any problem
+	 * Get the contents of a column from the current row based on its position. It will return the given default if there is any problem
 	 * (column missing, value is null ...)
 	 * 
-	 * @param iColumn
-	 *            column number (1 = first column of the result set)
-	 * @param sDefault
-	 *            default value to return on error cases
-	 * @return the value for the column with the same name from the current row
+	 * @param iColumn position (1 = first column of the result set)
+	 * @param sDefault default value to return if the column doesn't exist or is <code>null</code>
+	 * @return value in the DB or the default value
+	 * 
+	 * @see #gets(String)
+	 * @see #gets(String, String)
+	 * @see #gets(int)
 	 */
 	public final String gets(final int iColumn, final String sDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -865,28 +1023,35 @@ public class DBFunctions {
 			return sDefault;
 		}
 	}
-
+	
 	/**
-	 * Get the value of a column as a Date object. Will return the current date/time as default if
-	 * there is a problem parsing the column.
+	 * Get the column contents converted to Date. Will return the given default Date if there is a
+	 * problem parsing the column.
 	 * 
-	 * @param sColumnName
-	 *            column name
-	 * @return a Date representation of this column
+	 * @param sColumnName column name
+	 * @return date, never <code>null</code> but maybe the current time if the contents cannot be converted to Date
+	 * 
+	 * @see Format#parseDate(String)
+	 * @see #getDate(String, Date)
+	 * @see #getDate(int)
+	 * @see #getDate(int, Date)
 	 */
 	public final Date getDate(final String sColumnName) {
 		return getDate(sColumnName, new Date());
 	}
-
+	
 	/**
-	 * Get the value of a column as a Date object. Will return the given default Date if there is a
+	 * Get the column contents converted to Date. Will return the given default Date if there is a
 	 * problem parsing the column.
 	 * 
-	 * @param sColumnName
-	 *            column name
-	 * @param dDefault
-	 *            default value to return in case of an error at parsing
-	 * @return a Date representation of this column
+	 * @param sColumnName column name
+	 * @param dDefault default value to return if the contents in db cannot be parsed to Date
+	 * @return date from db, or the default value
+	 * 
+	 * @see Format#parseDate(String)
+	 * @see #getDate(String)
+	 * @see #getDate(int)
+	 * @see #getDate(int, Date)
 	 */
 	public final Date getDate(final String sColumnName, final Date dDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -914,12 +1079,16 @@ public class DBFunctions {
 	}
 
 	/**
-	 * Get the value of a column as a Date object. Will return the current date/time as default if
+	 * Get the column contents converted to Date. Will return the current date/time as default if
 	 * there is a problem parsing the column.
 	 * 
-	 * @param iColumn
-	 *            column number ( 1 = first column of the result set )
-	 * @return a Date representation of this column
+	 * @param iColumn column number ( 1 = first column of the result set )
+	 * @return date from db, or the default value
+	 * 
+	 * @see Format#parseDate(String)
+	 * @see #getDate(String)
+	 * @see #getDate(String, Date)
+	 * @see #getDate(int, Date)
 	 */
 	public final Date getDate(final int iColumn) {
 		return getDate(iColumn, new Date());
@@ -934,6 +1103,11 @@ public class DBFunctions {
 	 * @param dDefault
 	 *            default value to return in case of an error at parsing
 	 * @return a Date representation of this column
+	 * 
+	 * @see Format#parseDate(String)
+	 * @see #getDate(String)
+	 * @see #getDate(String, Date)
+	 * @see #getDate(int)
 	 */
 	public final Date getDate(final int iColumn, final Date dDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -961,26 +1135,28 @@ public class DBFunctions {
 	}
 
 	/**
-	 * Get the integer value of a column. Will return 0 by default if the column value cannot be
-	 * parsed into an integer.
+	 * Get the value of this column as int. Will return the current date/time as default if
+	 * there is a problem parsing the column.
 	 * 
-	 * @param sColumnName
-	 *            column name
-	 * @return the integer value of this column
+	 * @param sColumnName column
+	 * @return value as int, or 0 if there is a problem parsing
+	 * @see #geti(String, int)
+	 * @see #geti(int)
+	 * @see #geti(int, int)
 	 */
 	public final int geti(final String sColumnName) {
 		return geti(sColumnName, 0);
 	}
 
 	/**
-	 * Get the integer value of a column. Will return the given default value if the column value
-	 * cannot be parsed into an integer.
+	 * Get the value of this column as int, returning the default value if the conversion is not possible.
 	 * 
-	 * @param sColumnName
-	 *            column name
-	 * @param iDefault
-	 *            default value to return in case of a parsing error
-	 * @return the integer value of this column
+	 * @param sColumnName column name
+	 * @param iDefault default value to return
+	 * @return the value in the db or the given default if there is a problem parsing
+	 * @see #geti(String)
+	 * @see #geti(int)
+	 * @see #geti(int, int)
 	 */
 	public final int geti(final String sColumnName, final int iDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -992,18 +1168,20 @@ public class DBFunctions {
 			return iDefault;
 		}
 	}
-
+	
 	/**
-	 * Get the integer value of a column. Will return 0 by default if the column value cannot be
-	 * parsed into an integer.
+	 * Get the value of this column as int, returning the default value of 0 if the conversion is not possible.
 	 * 
-	 * @param iColumn
-	 *            column number
-	 * @return the integer value of this column
+	 * @param iColumn column position
+	 * @return the value in the db or 0 if there is a problem parsing
+	 * @see #geti(String, int)
+	 * @see #geti(String)
+	 * @see #geti(int, int)
 	 */
 	public final int geti(final int iColumn) {
 		return geti(iColumn, 0);
 	}
+	
 
 	/**
 	 * Get the integer value of a column. Will return the given default value if the column value
@@ -1014,6 +1192,9 @@ public class DBFunctions {
 	 * @param iDefault
 	 *            default value to return in case of a parsing error
 	 * @return the integer value of this column
+	 * @see #geti(String, int)
+	 * @see #geti(int)
+	 * @see #geti(String)
 	 */
 	public final int geti(final int iColumn, final int iDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -1035,6 +1216,9 @@ public class DBFunctions {
 	 * @param sColumnName
 	 *            column name
 	 * @return the long value of this column
+	 * @see #getl(String, long)
+	 * @see #getl(int)
+	 * @see #getl(int, long)
 	 */
 	public final long getl(final String sColumnName) {
 		return getl(sColumnName, 0);
@@ -1049,6 +1233,9 @@ public class DBFunctions {
 	 * @param lDefault
 	 *            default value to return in case of a parsing error
 	 * @return the long value of this column
+	 * @see #getl(String)
+	 * @see #getl(int)
+	 * @see #getl(int, long)
 	 */
 	public final long getl(final String sColumnName, final long lDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -1068,6 +1255,9 @@ public class DBFunctions {
 	 * @param iColCount
 	 *            column count
 	 * @return the long value of this column
+	 * @see #getl(String, long)
+	 * @see #getl(String)
+	 * @see #getl(int, long)
 	 */
 	public final long getl(final int iColCount) {
 		return getl(iColCount, 0);
@@ -1082,6 +1272,9 @@ public class DBFunctions {
 	 * @param lDefault
 	 *            default value to return in case of a parsing error
 	 * @return the long value of this column
+	 * @see #getl(String, long)
+	 * @see #getl(int)
+	 * @see #getl(String)
 	 */
 	public final long getl(final int iColCount, final long lDefault) {
 		if ((this.dbc == null) || this.rsRezultat == null)
@@ -1127,6 +1320,40 @@ public class DBFunctions {
 		}
 	}
 
+	
+	/**
+	 * Get the float value of a column. Will return 0 by default if the column value cannot be
+	 * parsed into a float.
+	 * 
+	 * @param iColumn 
+	 *            column position
+	 * @return the float value of this column
+	 */
+	public final float getf(final int iColumn) {
+		return getf(iColumn, 0);
+	}
+
+	/**
+	 * Get the float value of a column. Will return the given default value if the column value
+	 * cannot be parsed into a float.
+	 * 
+	 * @param iColumn
+	 *            column position
+	 * @param fDefault
+	 *            default value to return in case of a parsing error
+	 * @return the float value of this column
+	 */
+	public final float getf(final int iColumn, final float fDefault) {
+		if ((this.dbc == null) || this.rsRezultat == null)
+			return fDefault;
+		try {
+			final float fTemp = this.rsRezultat.getFloat(iColumn);
+			return this.rsRezultat.wasNull() ? fDefault : fTemp;
+		} catch (Exception e) {
+			return fDefault;
+		}
+	}
+	
 	/**
 	 * Get the double value of a column. Will return 0 by default if the column value cannot be
 	 * parsed into a double.
@@ -1161,23 +1388,49 @@ public class DBFunctions {
 	}
 	
 	/**
+	 * Get the double value of a column. Will return 0 by default if the column value cannot be
+	 * parsed into a double.
+	 * 
+	 * @param iColumn
+	 *            column position
+	 * @return the double value of this column
+	 */
+	public final double getd(final int iColumn) {
+		return getd(iColumn, 0);
+	}
+
+	/**
+	 * Get the double value of a column. Will return 0 by default if the column value cannot be
+	 * parsed into a double.
+	 * 
+	 * @param iColumn
+	 *            column position
+	 * @param dDefault
+	 *            default value to return in case of a parsing error
+	 * @return the double value of this column
+	 */
+	public final double getd(final int iColumn, final double dDefault) {
+		if ((this.dbc == null) || this.rsRezultat == null)
+			return dDefault;
+		try {
+			final double dTemp = this.rsRezultat.getDouble(iColumn);
+			return this.rsRezultat.wasNull() ? dDefault : dTemp;
+		} catch (Throwable e) {
+			return dDefault;
+		}
+	}
+	
+	/**
 	 * Get the boolean value of a column
 	 * 
 	 * @param sColumn column name
 	 * @param bDefault default value
 	 * @return true/false, obviously :)
+	 * @see Utils#stringToBool(String, boolean)
+	 * @see #getb(int, boolean)
 	 */
 	public final boolean getb(final String sColumn, final boolean bDefault){
-		final String s = gets(sColumn);
-		
-		if (s.length()>0){
-			final char c = s.charAt(0);
-			
-			if (c=='t' || c=='T' || c=='y' || c=='Y' || c=='1') return true;
-			if (c=='f' || c=='F' || c=='n' || c=='N' || c=='0') return false;
-		}
-		
-		return bDefault;
+		return Utils.stringToBool(gets(sColumn), bDefault);
 	}
 
 	/**
@@ -1186,19 +1439,11 @@ public class DBFunctions {
 	 * @param iColumn column index
 	 * @param bDefault default value
 	 * @return true/false, obviously :)
+	 * @see Utils#stringToBool(String, boolean)
+	 * @see #getb(String, boolean)
 	 */
 	public final boolean getb(final int iColumn, final boolean bDefault){
-		final String s = gets(iColumn);
-		
-		if (s.length()>0){
-			final char c = s.charAt(0);
-			
-			if (c=='t' || c=='T' || c=='y' || c=='Y' || c=='1') return true;
-			if (c=='f' || c=='F' || c=='n' || c=='N' || c=='0') return false;
-		}
-		
-		return bDefault;
-	}
+		return Utils.stringToBool(gets(iColumn), bDefault);	}
 	
 	/**
 	 * Extract a PostgreSQL array into a Collection of String objects
@@ -1248,7 +1493,7 @@ public class DBFunctions {
 	 * Convert each entry from an array to Integer.
 	 * 
 	 * @param sValue
-	 * @return
+	 * @return collection of integers
 	 * @since 1.0.3
 	 */
 	private static Collection<Integer> decodeToInt(final String sValue){
@@ -1272,7 +1517,7 @@ public class DBFunctions {
 	 * Given an array in PostgreSQL format, convert it to a Java array of Strings.
 	 * 
 	 * @param sValue
-	 * @return
+	 * @return collection of strings
 	 * @since 1.0.3
 	 */
 	private static Collection<String> decode(final String sValue){

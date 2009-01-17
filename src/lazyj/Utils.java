@@ -432,6 +432,17 @@ public final class Utils {
 	 * @return file contents if everything is ok, null if there is an error
 	 */
 	public static final String readFile(final String sFileName) {
+		return readFile(sFileName, "UTF-8");
+	}
+	
+	/**
+	 * Read the contents of a text file, in an arbitrary character set
+	 * 
+	 * @param sFileName file to read
+	 * @param charSet character set
+	 * @return file contents if everything is ok, null if there is an error
+	 */
+	public static final String readFile(final String sFileName, final String charSet) {
 		final File f = new File(sFileName);
 		if (!f.exists() || !f.canRead() || !f.isFile()) {
 			Log.log(Log.WARNING, "lazyj.Utils", "could not read '" + sFileName + "' because : exists=" + f.exists() + ", canread=" + f.canRead() + ", isfile=" + f.isFile());
@@ -450,7 +461,7 @@ public final class Utils {
 			if (len != readLen)
 				return null;
 
-			return new String(b, "UTF-8");
+			return new String(b, charSet);
 		} catch (IOException ioe) {
 			Log.log(Log.WARNING, "lazyj.Utils", "exception reading from '" + sFileName + "'", ioe);
 			return null;

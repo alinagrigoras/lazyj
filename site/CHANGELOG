@@ -2,6 +2,8 @@
 	2009-01-17:
 	lazyj.DBFunctions:
 		- api: public access to the raw JDBC connection
+	lazyj.Utils:
+		- add: new parameter for readFile to specify character set
 
 	2009-01-01:
 	lazyj.Utils

@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
@@ -195,11 +194,22 @@ public class DBFunctions {
 	}
 	
 	/**
+	 * If you already have the full JDBC connection URL, connect like this.
+	 * 
+	 * @param driverClass JDBC driver class name
+	 * @param jdbcURL JDBC connection URL
+	 * @see DBFunctions#DBFunctions(String, String, Properties)
+	 */
+	public DBFunctions(final String driverClass, final String jdbcURL){
+		this(driverClass, jdbcURL, null);
+	}
+	
+	/**
 	 * If you already have the full JDBC connection URL, connect like this
 	 * 
 	 * @param driverClass JDBC driver class name
 	 * @param jdbcURL full JDBC connection URL
-	 * @param configProperties extra configuration options
+	 * @param configProperties extra configuration options. Can be <code>null</code> if the URL has everything in it
 	 * @see #DBFunctions(ExtProperties)
 	 */
 	public DBFunctions(final String driverClass, final String jdbcURL, final Properties configProperties){
@@ -403,7 +413,7 @@ public class DBFunctions {
 	 * dbProp.set("password", "*****"); 				// recommended
 	 * // you can also set here various other configuration options that the JDBC driver will look at
 	 * 
-	 * DBFunctions db = new DBFunctions(prop);
+	 * DBFunctions db = new DBFunctions(dbProp);
 	 * 
 	 * DBFunctions.DBConnection conn = db.getConnection();
 	 * 
@@ -536,7 +546,7 @@ public class DBFunctions {
 			}
 			
 			try{
-				this.conn = DriverManager.getConnection(jdbcURL, prop);
+				this.conn = prop!=null ? DriverManager.getConnection(jdbcURL, prop) : DriverManager.getConnection(jdbcURL);
 				this.iBusy = 1;
 			}
 			catch (SQLException e){

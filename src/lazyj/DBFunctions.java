@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -93,7 +94,22 @@ public class DBFunctions {
 	/**
 	 * Configuration options
 	 */
-	final ExtProperties												prop;
+	final Properties												prop;
+	
+	/**
+	 * JDBC driver class name
+	 */
+	final String													driver;
+	
+	/**
+	 * JDBC connection string
+	 */
+	final String													jdbcConnectionString;
+	
+	/**
+	 * Unique key identifying this connection in the map
+	 */
+	final String													uniqueKey;
 	
 	/**
 	 * Create a connection to the database using the parameters in this properties file. The
@@ -127,11 +143,23 @@ public class DBFunctions {
 	 *            connection options
 	 */
 	public DBFunctions(final ExtProperties configProperties) {
+		this(configProperties.getProperties());
+	}
+	
+	/**
+	 * @param configProperties
+	 * @see #DBFunctions(ExtProperties)
+	 */
+	public DBFunctions(final Properties configProperties){
 		this.prop = configProperties;
 		this.dbc = null;
 		this.first = false;
 		this.bIsUpdate = true;
 		this.rsRezultat = null;
+		
+		this.driver = this.prop.getProperty("driver");
+		this.jdbcConnectionString = propToJDBC(this.prop);
+		this.uniqueKey = getKey();
 	}
 
 	/**
@@ -144,10 +172,40 @@ public class DBFunctions {
 	 *            query to execute after connecting
 	 * @see DBFunctions#DBFunctions(ExtProperties)
 	 */
-	public DBFunctions(final ExtProperties configProperties, final String sQuery) {
+	public DBFunctions(final Properties configProperties, final String sQuery){
 		this(configProperties);
+		
+		query(sQuery);
+	}
+	
+	/**
+	 * Create a connection to the database using the parameters in this properties file, then
+	 * execute the given query.
+	 * 
+	 * @param configProperties
+	 *            connection parameters
+	 * @param sQuery
+	 *            query to execute after connecting
+	 * @see DBFunctions#DBFunctions(ExtProperties)
+	 */
+	public DBFunctions(final ExtProperties configProperties, final String sQuery) {
+		this(configProperties.getProperties());
 
 		query(sQuery);
+	}
+	
+	/**
+	 * If you already have the full JDBC connection URL, connect like this
+	 * 
+	 * @param driverClass JDBC driver class name
+	 * @param jdbcURL
+	 * @param configProperties
+	 */
+	public DBFunctions(final String driverClass, final String jdbcURL, final Properties configProperties){
+		this.driver = driverClass;
+		this.jdbcConnectionString = jdbcURL;
+		this.prop = configProperties;
+		this.uniqueKey = jdbcURL;
 	}
 
 	/**
@@ -182,7 +240,12 @@ public class DBFunctions {
 	 * @return unique key
 	 */
 	private String getKey() {
-		return this.prop.gets("driver") + "/" + this.prop.gets("host", "127.0.0.1") + "/" + this.prop.gets("port") + "/" + this.prop.gets("database") + "/" + this.prop.gets("user") + "/" + this.prop.gets("password");
+		return this.prop.getProperty("driver", "") + "/" + 
+				this.prop.getProperty("host", "127.0.0.1") + "/" + 
+				this.prop.getProperty("port", "") + "/" + 
+				this.prop.getProperty("database", "") + "/" + 
+				this.prop.getProperty("user", "") + "/" + 
+				this.prop.getProperty("password");
 	}
 
 	/**
@@ -191,7 +254,7 @@ public class DBFunctions {
 	 * @return true if the connection is done to a PostgreSQL database
 	 */
 	public boolean isPostgreSQL(){
-		return this.prop!=null && this.prop.gets("driver").toLowerCase(Locale.getDefault()).indexOf("postgres")>=0;
+		return this.prop!=null && this.prop.getProperty("driver", "").toLowerCase(Locale.getDefault()).indexOf("postgres")>=0;
 	}
 	
 	/**
@@ -200,7 +263,7 @@ public class DBFunctions {
 	 * @return true if the connection is done to a MySQL database
 	 */
 	public boolean isMySQL(){
-		return this.prop!=null && this.prop.gets("driver").toLowerCase(Locale.getDefault()).indexOf("mysql")>=0;
+		return this.prop!=null && this.prop.getProperty("driver", "").toLowerCase(Locale.getDefault()).indexOf("mysql")>=0;
 	}
 	
 	/**
@@ -210,19 +273,17 @@ public class DBFunctions {
 	 * @return <code>true</code> if the connection was established and <code>this.dbc</code> can be used, <code>false</code> if not.
 	 */
 	private final boolean connect() {
-		final String sConn = getKey();
-
 		for (int i = 0; i < 3; i++) {
-			this.dbc = getFreeConnection(sConn);
+			this.dbc = getFreeConnection(this.uniqueKey);
 
 			if (this.dbc != null)
 				return true;
 
 			synchronized (oConnLock) {
-				final LinkedList<DBConnection> ll = hmConn.get(sConn);
+				final LinkedList<DBConnection> ll = hmConn.get(this.uniqueKey);
 
 				if (ll.size() < 50) {
-					this.dbc = new DBConnection(this.prop, sConn);
+					this.dbc = new DBConnection(this.driver, this.jdbcConnectionString, this.prop, this.uniqueKey);
 					if (this.dbc.canUse()) {
 						this.dbc.use();
 						ll.add(this.dbc);
@@ -258,6 +319,52 @@ public class DBFunctions {
 
 	static {
 		System.setProperty("PGDATESTYLE", "ISO");
+	}
+	
+	/**
+	 * Build a JDBC URL connection string for a bunch of parameters
+	 * 
+	 * @param prop
+	 * @return JDBC URL connection string, or <code>null</code> if for any reason it cannot be built (unknown driver?)
+	 */
+	public static final String propToJDBC(final Properties prop){
+		/*
+		 * See here for JDBC URL examples:
+		 * http://www.petefreitag.com/articles/jdbc_urls/
+		 */			
+		final StringBuilder connection = new StringBuilder("jdbc:");
+
+		final String driver = prop.getProperty("driver", "");
+		
+		final boolean isMySQL = driver.indexOf("mysql") >= 0;
+		final boolean isPostgreSQL = driver.indexOf("postgres") >= 0;
+		final boolean isMSSQL = driver.indexOf("sqlserver") >= 0; 
+		
+		if (isMySQL)
+			connection.append("mysql:");
+		else if (isPostgreSQL)
+			connection.append("postgresql:");
+		else if (isMSSQL)
+			connection.append("microsoft:sqlserver:");
+		else {
+			// UNKNOWN DRIVER
+			return null;
+		}
+
+		connection.append("//").append(prop.getProperty("host", "127.0.0.1"));
+
+		final String sPort = prop.getProperty("port"); 
+		
+		if (sPort!=null && sPort.length() > 0)
+			connection.append(':').append(sPort);
+
+		if (isMySQL || isPostgreSQL)
+			connection.append('/').append(prop.getProperty("database", ""));
+		else
+		if (isMSSQL)
+			connection.append(";databaseName=").append(prop.getProperty("database", ""));
+		
+		return connection.toString();
 	}
 
 	/**
@@ -355,68 +462,70 @@ public class DBFunctions {
 		 * @param prop    connection properties
 		 * @param _sConn  connection key
 		 */
-		DBConnection(final ExtProperties prop, final String _sConn) {
-			this.conn = null;
+		DBConnection(final Properties prop, final String _sConn) {
+			this.sConn = _sConn;
+
+			final String driver = prop.getProperty("driver");
+			
+			if (driver==null){
+				this.iBusy = 3;
+				return;
+			}
+			
+			final String sURL = propToJDBC(prop);
+			
+			if (sURL==null){
+				this.iBusy=3;
+				return;
+			}
+			
+			init(driver , propToJDBC(prop), prop);
+		}
+
+		/**
+		 * Other constructor type, based on the driver class and the full JDBC URL
+		 * 
+		 * @param driverClass driver class name
+		 * @param jdbcURL pre-built JDBC URL
+		 * @param prop other connection properties
+		 * @param connDescr some description for logging
+		 */
+		DBConnection(final String driverClass, final String jdbcURL, final Properties prop, final String connDescr){
+			this.sConn = connDescr;
+			
+			init(driverClass, jdbcURL, prop);
+		}
+		
+		/**
+		 * Initialize the connection
+		 * 
+		 * @param driverClass
+		 * @param jdbcURL
+		 * @param prop
+		 */
+		private final void init(final String driverClass, final String jdbcURL, final Properties prop){
 			this.iBusy = 0;
 
 			lOpened++;
 
-			this.sConn = _sConn;
-
-			final String driver = prop.gets("driver");
-
 			try {
-				Class.forName(driver);
-			} catch (Exception e) {
-				System.err.println("Cannot find driver '" + driver + "' : " + e + " (" + e.getMessage() + ")");
+				Class.forName(driverClass);
+			} catch (Throwable e) {
+				System.err.println("Cannot find driver '" + driverClass + "' : " + e + " (" + e.getMessage() + ")");
 				this.iBusy = 3;
 				return;
 			}
-
-			/*
-			 * See here for JDBC URL examples:
-			 * http://www.petefreitag.com/articles/jdbc_urls/
-			 */
 			
-			try {
-				final StringBuilder connection = new StringBuilder("jdbc:");
-
-				final boolean isMySQL = driver.indexOf("mysql") >= 0;
-				final boolean isPostgreSQL = driver.indexOf("postgres") >= 0;
-				final boolean isMSSQL = driver.indexOf("sqlserver") >= 0; 
-				
-				if (isMySQL)
-					connection.append("mysql:");
-				else if (isPostgreSQL)
-					connection.append("postgresql:");
-				else if (isMSSQL)
-					connection.append("microsoft:sqlserver:");
-				else {
-					// UNKNOWN DRIVER
-					this.iBusy = 3;
-					return;
-				}
-
-				connection.append("//").append(prop.gets("host", "127.0.0.1"));
-
-				final String sPort = prop.gets("port"); 
-				
-				if (sPort.length() > 0)
-					connection.append(':').append(sPort);
-
-				if (isMySQL || isPostgreSQL)
-					connection.append('/').append(prop.gets("database"));
-				else
-				if (isMSSQL)
-					connection.append(";databaseName=").append(prop.gets("database"));
-
-				this.conn = DriverManager.getConnection(connection.toString(), prop.getProperties());
+			try{
+				this.conn = DriverManager.getConnection(jdbcURL, prop);
 				this.iBusy = 1;
-			} catch (SQLException e) {
+			}
+			catch (SQLException e){
+				// cannot establish a connection
 				this.iBusy = 3;
 			}
 		}
-
+		
 		/**
 		 * Get the established JDBC connection for direct access to the database.
 		 * 

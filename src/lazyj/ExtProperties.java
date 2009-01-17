@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
@@ -107,6 +108,23 @@ public final class ExtProperties extends Observable implements Observer {
 		this.pSuper = superProperties;
 		
 		reload();
+	}
+	
+	/**
+	 * Copy constructor
+	 * 
+	 * @param inherit key-value pairs to copy
+	 */
+	public ExtProperties(final Properties inherit){
+		this.prop = new Properties();
+		
+		for (final Map.Entry<Object, Object> me: inherit.entrySet()){
+			final Object key = me.getKey();
+			final Object value = me.getValue();
+			
+			if (value!=null)
+				this.prop.setProperty(key.toString(), value.toString());
+		}
 	}
 	
 	/**

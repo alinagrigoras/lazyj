@@ -540,18 +540,8 @@ public final class DBSession implements Serializable, Delayed {
 			oos.close();
 			baos.flush();
 			baos.close();
-
-			final byte[] vb = baos.toByteArray();
-			final char[] vc = new char[vb.length * 2];
-
-			for (int i = 0; i < vb.length; i++) {
-				int k = vb[i];
-				k += 128;
-				vc[i * 2] = (char) ((k / 16) + 'A');
-				vc[i * 2 + 1] = (char) ((k % 16) + 'A');
-			}
 			
-			final String sValue = new String(vc);
+			final String sValue = encodeBytes(baos.toByteArray());
 
 			final DBFunctions db = getDB();
 
@@ -743,17 +733,7 @@ public final class DBSession implements Serializable, Delayed {
 	 */
 	private static DBSession decode(final String s, final ClassLoader loader) {
 		try {
-			final char[] vc2 = s.toCharArray();
-			final int l = vc2.length / 2;
-			final byte[] vb2 = new byte[l];
-			
-			for (int i = 0; i < l; i++) {
-				int val = (vc2[i * 2] - 'A') * 16 + (vc2[i * 2 + 1] - 'A');
-				vb2[i] = (byte) val;
-				vb2[i] -= 128;
-			}
-			
-			final ByteArrayInputStream bais = new ByteArrayInputStream(vb2);
+			final ByteArrayInputStream bais = new ByteArrayInputStream(decodeString(s));
 			final ObjectInputStream ois = new MyObjectInputStream(bais, loader);
 			
 			final DBSession readObject = (DBSession) ois.readObject();
@@ -767,6 +747,52 @@ public final class DBSession implements Serializable, Delayed {
 		}
 	}
 
+	/**
+	 * Convert a byte array to a String with only letters
+	 * 
+	 * @param binaryContent array to encode
+	 * @return String representation
+	 * @see DBSession#decodeString(String)
+	 */
+	public static final String encodeBytes(final byte[] binaryContent){
+		if (binaryContent == null)
+			return null;
+		
+		final char[] chars = new char[binaryContent.length * 2];
+
+		for (int i = 0; i < binaryContent.length; i++) {
+			int k = binaryContent[i];
+			k += 128;
+			chars[i * 2] = (char) ((k / 16) + 'A');
+			chars[i * 2 + 1] = (char) ((k % 16) + 'A');
+		}
+		
+		return new String(chars);
+	}
+	
+	/**
+	 * Decode a text previously encoded with {@link #encodeBytes(byte[])} to the original byte array
+	 * 
+	 * @param text string to decode
+	 * @return byte array
+	 */
+	public static final byte[] decodeString(final String text){
+		if (text==null)
+			return null;
+		
+		final char[] characters = text.toCharArray();
+		final int l = characters.length / 2;
+		final byte[] bytes = new byte[l];
+		
+		for (int i = 0; i < l; i++) {
+			final int val = (characters[i * 2] - 'A') * 16 + (characters[i * 2 + 1] - 'A');
+			bytes[i] = (byte) val;
+			bytes[i] -= 128;
+		}
+		
+		return bytes;
+	}
+	
 	/**
 	 * For internal statistics, get the list of all active sessions for a given application. You can
 	 * specify here if you want all the active sessions or only the ones that have an associated username.

@@ -712,7 +712,7 @@ public class DBFunctions {
 									// is not in use
 									dbc.close();
 								} else {
-									System.err.println("DB2: Not closing busy connection");
+									System.err.println("DBFunctions: Not closing busy connection");
 									iUnclosed++;
 								}
 

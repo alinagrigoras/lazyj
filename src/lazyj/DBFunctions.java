@@ -156,7 +156,7 @@ public class DBFunctions {
 		this.bIsUpdate = true;
 		this.rsRezultat = null;
 		
-		this.driver = this.prop.getProperty("driver");
+		this.driver = this.prop.getProperty("driver"); //$NON-NLS-1$
 		this.jdbcConnectionString = propToJDBC(this.prop);
 		this.uniqueKey = getKey();
 	}
@@ -269,12 +269,12 @@ public class DBFunctions {
 		if (this.prop == null)
 			return this.jdbcConnectionString;
 		
-		return this.prop.getProperty("driver", "") + "/" + 
-				this.prop.getProperty("host", "127.0.0.1") + "/" + 
-				this.prop.getProperty("port", "") + "/" + 
-				this.prop.getProperty("database", "") + "/" + 
-				this.prop.getProperty("user", "") + "/" + 
-				this.prop.getProperty("password");
+		return this.prop.getProperty("driver", "") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
+				this.prop.getProperty("host", "127.0.0.1") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
+				this.prop.getProperty("port", "") + '/' +   //$NON-NLS-1$//$NON-NLS-2$
+				this.prop.getProperty("database", "") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
+				this.prop.getProperty("user", "") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
+				this.prop.getProperty("password", ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class DBFunctions {
 	 * @return true if the connection is done to a PostgreSQL database
 	 */
 	public boolean isPostgreSQL(){
-		return this.jdbcConnectionString.indexOf("postgres")>=0;
+		return this.jdbcConnectionString.indexOf("postgres")>=0; //$NON-NLS-1$
 	}
 	
 	/**
@@ -292,9 +292,23 @@ public class DBFunctions {
 	 * @return true if the connection is done to a MySQL database
 	 */
 	public boolean isMySQL(){
-		return this.jdbcConnectionString.indexOf("mysql")>=0;
+		return this.jdbcConnectionString.indexOf("mysql")>=0; //$NON-NLS-1$
 	}
 	
+	/**
+	 * Reason why the last connect() attempt failed
+	 */
+	private String sConnectFailReason = null;
+	
+	/**
+	 * Get the reason why the last connect() attempt has failed.
+	 * 
+	 * @return reason, if there is any, or <code>null</code> if the connection actually worked
+	 */
+	public String getConnectFailReason(){
+		return this.sConnectFailReason;
+	}
+		
 	/**
 	 * Initialize a database connection. First it will try to take a free one from the pool. If there is no free connection it will
 	 * try to establish a new one, only if there are less than 50 connections to this particular database in total. 
@@ -305,8 +319,11 @@ public class DBFunctions {
 		for (int i = 0; i < 3; i++) {
 			this.dbc = getFreeConnection(this.uniqueKey);
 
-			if (this.dbc != null)
+			if (this.dbc != null){
+				this.sConnectFailReason = null;
+				
 				return true;
+			}
 
 			synchronized (oConnLock) {
 				final LinkedList<DBConnection> ll = hmConn.get(this.uniqueKey);
@@ -314,12 +331,20 @@ public class DBFunctions {
 				if (ll.size() < 50) {
 					this.dbc = new DBConnection(this.driver, this.jdbcConnectionString, this.prop, this.uniqueKey);
 					if (this.dbc.canUse()) {
+						this.sConnectFailReason = null;
+						
 						this.dbc.use();
 						ll.add(this.dbc);
 						return true;
 					}
+					
+					this.sConnectFailReason = "Cannot establish new DB connection"; //$NON-NLS-1$
+					
 					this.dbc.close();
 					this.dbc = null;
+				}
+				else{
+					this.sConnectFailReason = "There are already 50 established connections to the DB, refusing to establish another one"; //$NON-NLS-1$
 				}
 			}
 
@@ -347,7 +372,7 @@ public class DBFunctions {
 	}
 
 	static {
-		System.setProperty("PGDATESTYLE", "ISO");
+		System.setProperty("PGDATESTYLE", "ISO"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
@@ -361,37 +386,37 @@ public class DBFunctions {
 		 * See here for JDBC URL examples:
 		 * http://www.petefreitag.com/articles/jdbc_urls/
 		 */			
-		final StringBuilder connection = new StringBuilder("jdbc:");
+		final StringBuilder connection = new StringBuilder("jdbc:"); //$NON-NLS-1$
 
-		final String driver = prop.getProperty("driver", "");
+		final String driver = prop.getProperty("driver", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		final boolean isMySQL = driver.indexOf("mysql") >= 0;
-		final boolean isPostgreSQL = driver.indexOf("postgres") >= 0;
-		final boolean isMSSQL = driver.indexOf("sqlserver") >= 0; 
+		final boolean isMySQL = driver.indexOf("mysql") >= 0; //$NON-NLS-1$
+		final boolean isPostgreSQL = driver.indexOf("postgres") >= 0; //$NON-NLS-1$
+		final boolean isMSSQL = driver.indexOf("sqlserver") >= 0;  //$NON-NLS-1$
 		
 		if (isMySQL)
-			connection.append("mysql:");
+			connection.append("mysql:"); //$NON-NLS-1$
 		else if (isPostgreSQL)
-			connection.append("postgresql:");
+			connection.append("postgresql:"); //$NON-NLS-1$
 		else if (isMSSQL)
-			connection.append("microsoft:sqlserver:");
+			connection.append("microsoft:sqlserver:"); //$NON-NLS-1$
 		else {
 			// UNKNOWN DRIVER
 			return null;
 		}
 
-		connection.append("//").append(prop.getProperty("host", "127.0.0.1"));
+		connection.append("//").append(prop.getProperty("host", "127.0.0.1"));  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 
-		final String sPort = prop.getProperty("port"); 
+		final String sPort = prop.getProperty("port");  //$NON-NLS-1$
 		
 		if (sPort!=null && sPort.length() > 0)
 			connection.append(':').append(sPort);
 
 		if (isMySQL || isPostgreSQL)
-			connection.append('/').append(prop.getProperty("database", ""));
+			connection.append('/').append(prop.getProperty("database", ""));  //$NON-NLS-1$//$NON-NLS-2$
 		else
 		if (isMSSQL)
-			connection.append(";databaseName=").append(prop.getProperty("database", ""));
+			connection.append(";databaseName=").append(prop.getProperty("database", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		return connection.toString();
 	}
@@ -484,7 +509,12 @@ public class DBFunctions {
 		 * Connection key
 		 */
 		private final String	sConn;
-
+		
+		/**
+		 * Description for this connection, set by an outside entity.
+		 */
+		private String description = null;
+		
 		/**
 		 * Establish a new connection. Cannot be called directly, you have to use {@link DBFunctions#getConnection()} for example.
 		 * 
@@ -494,7 +524,7 @@ public class DBFunctions {
 		DBConnection(final Properties prop, final String _sConn) {
 			this.sConn = _sConn;
 
-			final String driver = prop.getProperty("driver");
+			final String driver = prop.getProperty("driver"); //$NON-NLS-1$
 			
 			if (driver==null){
 				this.iBusy = 3;
@@ -540,7 +570,7 @@ public class DBFunctions {
 			try {
 				Class.forName(driverClass);
 			} catch (Throwable e) {
-				System.err.println("Cannot find driver '" + driverClass + "' : " + e + " (" + e.getMessage() + ")");
+				System.err.println("Cannot find driver '" + driverClass + "' : " + e + " (" + e.getMessage() + ")");    //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
 				this.iBusy = 3;
 				return;
 			}
@@ -616,7 +646,7 @@ public class DBFunctions {
 				try {
 					this.conn.close();
 				} catch (Exception e) {
-					System.err.println("DBConnection: cannot close " + this.sConn + " because : " + e + " (" + e.getMessage() + ")");
+					System.err.println("DBConnection: cannot close " + this.sConn + " (descr: "+getDescription()+") because : " + e + " (" + e.getMessage() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 				}
 
 				this.conn = null;
@@ -635,11 +665,28 @@ public class DBFunctions {
 					this.conn.close();
 					lClosedOnFinalize++;
 				} catch (Exception e) {
-					System.err.println("DBConnection: cannot close " + this.sConn + " on finalize because : " + e + " (" + e.getMessage() + ")");
+					System.err.println("DBConnection: cannot close " + this.sConn + " on finalize because : " + e + " (" + e.getMessage() + ")");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$
 				}
 			}
 		}
 
+		/**
+		 * Set the description to an arbitrary string to be used when debugging a problem.
+		 * 
+		 * @param description the description to set
+		 */
+		public void setDescription(final String description) {
+			this.description = description;
+		}
+
+		/**
+		 * Get the current description
+		 * 
+		 * @return the description
+		 */
+		public String getDescription() {
+			return this.description;
+		}
 	}
 
 	/**
@@ -652,7 +699,7 @@ public class DBFunctions {
 		 * Create the thread with some name to display in the stack trace
 		 */
 		public CleanupThread(){
-			super("lazyj.DBFunctions: cleanup thread");
+			super("lazyj.DBFunctions: cleanup thread"); //$NON-NLS-1$
 		}
 		
 		/**
@@ -712,7 +759,7 @@ public class DBFunctions {
 									// is not in use
 									dbc.close();
 								} else {
-									System.err.println("DBFunctions: Not closing busy connection");
+									System.err.println("DBFunctions: Not closing busy connection (description: "+dbc.getDescription()+')'); //$NON-NLS-1$
 									iUnclosed++;
 								}
 
@@ -907,9 +954,9 @@ public class DBFunctions {
 
 		if (!connect()) {
 			try {
-				throw new SQLException("connection failed");
+				throw new SQLException("connection failed"); //$NON-NLS-1$
 			} catch (Exception e) {
-				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> cannot connect for query : \n" + sQuery, e);
+				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> cannot connect for query because "+getConnectFailReason()+" : \n" + sQuery, e);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 
 			al.addAndGet(System.currentTimeMillis() - lStartTime);
@@ -951,8 +998,8 @@ public class DBFunctions {
 
 			final String s = e.getMessage();
 
-			if (!bIgnoreErrors && s.indexOf("duplicate key") < 0 && s.indexOf("drop table") < 0) {
-				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> Error executing '" + sQuery + "'", e);
+			if (!bIgnoreErrors && s.indexOf("duplicate key") < 0 && s.indexOf("drop table") < 0) {  //$NON-NLS-1$//$NON-NLS-2$
+				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> Error executing '" + sQuery + "'", e);  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 				// in case of an error, close the connection
 				this.dbc.close();
 			} else {
@@ -998,7 +1045,7 @@ public class DBFunctions {
 
 			return ret;
 		} catch (Throwable t) {
-			Log.log(Log.ERROR, "lazyj.DBFunctions", "count()", t);
+			Log.log(Log.ERROR, "lazyj.DBFunctions", "count()", t); //$NON-NLS-1$ //$NON-NLS-2$
 			return -1;
 		}
 	}
@@ -1104,7 +1151,7 @@ public class DBFunctions {
 	 * @see #gets(int, String)
 	 */
 	public final String gets(final String sColumnName) {
-		return gets(sColumnName, "");
+		return gets(sColumnName, ""); //$NON-NLS-1$
 	}
 	
 	/**
@@ -1151,7 +1198,7 @@ public class DBFunctions {
 	 * @see #gets(int, String)
 	 */
 	public final String gets(final int iColumn) {
-		return gets(iColumn, "");
+		return gets(iColumn, ""); //$NON-NLS-1$
 	}
 
 	/**
@@ -1677,7 +1724,7 @@ public class DBFunctions {
 		if (sValue==null || sValue.length()<2 || sValue.charAt(0)!='{' || sValue.charAt(sValue.length()-1)!='}')
 			return new ArrayList<String>(0);
 		
-		final StringTokenizer st = new StringTokenizer(sValue.substring(1, sValue.length()-1), ",");
+		final StringTokenizer st = new StringTokenizer(sValue.substring(1, sValue.length()-1), ","); //$NON-NLS-1$
 		
 		final ArrayList<String> l = new ArrayList<String>(st.countTokens());
 		
@@ -1686,10 +1733,10 @@ public class DBFunctions {
 			
 			if (s.charAt(0)=='"'){
 				while ((s.length()<2 || s.charAt(s.length()-1)!='"' || s.charAt(s.length()-2)=='\\') && st.hasMoreTokens()){
-					s += "," + st.nextToken();
+					s += ',' + st.nextToken();
 				}
 				
-				s = s.substring(1, s.length()-1).replace("\\\"", "\"").replace("\\\\", "\\");
+				s = s.substring(1, s.length()-1).replace("\\\"", "\"").replace("\\\\", "\\");   //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$
 			}
 			
 			l.add(s);
@@ -1711,7 +1758,7 @@ public class DBFunctions {
 		
 		for (Object o: array){
 			String s = o.toString();
-			s = Format.replace(s, "\"", "\\\"");
+			s = Format.replace(s, "\"", "\\\"");  //$NON-NLS-1$//$NON-NLS-2$
 			s = Format.escJS(s);
 			
 			if (sb.length()>0)
@@ -1720,7 +1767,7 @@ public class DBFunctions {
 			sb.append('"').append(s).append('"');
 		}
 		
-		return "'{"+sb.toString()+"}'";
+		return "'{"+sb.toString()+"}'"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

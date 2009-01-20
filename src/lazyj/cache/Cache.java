@@ -139,11 +139,11 @@ public class Cache extends Thread {
 			if (c!=null){
 				refreshAndQueue(c);
 			
-				Log.log(Log.FINE, "lazyj.cache.Cache", "Successfully registered '"+sKey+"'");
+				Log.log(Log.FINE, "lazyj.cache.Cache", "Successfully registered '"+sKey+"'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
 		catch (Throwable t){
-			Log.log(Log.WARNING, "lazyj.cache.Cache", "Cannot register '"+sKey+"' because", t);
+			Log.log(Log.WARNING, "lazyj.cache.Cache", "Cannot register '"+sKey+"' because", t);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
 
@@ -183,10 +183,10 @@ public class Cache extends Thread {
 				queue.offer(c);
 			}
 			
-			Log.log(Log.FINEST, "lazyj.cache.Cache", "Successfully refreshed '"+c.ce.getClass().getName()+"'");
+			Log.log(Log.FINEST, "lazyj.cache.Cache", "Successfully refreshed '"+c.ce.getClass().getName()+"'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		catch (Throwable t){
-			Log.log(Log.WARNING, "lazyj.cache.Cache", "Cannot refresh '"+c.ce.getClass().getName()+"' because", t);
+			Log.log(Log.WARNING, "lazyj.cache.Cache", "Cannot refresh '"+c.ce.getClass().getName()+"' because", t); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}		
 	}
 
@@ -223,7 +223,7 @@ public class Cache extends Thread {
 	 * Set thread name
 	 */
 	private Cache() {
-		super("lazyj.cache.Cache refresh thread");
+		super("lazyj.cache.Cache refresh thread"); //$NON-NLS-1$
 	}
 
 	/**

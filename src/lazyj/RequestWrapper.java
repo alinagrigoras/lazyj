@@ -50,7 +50,7 @@ public final class RequestWrapper {
 		try {
 			this.mpRequest = new MultipartRequest(this.request, sTempDir, iFileSizeLimit);
 		} catch (IOException ioe) {
-			Log.log(Log.FINE, "lazyj.RequestWrapper", "initMultipartRequest", ioe);
+			Log.log(Log.FINE, "lazyj.RequestWrapper", "initMultipartRequest", ioe); //$NON-NLS-1$ //$NON-NLS-2$
 			this.mpRequest = null;
 		}
 				
@@ -82,9 +82,9 @@ public final class RequestWrapper {
 		final String sValue = this.mpRequest != null ? this.mpRequest.getParameter(sParam) : this.request.getParameter(sParam);
 
 		try {
-			return sValue != null ? new String(sValue.getBytes("ISO-8859-1"), "UTF-8") : "";
+			return sValue != null ? new String(sValue.getBytes("ISO-8859-1"), "UTF-8") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		} catch (UnsupportedEncodingException e) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 	
@@ -237,7 +237,7 @@ public final class RequestWrapper {
 			// ignore
 		}
 
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 	
 	/**
@@ -269,9 +269,9 @@ public final class RequestWrapper {
 	 * @param response
 	 */
 	public static void setNotCache(final HttpServletResponse response){
-		response.setHeader("Expires", "0");
-		response.setHeader("Cache-Control", "no-cache");
-		response.setHeader("Pragma", "no-cache");
-		response.setDateHeader("Date", System.currentTimeMillis());
+		response.setHeader("Expires", "0"); //$NON-NLS-1$ //$NON-NLS-2$
+		response.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
+		response.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
+		response.setDateHeader("Date", System.currentTimeMillis()); //$NON-NLS-1$
 	}
 }

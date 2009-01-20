@@ -183,7 +183,7 @@ public final class DateFileWatchdog extends Observable {
 		 * Set the thread title and make the thread daemon
 		 */
 		public DFWManager() {
-			super("lazyj.DateFileWatchdogManager");
+			super("lazyj.DateFileWatchdogManager"); //$NON-NLS-1$
 			
 			try {
 				setDaemon(true);
@@ -220,7 +220,7 @@ public final class DateFileWatchdog extends Observable {
 				}
 			} 
 			catch (Throwable t) {
-				Log.log(Log.WARNING, "lazyj.DateFileWatchdog", "Got exception trying to monitor for a file change [ "+ dfe.dfw.cannonicalFilePath + " ]", t);
+				Log.log(Log.WARNING, "lazyj.DateFileWatchdog", "Got exception trying to monitor for a file change [ "+ dfe.dfw.cannonicalFilePath + " ]", t);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
 
@@ -238,7 +238,7 @@ public final class DateFileWatchdog extends Observable {
 			this.queue.add(dfe);
 			this.cmap.put(Long.valueOf(dfw.seq), dfe);
 			
-			setName("DateFileWatchdogManager [ " + this.queue.size() + " ]");
+			setName("DateFileWatchdogManager [ " + this.queue.size() + " ]"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		/**
@@ -254,7 +254,7 @@ public final class DateFileWatchdog extends Observable {
 			
 			if (dfe != null) {
 				this.queue.remove(dfe);
-				setName("lazyj.DateFileWatchdogManager [ " + this.queue.size() + " files watched ]");
+				setName("lazyj.DateFileWatchdogManager [ " + this.queue.size() + " files watched ]");  //$NON-NLS-1$//$NON-NLS-2$
 			}
 		}
 
@@ -263,7 +263,7 @@ public final class DateFileWatchdog extends Observable {
 		 */
 		@Override
 		public void run() {
-			Log.log(Log.FINE, "lazyj.DateFileWatchdog", "started");
+			Log.log(Log.FINE, "lazyj.DateFileWatchdog", "started");  //$NON-NLS-1$//$NON-NLS-2$
 			
 			while (this.hasToRun) {
 				try {
@@ -291,7 +291,7 @@ public final class DateFileWatchdog extends Observable {
 					}
 				} 
 				catch (Throwable t) {
-					Log.log(Log.WARNING, "lazyj.DateFileWatchdog", "Exception processing", t);
+					Log.log(Log.WARNING, "lazyj.DateFileWatchdog", "Exception processing", t); //$NON-NLS-1$ //$NON-NLS-2$
 					
 					try {
 						Thread.sleep(20 * 1000);
@@ -334,17 +334,17 @@ public final class DateFileWatchdog extends Observable {
 	 */
 	public DateFileWatchdog(final File f, final long howOften) throws Exception {
 		if (f == null) {
-			throw new IllegalArgumentException("Cannot monitor a null File...");
+			throw new IllegalArgumentException("Cannot monitor a null File..."); //$NON-NLS-1$
 		}
 		
 		this.cannonicalFilePath = f.getCanonicalPath();
 		
 		if (!f.exists()) {
-			throw new Exception("The file [ " + this.cannonicalFilePath + " ] doesn't exist!");
+			throw new Exception("The file [ " + this.cannonicalFilePath + " ] doesn't exist!"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		if (!f.canRead()) {
-			throw new Exception("The file [ " + this.cannonicalFilePath + " ] doesn't have Read acces!");
+			throw new Exception("The file [ " + this.cannonicalFilePath + " ] doesn't have Read acces!");  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		
 		this.seq = SEQ.getAndIncrement();

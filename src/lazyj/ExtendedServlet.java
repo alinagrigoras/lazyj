@@ -65,7 +65,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	protected String				sPage			= getClass().getName();
 
 	/** The zone of the currently executed servlet */
-	protected String				sZone			= "<unknown>";
+	protected String				sZone			= "<unknown>"; //$NON-NLS-1$
 
 	/** Object used for file uploading. See {@link #initMultipartRequest(String, int)}. */
 	protected MultipartRequest	mpRequest		= null;
@@ -97,7 +97,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @return some string that is appended to the caching key. 
 	 */
 	protected String getCacheKeyModifier() {
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -155,8 +155,8 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @return the domain for which the cookies will be set by default
 	 */
 	protected String getDomain() {
-		assert false : "Override getDomain() to return a meaningfull value for your application";
-		return ".unset.domain.do";
+		assert false : "Override getDomain() to return a meaningfull value for your application"; //$NON-NLS-1$
+		return ".unset.domain.do"; //$NON-NLS-1$
 	}
 	
 	/**
@@ -197,7 +197,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @return application unique number
 	 */
 	protected int getApp() {
-		assert false : "Override getApp() to return a meaningfull value for your application";
+		assert false : "Override getApp() to return a meaningfull value for your application"; //$NON-NLS-1$
 		return 0;
 	}
 
@@ -224,7 +224,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		final long lTimeout = getCacheTimeout(); 
 		
 		if ((lTimeout > 0) && (this.bGet == true)) {
-			log(Log.FINEST, "cacheable request : "+lTimeout);
+			log(Log.FINEST, "cacheable request : "+lTimeout); //$NON-NLS-1$
 			
 			final String sKey = PageCache.getCacheKey(this.request, getCacheKeyModifier());
 
@@ -235,11 +235,11 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			if (cs != null) { // it's ok, i can write the cache content to the output
 				lHit++;
 				
-				log(Log.FINEST, "serving request from cache : "+cs.length());
+				log(Log.FINEST, "serving request from cache : "+cs.length()); //$NON-NLS-1$
 
 				this.response.setContentType(cs.sContentType);
-				this.response.setHeader("Content-Language", "en");
-				this.response.setHeader("Content-Length", ""+cs.length());
+				this.response.setHeader("Content-Language", "en"); //$NON-NLS-1$ //$NON-NLS-2$
+				this.response.setHeader("Content-Length", ""+cs.length()); //$NON-NLS-1$ //$NON-NLS-2$
 				RequestWrapper.setNotCache(this.response);
 
 				try {
@@ -263,11 +263,11 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 
 				return false;
 			}
-			log(Log.FINEST, "generating the contents for key = '"+sKey+"'");
+			log(Log.FINEST, "generating the contents for key = '"+sKey+'\''); //$NON-NLS-1$
 			
 			this.osOut = new StringBufferOutputStream(sKey, lTimeout);
 		} else { // this request cannot be cached, do nothing
-			log(Log.FINEST, "uncacheable request");
+			log(Log.FINEST, "uncacheable request"); //$NON-NLS-1$
 		}
 		
 		return true;
@@ -344,11 +344,11 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		 */
 		@Override
 		public void close() throws IOException{
-			ExtendedServlet.this.response.setDateHeader("Date", System.currentTimeMillis());
+			ExtendedServlet.this.response.setDateHeader("Date", System.currentTimeMillis()); //$NON-NLS-1$
 
 			ExtendedServlet.this.pwOut.flush();
 
-			if (!ExtendedServlet.this.response.containsHeader("Location") && !ExtendedServlet.this.bRedirect) {
+			if (!ExtendedServlet.this.response.containsHeader("Location") && !ExtendedServlet.this.bRedirect) { //$NON-NLS-1$
 				long lExpires = this.lTimeout * 1000; 
 				
 				if (CachingStructure.bonus.get(this.sKey)!=null)
@@ -508,7 +508,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			this.response.sendRedirect(sURL);
 			return true;
 		} catch (Exception e) {
-			Log.log(Log.FATAL, "lazyj.ExtendedServlet", "ServletExtension (" + this.sZone + "/" + this.sPage + "), redirect('" + sURL + "'), exception: " + e);
+			Log.log(Log.FATAL, "lazyj.ExtendedServlet", "ServletExtension (" + this.sZone + '/' + this.sPage + "), redirect('" + sURL + "'), exception: " + e);  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 			return false;
 		}
 	}
@@ -589,14 +589,14 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			c.setMaxAge(iAge);
 
 			c.setDomain(sDomain);
-			c.setPath("/");
+			c.setPath("/"); //$NON-NLS-1$
 			c.setSecure(false);
 
 			this.response.addCookie(c);
 
 			return true;
 		} catch (Exception e) {
-			log(Log.WARNING, "setCookie exception", e);
+			log(Log.WARNING, "setCookie exception", e); //$NON-NLS-1$
 
 			return false;
 		}
@@ -710,16 +710,16 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			try{
 				// If we are running under Servlet API 2.1+ we have this method
 				// Since we cannot invoke it directly, we have to introspect the request object
-				final Method m = this.request.getClass().getDeclaredMethod("getContextPath");
+				final Method m = this.request.getClass().getDeclaredMethod("getContextPath"); //$NON-NLS-1$
 				
 				if (m!=null){
 					this.sZone = (String) m.invoke(this.request);
 					this.sPage = sPath;
 					
-					if (this.sZone!=null && this.sZone.startsWith("/"))
+					if (this.sZone!=null && this.sZone.startsWith("/")) //$NON-NLS-1$
 						this.sZone = this.sZone.substring(1);
 					
-					if (this.sPage!=null && this.sPage.startsWith("/"))
+					if (this.sPage!=null && this.sPage.startsWith("/")) //$NON-NLS-1$
 						this.sPage = this.sPage.substring(1);
 				}
 			}
@@ -737,7 +737,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		if (!bServlet21Plus || this.sZone==null){
 			try{
 		
-				final StringTokenizer st = new StringTokenizer(sPath, "/");
+				final StringTokenizer st = new StringTokenizer(sPath, "/"); //$NON-NLS-1$
 
 				this.sZone = st.nextToken();
 			
@@ -745,7 +745,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 					this.sPage = st.nextToken();
 				else{
 					this.sPage = this.sZone;
-					this.sZone = "";
+					this.sZone = ""; //$NON-NLS-1$
 				}
 			}
 			catch (Throwable t){
@@ -757,15 +757,15 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		this.sZone = StringFactory.get(this.sZone);
 		this.sPage = StringFactory.get(this.sPage);					
 		
-		final String sOldName = setName("lazyj.ExtendedServlet("+this.sZone+"/"+this.sPage+") : ACTIVE ("+this.request.getRemoteAddr()+")");
+		final String sOldName = setName("lazyj.ExtendedServlet("+this.sZone+"/"+this.sPage+") : ACTIVE ("+this.request.getRemoteAddr()+")");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		
 		FrameworkStats.addPage(this.sZone, this.sPage);
 
-		this.response.setHeader("P3P", "CP=\"NOI DSP COR LAW CURa DEVa TAIa PSAa PSDa OUR BUS UNI COM NAV\"");
+		this.response.setHeader("P3P", "CP=\"NOI DSP COR LAW CURa DEVa TAIa PSAa PSDa OUR BUS UNI COM NAV\""); //$NON-NLS-1$ //$NON-NLS-2$
 
 		final long lMaxRunTime = getMaxRunTime();
 		
-		final BoundedThreadContainer btc = lMaxRunTime > 0 ? new BoundedThreadContainer(getMaxRunTime(), Thread.currentThread(), this.sZone + "/" + this.sPage) : null;
+		final BoundedThreadContainer btc = lMaxRunTime > 0 ? new BoundedThreadContainer(getMaxRunTime(), Thread.currentThread(), this.sZone + '/' + this.sPage) : null;
 
 		if (btc!=null)
 			ThreadsMonitor.register(btc);
@@ -774,7 +774,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			executeRequest();
 		}
 		catch (Throwable t) {
-			Log.log(Log.FATAL, "lazyj.ExtendedServlet", "Execution exception: "+(isGet?"GET":"POST")+" "+this.sZone+"/"+this.sPage, t);
+			Log.log(Log.FATAL, "lazyj.ExtendedServlet", "Execution exception: "+(isGet?"GET":"POST")+" "+this.sZone+'/'+this.sPage, t); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		}
 		finally{
 			if (btc!=null)
@@ -816,14 +816,14 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		try {
 			this.mpRequest = null;
 			
-			this.sContentType = "text/html; charset=UTF-8";
+			this.sContentType = "text/html; charset=UTF-8"; //$NON-NLS-1$
 			
 			this.dbs = DBSession.getSession(this);
 
 			this.osOut = this.response.getOutputStream();
 			this.pwOut = new PrintWriter(this.osOut);
 		} catch (Exception e) {
-			log(Log.ERROR, "exception geting the streams", e);
+			log(Log.ERROR, "exception geting the streams", e); //$NON-NLS-1$
 		}
 		
 		doInit();
@@ -839,7 +839,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			else
 				execPost();
 		} catch (Exception e) {
-			log(Log.ERROR, "Execution exception (get:" + this.bGet + ")", e);
+			log(Log.ERROR, "Execution exception (get:" + this.bGet + ')', e); //$NON-NLS-1$
 		}
 
 		try {
@@ -865,7 +865,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 				}
 			}
 			catch (Throwable t) {
-				System.err.println("ThreadedPage.run(): cannot delete from multipartrequest: " + t + " (" + t.getMessage() + ")");
+				System.err.println("ThreadedPage.run(): cannot delete from multipartrequest: " + t + '(' + t.getMessage() + ')'); //$NON-NLS-1$
 			}
 	}
 	
@@ -893,7 +893,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @return client's address
 	 */
 	public final String getHostName() {
-		String hostName = "";
+		String hostName = ""; //$NON-NLS-1$
 		try {
 			InetAddress host = InetAddress.getByName(this.request.getRemoteAddr());
 			hostName = host.getHostName();
@@ -945,7 +945,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 				if (!bFirst)
 					sb.append('&');
 
-				sb.append(Format.encode(sParam) + "=" + Format.encode(vs[i]));
+				sb.append(Format.encode(sParam) + '=' + Format.encode(vs[i]));
 
 				bFirst = false;
 			}
@@ -953,7 +953,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 
 		String sCurrentPage = sb.toString();
 
-		if (sCurrentPage.endsWith("?"))
+		if (sCurrentPage.endsWith("?")) //$NON-NLS-1$
 			sCurrentPage = sCurrentPage.substring(0, sCurrentPage.length() - 1);
 
 		return sCurrentPage;
@@ -979,7 +979,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @param sMessage error message
 	 */
 	public void log(final int level, final String sMessage){
-		Log.log(level, this.sZone+"."+this.sPage, sMessage);
+		Log.log(level, this.sZone+'.'+this.sPage, sMessage);
 	}
 	
 	
@@ -992,7 +992,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @param o object to be logged, special case when the object is a Throwable instance
 	 */
 	public void log(final int level, final String sMessage, final Object o){
-		Log.log(level, this.sZone+"."+this.sPage, sMessage, o);
+		Log.log(level, this.sZone+'.'+this.sPage, sMessage, o);
 	}
 	
 	
@@ -1005,7 +1005,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * @return true if a message at this level would be logged, false if not
 	 */
 	public boolean isLoggable(final int iLevel){
-		return Log.isLoggable(iLevel, this.sZone+"."+this.sPage);
+		return Log.isLoggable(iLevel, this.sZone+'.'+this.sPage);
 	}
 	
 }

@@ -46,7 +46,7 @@ public class Attachment extends AttachHeader {
 	 * @return raw data input stream
 	 */
 	public InputStream getInputStream() {
-		return new ByteArrayInputStream((getOriginalHeader() + "\n" + this.sAttachmentBody).getBytes());
+		return new ByteArrayInputStream((getOriginalHeader() + '\n' + this.sAttachmentBody).getBytes());
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class Attachment extends AttachHeader {
 			javax.mail.internet.MimeBodyPart mbp = new javax.mail.internet.MimeBodyPart(getInputStream());
 			isResult = (InputStream) mbp.getContent();
 		} catch (Exception e) {
-			Log.log(Log.FATAL, "lazyj.mail.Attachment", "Attachment: getDecodedInputStream exception : "+ e);
+			Log.log(Log.FATAL, "lazyj.mail.Attachment", "Attachment: getDecodedInputStream exception : "+ e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		return isResult;
@@ -74,9 +74,9 @@ public class Attachment extends AttachHeader {
 	 * @return the text contained in this attachment, using the supplied charset
 	 */
 	public String getText(){
-		final String sEncoding = getValue("charset");
+		final String sEncoding = getValue("charset"); //$NON-NLS-1$
 			
-		return getText(sEncoding.length()>0 ? sEncoding : "us-ascii");
+		return getText(sEncoding.length()>0 ? sEncoding : "us-ascii"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class Attachment extends AttachHeader {
 			return new String(baos.toByteArray(), sEncoding);
 		}
 		catch (Throwable t) {
-			Log.log(Log.ERROR, "lazyj.mail.Attachment", "getText exception", t);
+			Log.log(Log.ERROR, "lazyj.mail.Attachment", "getText exception", t); //$NON-NLS-1$ //$NON-NLS-2$
 			return null;
 		}
 	}

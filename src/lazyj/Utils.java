@@ -59,6 +59,7 @@ import lazyj.page.BasePage;
  * @author costing
  * @since Jan 17, 2009
  */
+@SuppressWarnings("nls")
 public final class Utils {
 
 	/**
@@ -94,7 +95,7 @@ public final class Utils {
 		if (bLazyjConfigFolderDetermined)
 			return sLazyjConfigFolder;
 		
-		sLazyjConfigFolder = System.getProperty("lazyj.config.folder");
+		sLazyjConfigFolder = System.getProperty("lazyj.config.folder"); //$NON-NLS-1$
 		
 		if (sLazyjConfigFolder!=null){
 			final File f = new File(sLazyjConfigFolder);
@@ -106,7 +107,7 @@ public final class Utils {
 			}
 		}
 	
-		sLazyjConfigFolder = getConfigFolder("lazyj", new String[]{"logging.properties", "dbsessions.properties", "basepage.properties", "modules.properties"});
+		sLazyjConfigFolder = getConfigFolder("lazyj", new String[]{"logging.properties", "dbsessions.properties", "basepage.properties", "modules.properties"});  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		
 		bLazyjConfigFolderDetermined = true;
 		
@@ -124,23 +125,23 @@ public final class Utils {
 		final List<String> folders = new LinkedList<String>();
 		
 		try{
-			File fDir = new File("."); 
+			File fDir = new File(".");  //$NON-NLS-1$
 			
 			if (fDir.isDirectory() && fDir.canRead()){
 				String sPath = fDir.getCanonicalPath();
 				
-				folders.add(sPath+File.separator+"config"+File.separator+sAppName);
-				folders.add(sPath+File.separator+"config");
+				folders.add(sPath+File.separator+"config"+File.separator+sAppName); //$NON-NLS-1$
+				folders.add(sPath+File.separator+"config"); //$NON-NLS-1$
 				folders.add(sPath);
 			}
 
-			fDir = new File(".."); 
+			fDir = new File("..");  //$NON-NLS-1$
 			
 			if (fDir.isDirectory() && fDir.canRead()){
 				String sPath = fDir.getCanonicalPath();
 				
-				folders.add(sPath+File.separator+"config"+File.separator+sAppName);
-				folders.add(sPath+File.separator+"config");
+				folders.add(sPath+File.separator+"config"+File.separator+sAppName); //$NON-NLS-1$
+				folders.add(sPath+File.separator+"config"); //$NON-NLS-1$
 				folders.add(sPath);
 			}
 		}
@@ -148,8 +149,8 @@ public final class Utils {
 			// ignore
 		}
 		
-		folders.add(System.getProperty("user.home")+File.separator+"."+sAppName);
-		folders.add("/etc/"+sAppName);
+		folders.add(System.getProperty("user.home")+File.separator+'.'+sAppName); //$NON-NLS-1$
+		folders.add("/etc/"+sAppName); //$NON-NLS-1$
 				
 		for (String sPath: folders){
 			File f = new File(sPath);
@@ -199,7 +200,7 @@ public final class Utils {
 		try {
 			orig = javax.imageio.ImageIO.read(new FileInputStream(sSource));
 		} catch (Exception e) {
-			Log.log(Log.ERROR, "lazyj.Utils", "image resize: exception decoding a compressed format from file '" + sSource + "'", e);
+			Log.log(Log.ERROR, "lazyj.Utils", "image resize: exception decoding a compressed format from file '" + sSource + "'", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return false;
 		}
 
@@ -250,7 +251,7 @@ public final class Utils {
 		}
 
 		try{
-			final Iterator<ImageWriter> it = ImageIO.getImageWritersByFormatName("jpeg");
+			final Iterator<ImageWriter> it = ImageIO.getImageWritersByFormatName("jpeg"); //$NON-NLS-1$
 			
 			if (it.hasNext()){
 				final ImageWriter writer = it.next();
@@ -273,16 +274,16 @@ public final class Utils {
 			}
 		}
 		catch (Throwable t){
-			Log.log(Log.ERROR, "lazyj.Utils", "resize: cannot write to destination file: " + sDest, t);
+			Log.log(Log.ERROR, "lazyj.Utils", "resize: cannot write to destination file: " + sDest, t); //$NON-NLS-1$ //$NON-NLS-2$
 			return false;			
 		}
 
 		if (bDeleteOriginalFile)
 			try {
 				if (!(new File(sSource)).delete())
-					Log.log(Log.WARNING, "lazyj.Utils", "resize: could not delete original file (" + sSource + ")");
+					Log.log(Log.WARNING, "lazyj.Utils", "resize: could not delete original file (" + sSource + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			} catch (SecurityException se) {
-				Log.log(Log.ERROR, "lazyj.Utils", "resize: security constraints prevents file deletion");
+				Log.log(Log.ERROR, "lazyj.Utils", "resize: security constraints prevents file deletion"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 		return true;
@@ -324,7 +325,7 @@ public final class Utils {
 			os.flush();
 			os.close();
 		} catch (Throwable e) {
-			Log.log(Log.WARNING, "lazyj.Utils", "compress : cannot compress '" + sSource + "' to '" + sDest + "'", e);
+			Log.log(Log.WARNING, "lazyj.Utils", "compress : cannot compress '" + sSource + "' to '" + sDest + "'", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return false;
 		} finally {
 			if (is != null) {
@@ -347,9 +348,9 @@ public final class Utils {
 		if (bDeleteSourceOnSuccess)
 			try {
 				if (!(new File(sSource)).delete())
-					Log.log(Log.WARNING, "lazyj.Utils", "compress: could not delete original file (" + sSource + ")");
+					Log.log(Log.WARNING, "lazyj.Utils", "compress: could not delete original file (" + sSource + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			} catch (SecurityException se) {
-				Log.log(Log.ERROR, "lazyj.Utils", "compress: security constraints prevents file deletion");
+				Log.log(Log.ERROR, "lazyj.Utils", "compress: security constraints prevents file deletion"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 		return true;
@@ -379,8 +380,8 @@ public final class Utils {
 			int r;
 
 			String sFileName = sSource;
-			if (sFileName.indexOf("/") >= 0)
-				sFileName = sFileName.substring(sFileName.lastIndexOf("/") + 1);
+			if (sFileName.indexOf('/') >= 0)
+				sFileName = sFileName.substring(sFileName.lastIndexOf('/') + 1);
 
 			os.putNextEntry(new ZipEntry(sFileName));
 
@@ -393,7 +394,7 @@ public final class Utils {
 			os.closeEntry();
 			os.close();
 		} catch (Throwable e) {
-			Log.log(Log.WARNING, "lazyj.Utils", "compressToZip : cannot compress '" + sSource + "' to '" + sDest + "' because", e);
+			Log.log(Log.WARNING, "lazyj.Utils", "compressToZip : cannot compress '" + sSource + "' to '" + sDest + "' because", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return false;
 		} finally {
 			if (is != null) {
@@ -416,9 +417,9 @@ public final class Utils {
 		if (bDeleteSourceOnSuccess)
 			try {
 				if (!(new File(sSource)).delete())
-					Log.log(Log.WARNING, "lazyj.Utils", "compressToZip: could not delete original file (" + sSource + ")");
+					Log.log(Log.WARNING, "lazyj.Utils", "compressToZip: could not delete original file (" + sSource + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			} catch (SecurityException se) {
-				Log.log(Log.ERROR, "lazyj.Utils", "compressToZip: security constraints prevents file deletion");
+				Log.log(Log.ERROR, "lazyj.Utils", "compressToZip: security constraints prevents file deletion"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 		return true;
@@ -432,7 +433,7 @@ public final class Utils {
 	 * @return file contents if everything is ok, null if there is an error
 	 */
 	public static final String readFile(final String sFileName) {
-		return readFile(sFileName, "UTF-8");
+		return readFile(sFileName, "UTF-8"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -445,7 +446,7 @@ public final class Utils {
 	public static final String readFile(final String sFileName, final String charSet) {
 		final File f = new File(sFileName);
 		if (!f.exists() || !f.canRead() || !f.isFile()) {
-			Log.log(Log.WARNING, "lazyj.Utils", "could not read '" + sFileName + "' because : exists=" + f.exists() + ", canread=" + f.canRead() + ", isfile=" + f.isFile());
+			Log.log(Log.WARNING, "lazyj.Utils", "could not read '" + sFileName + "' because : exists=" + f.exists() + ", canread=" + f.canRead() + ", isfile=" + f.isFile()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
 			return null;
 		}
@@ -463,7 +464,7 @@ public final class Utils {
 
 			return new String(b, charSet);
 		} catch (IOException ioe) {
-			Log.log(Log.WARNING, "lazyj.Utils", "exception reading from '" + sFileName + "'", ioe);
+			Log.log(Log.WARNING, "lazyj.Utils", "exception reading from '" + sFileName + "'", ioe); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return null;
 		} finally {
 			if (fis != null)

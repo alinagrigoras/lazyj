@@ -48,7 +48,7 @@ public class EmailSender extends Sender {
 	/**
 	 * SMTP server to use
 	 */
-	private String sServerHost = "127.0.0.1";
+	private String sServerHost = "127.0.0.1"; //$NON-NLS-1$
 	
 	/**
 	 * Port on which the SMTP server listens on
@@ -58,6 +58,7 @@ public class EmailSender extends Sender {
 	/* (non-Javadoc)
 	 * @see lazyj.notifications.Sender#init(lazyj.ExtProperties, java.lang.String)
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public boolean init(final ExtProperties prop, final String keyPrefix) {
 		this.sDefaultFrom = prop.gets(keyPrefix+"from", this.sDefaultFrom);

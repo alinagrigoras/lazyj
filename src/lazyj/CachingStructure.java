@@ -201,6 +201,7 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 	/**
 	 * Overriden toString() produces a nicer HTML output, for web statistics
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public String toString() {
 		final String s = this.sKey.length() > 70 ? this.sKey.substring(0, 70)+"..." : this.sKey;

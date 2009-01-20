@@ -49,7 +49,7 @@ public final class DBSession implements Serializable, Delayed {
 	/**
 	 * The cookie name to use for session ids.
 	 */
-	public static final String COOKIE_NAME = "LAZYJ_ID";
+	public static final String COOKIE_NAME = "LAZYJ_ID"; //$NON-NLS-1$
 	
 	/**
 	 * Cache active sessions.
@@ -95,11 +95,11 @@ public final class DBSession implements Serializable, Delayed {
 		final String s = Utils.getLazyjConfigFolder();
 		
 		if (s==null){
-			System.err.println("lazyj.DBSession : system property 'lazyj.config.folder' is not defined. As a consequence sessions do NOT have a DB backing!");
+			System.err.println("lazyj.DBSession : system property 'lazyj.config.folder' is not defined. As a consequence sessions do NOT have a DB backing!"); //$NON-NLS-1$
 			dbProp = new ExtProperties();
 		}
 		else{
-			dbProp = new ExtProperties(s, "dbsessions");
+			dbProp = new ExtProperties(s, "dbsessions"); //$NON-NLS-1$
 			dbProp.addObserver(new Observer(){
 				public void update(Observable o, Object arg) {
 					reload();
@@ -115,6 +115,7 @@ public final class DBSession implements Serializable, Delayed {
 	/**
 	 * Reload configuration when underlying configuration file has changed.
 	 */
+	@SuppressWarnings("nls")
 	static void reload(){
 		final boolean bPrevEnabled = bDBEnabled;
 		
@@ -369,17 +370,17 @@ public final class DBSession implements Serializable, Delayed {
 		
 		final boolean bIPProtection = tp.isSessionIPProtected();
 		
-		final String sKey = sID + "/" + iApp + (bIPProtection ? "/" + sIP : "");
+		final String sKey = sID + '/' + iApp + (bIPProtection ? '/' + sIP : ""); //$NON-NLS-1$
 		
 		DBSession dbs = mSessions.get(sKey);
 		
 		if (dbs==null && bDBEnabled){
 			final DBFunctions db = getDB();
 		
-			db.query("SELECT values FROM sessions WHERE id='"+Format.escSQL(sID)+"' AND app="+iApp+(bIPProtection ? " AND ip='"+Format.escSQL(sIP)+"'" : "")+";");
+			db.query("SELECT values FROM sessions WHERE id='"+Format.escSQL(sID)+"' AND app="+iApp+(bIPProtection ? " AND ip='"+Format.escSQL(sIP)+"'" : "")+";");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 		
 			if (db.moveNext()){
-				dbs = decode(db.gets("values"), tp.getClass().getClassLoader());
+				dbs = decode(db.gets("values"), tp.getClass().getClassLoader()); //$NON-NLS-1$
 			}
 		
 			if (dbs!=null){
@@ -430,7 +431,7 @@ public final class DBSession implements Serializable, Delayed {
 		 * Just set a name for this thread and make it a deamon thread.
 		 */
 		public SessionsCleaner(){
-			super("lazyj.DBSessions - cleaner / flusher");
+			super("lazyj.DBSessions - cleaner / flusher"); //$NON-NLS-1$
 			setDaemon(true);
 		}
 		
@@ -486,7 +487,7 @@ public final class DBSession implements Serializable, Delayed {
 				
 				if (lNow - lLastCleaned > 1000*60*10){
 					if (bDBEnabled)
-						getDB().query("DELETE FROM sessions WHERE lastaccess < extract(epoch from now()-'"+iDBFlushMinutes+" minutes'::interval)::int;");
+						getDB().query("DELETE FROM sessions WHERE lastaccess < extract(epoch from now()-'"+iDBFlushMinutes+" minutes'::interval)::int;"); //$NON-NLS-1$ //$NON-NLS-2$
 					
 					lLastCleaned = lNow;
 				}
@@ -518,7 +519,7 @@ public final class DBSession implements Serializable, Delayed {
 			}
 		}
 		
-		final String sKey = this.sID + "/" + this.iApp + (this.bIPProtected ? "/" + this.sIP : "");
+		final String sKey = this.sID + '/' + this.iApp + (this.bIPProtected ? '/' + this.sIP : ""); //$NON-NLS-1$
 		
 		mSessions.put(sKey, this);
 	}
@@ -526,6 +527,7 @@ public final class DBSession implements Serializable, Delayed {
 	/**
 	 * This method actually saves the values in the database.
 	 */
+	@SuppressWarnings("nls")
 	void makePersistent() {
 		this.lLastSaved = System.currentTimeMillis();
 		
@@ -550,7 +552,7 @@ public final class DBSession implements Serializable, Delayed {
 				"username=" + formatName(this.sUsername) + "," + 
 				"fullname=" + formatName(this.sFullname) + "," + 
 				"lastaccess=" + (this.lLastAccess / 1000) + 
-				" WHERE id='" + Format.escSQL(this.sID) + "' AND app=" + this.iApp + (this.bIPProtected ? " AND ip='" + Format.escSQL(this.sIP) + "'" : "") + ";"
+				" WHERE id='" + Format.escSQL(this.sID) + "' AND app=" + this.iApp + (this.bIPProtected ? " AND ip='" + Format.escSQL(this.sIP) + '\'' : "") + ';'
 			);
 
 			if (db.getUpdateCount()<=0){
@@ -577,9 +579,9 @@ public final class DBSession implements Serializable, Delayed {
 	 */
 	private static final String formatName(final String sName){
 		if (sName==null)
-			return "null";
+			return "null"; //$NON-NLS-1$
 		
-		return "'"+Format.escSQL(sName)+"'"; 
+		return '\''+Format.escSQL(sName)+'\''; 
 	}
 	
 	/**
@@ -589,13 +591,13 @@ public final class DBSession implements Serializable, Delayed {
 		if (bDBEnabled){
 			final DBFunctions db = getDB();
 		
-			db.query("DELETE FROM sessions WHERE id='" + Format.escSQL(this.sID) + "' AND app="+this.iApp+(this.bIPProtected ? " AND ip='"+Format.escSQL(this.sIP)+"'" : "")+";");
+			db.query("DELETE FROM sessions WHERE id='" + Format.escSQL(this.sID) + "' AND app="+this.iApp+(this.bIPProtected ? " AND ip='"+Format.escSQL(this.sIP)+'\'' : "")+';');  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 		}
 		
-		mSessions.remove(this.sID + "/" + this.iApp + (this.bIPProtected ? "/" + this.sIP : ""));
+		mSessions.remove(this.sID + '/' + this.iApp + (this.bIPProtected ? '/' + this.sIP : "")); //$NON-NLS-1$
 		
 		if (this.tp != null){
-			this.tp.setCookie(COOKIE_NAME, "", 0);
+			this.tp.setCookie(COOKIE_NAME, "", 0); //$NON-NLS-1$
 		}
 	}
 	
@@ -644,7 +646,7 @@ public final class DBSession implements Serializable, Delayed {
 		final Object o = get(sKey);
 
 		if (o==null)
-			return "";
+			return ""; //$NON-NLS-1$
 		
 		if (o instanceof String)
 			return (String) o;
@@ -741,7 +743,7 @@ public final class DBSession implements Serializable, Delayed {
 			return readObject;
 		}
 		catch (Throwable e) {
-			Log.log(Log.WARNING, "lazyj.DBSession", "exception decoding previously saved value", e);
+			Log.log(Log.WARNING, "lazyj.DBSession", "exception decoding previously saved value", e); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			return null;
 		}
@@ -825,7 +827,7 @@ public final class DBSession implements Serializable, Delayed {
 
 		for (DBSession so : mSessions.values()) {
 			if (iAppId == 0 || iAppId == so.iApp)
-				l.add(so.sUsername + "|" + so.sLastPage);
+				l.add(so.sUsername + '|' + so.sLastPage);
 		}
 
 		return l;

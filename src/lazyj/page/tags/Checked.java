@@ -34,7 +34,7 @@ public final class Checked implements StringFormat {
 			
 		final boolean b = iValue>0 || Utils.stringToBool(s, false);
 		
-		return b ? "checked" : "";
+		return b ? "checked" : "";  //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 }

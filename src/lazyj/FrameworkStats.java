@@ -46,7 +46,7 @@ public final class FrameworkStats {
 		 */
 		@Override
 		public String toString() {
-			return StringFactory.get(this.sZone + "/" + this.sPage);
+			return StringFactory.get(this.sZone + '/' + this.sPage);
 		}
 	}
 	
@@ -113,7 +113,7 @@ public final class FrameworkStats {
 		 */
 		@Override
 		public String toString() {
-			return this.s + " : " + this.i;
+			return this.s + " : " + this.i; //$NON-NLS-1$
 		}
 	}
 

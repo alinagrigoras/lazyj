@@ -31,7 +31,7 @@ public class Cut implements StringFormat {
 			return cut(sValue, Integer.parseInt(sOption.substring(3)));
 		}
 		catch (Exception e){
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 		
@@ -42,6 +42,7 @@ public class Cut implements StringFormat {
 	 * @param iCut
 	 * @return the first N visible characters from the string
 	 */
+	@SuppressWarnings("nls")
 	public static String cut(final String sValue, final int iCut){
 		try {
 			if (iCut<=0)
@@ -132,7 +133,7 @@ public class Cut implements StringFormat {
 	 * @param args
 	 */
 	public static void main(String args[]){
-		String sTest = "string to <a blabla>test</a>";
+		String sTest = "string to <a blabla>test</a>"; //$NON-NLS-1$
 		
 		System.err.println(cut(sTest, 11));
 	}

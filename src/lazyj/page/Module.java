@@ -48,8 +48,8 @@ public abstract class Module {
 	 * @return  a default wrapper for all the modules
 	 */
 	public TemplatePage getWrapper() {
-		ModulePage p = new ModulePage("modules/wrapper.res");
-		p.modify("module_name", getModuleName());
+		ModulePage p = new ModulePage("modules/wrapper.res"); //$NON-NLS-1$
+		p.modify("module_name", getModuleName()); //$NON-NLS-1$
 
 		return p;
 	}
@@ -101,7 +101,7 @@ public abstract class Module {
 			boolean bE = false;
 			boolean bN = true;
 
-			String sName = "";
+			String sName = ""; //$NON-NLS-1$
 			StringBuilder sValue = new StringBuilder();
 
 			char c;
@@ -131,7 +131,7 @@ public abstract class Module {
 						} else {
 							bE = false;
 							hm.put(sName, sValue.toString());
-							sName = "";
+							sName = ""; //$NON-NLS-1$
 							sValue = new StringBuilder();
 							bN = true;
 						}

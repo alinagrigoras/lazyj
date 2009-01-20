@@ -61,6 +61,7 @@ public final class Log {
 	/**
 	 * File names for each level
 	 */
+	@SuppressWarnings("nls")
 	private static final String[] sFiles = new String[] { "fatal", "error",	"warning", "info", "fine", "finer", "finest"};
 
 	/**
@@ -94,11 +95,11 @@ public final class Log {
 
 		try {
 			if (sFolder==null){
-				System.err.println("lazyj.Log : system property 'lazyj.config.folder' is not defined.");
+				System.err.println("lazyj.Log : system property 'lazyj.config.folder' is not defined."); //$NON-NLS-1$
 				pTemp = new ExtProperties();
 			}
 			else{
-				pTemp = new ExtProperties(sFolder, "logging");
+				pTemp = new ExtProperties(sFolder, "logging"); //$NON-NLS-1$
 				pTemp.setAutoReload(30*1000);
 				pTemp.addObserver(new Observer(){
 					public void update(final Observable o, final Object arg) {
@@ -110,7 +111,7 @@ public final class Log {
 		catch (Throwable t) {
 			pTemp = new ExtProperties();
 			
-			System.err.println("Cannot load logging properties because : "+t+ " ("+t.getMessage()+")");
+			System.err.println("Cannot load logging properties because : "+t+ '('+t.getMessage()+')'); //$NON-NLS-1$
 			t.printStackTrace();
 		}
 
@@ -138,10 +139,10 @@ public final class Log {
 				iParent = getLevel(sComponent.substring(0, idx));
 			}
 			else{
-				iParent = Integer.valueOf(logProp.geti("default.level", WARNING));
+				iParent = Integer.valueOf(logProp.geti("default.level", WARNING)); //$NON-NLS-1$
 			}
 			
-			i = Integer.valueOf(logProp.geti(sComponent + ".level", iParent.intValue()));
+			i = Integer.valueOf(logProp.geti(sComponent + ".level", iParent.intValue())); //$NON-NLS-1$
 
 			mLevel.put(sComponent, i);
 		}
@@ -167,13 +168,13 @@ public final class Log {
 				sParent = getLogDir(sComponent.substring(0, idx));
 			}
 			else{
-				sParent = logProp.gets("logdir", "/var/log/java");
+				sParent = logProp.gets("logdir", "/var/log/java"); //$NON-NLS-1$  //$NON-NLS-2$
 			}
 			
-			sDir = logProp.gets(sComponent + ".logdir", sParent);
+			sDir = logProp.gets(sComponent + ".logdir", sParent); //$NON-NLS-1$
 			
-			if (!sDir.endsWith("/"))
-				sDir += "/";
+			if (!sDir.endsWith("/")) //$NON-NLS-1$
+				sDir += '/';
 
 			mDirs.put(sComponent, sDir);
 		}
@@ -202,7 +203,7 @@ public final class Log {
 	/**
 	 * Time formatting
 	 */
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
 
 	/**
 	 * @return time
@@ -222,7 +223,7 @@ public final class Log {
 	 */
 	public static void log(final int level, final String sComponent, final String sMessage) {
 		if (level < 0 || level > FINEST) {
-			throw new IllegalArgumentException("level must be between 0 (FATAL) and 6 (FINEST)");
+			throw new IllegalArgumentException("level must be between 0 (FATAL) and 6 (FINEST)"); //$NON-NLS-1$
 		}
 
 		if (!isLoggable(level, sComponent))
@@ -237,7 +238,7 @@ public final class Log {
 				pw = new PrintWriter(new FileWriter(sFile, true), true);
 			}
 			catch (IOException ioe) {
-				System.err.println("LazyJ will log to stderr instead of '"+sFile+"' from now on because "+ioe);
+				System.err.println("LazyJ will log to stderr instead of '"+sFile+"' from now on because "+ioe); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				pw = new PrintWriter(System.err);
 			}
@@ -245,7 +246,7 @@ public final class Log {
 			mFiles.put(sFile, pw);
 		}
 
-		pw.println(getTime() + " : " + sComponent + " : "+sMessage);
+		pw.println(getTime() + " : " + sComponent + " : "+sMessage); //$NON-NLS-1$ //$NON-NLS-2$
 		pw.flush();
 	}
 
@@ -266,7 +267,7 @@ public final class Log {
 			if (o instanceof Throwable) {
 				final Throwable t = (Throwable) o;
 
-				sExtra.append("\n").append(t.getClass().getName()).append(" : ").append(t.toString()).append(" (").append(t.getMessage()).append(")");
+				sExtra.append('\n').append(t.getClass().getName()).append(" : ").append(t.toString()).append(" (").append(t.getMessage()).append(')'); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				append(sExtra, t.getStackTrace());
 			} 
@@ -274,19 +275,19 @@ public final class Log {
 			if (o instanceof Thread) {
 				final Thread t = (Thread) o;
 				
-				sExtra.append("\n").append(t.getClass().getName()).append(" (").append(t.getName()).append(")");
+				sExtra.append('\n').append(t.getClass().getName()).append(" (").append(t.getName()).append(')'); //$NON-NLS-1$
 				
 				append(sExtra, t.getStackTrace());
 			}
 			if (o instanceof String) {
-				sExtra.append("\n").append((String) o);
+				sExtra.append('\n').append((String) o);
 			}
 			else {
-				sExtra.append("\n").append(o.getClass().getName()).append("\n").append(o.toString());
+				sExtra.append('\n').append(o.getClass().getName()).append('\n').append(o.toString());
 			}
 		}
 		else{
-			sExtra.append("\nNULL");
+			sExtra.append("\nNULL"); //$NON-NLS-1$
 		}
 
 		log(level, sComponent, sExtra.toString());
@@ -298,7 +299,7 @@ public final class Log {
 	 */
 	private static void append(final StringBuilder sb, final StackTraceElement[] vst){
 		for (StackTraceElement ste : vst)
-			sb.append("\n  ").append(ste.toString());		
+			sb.append("\n  ").append(ste.toString()); //$NON-NLS-1$		
 	}
 	
 }

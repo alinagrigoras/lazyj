@@ -78,13 +78,13 @@ final class TemplateParser implements Observer {
 			this.bOk = parse(sText);
 		}
 		catch (Throwable t){
-			Log.log(Log.ERROR, "lazyj.page.TemplateParser", "Cannot parse contents because", t);
+			Log.log(Log.ERROR, "lazyj.page.TemplateParser", "Cannot parse contents because", t); //$NON-NLS-1$ //$NON-NLS-2$
 			this.bOk = false;
 			return;
 		}
 		
-		if (Log.isLoggable(Log.FINEST, "lazyj.page.TemplateParser"))
-			Log.log(Log.FINEST, "lazyj.page.TemplateParser", "Parse result : "+this.bOk, sText);
+		if (Log.isLoggable(Log.FINEST, "lazyj.page.TemplateParser")) //$NON-NLS-1$
+			Log.log(Log.FINEST, "lazyj.page.TemplateParser", "Parse result : "+this.bOk, sText); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		if (this.bOk && bCache){
 			try{
@@ -110,7 +110,7 @@ final class TemplateParser implements Observer {
 			this.bOk = parse(sTemplate);
 		}
 		catch (Throwable t){
-			Log.log(Log.ERROR, "lazyj.page.TemplateParser", "Cannot parse contents because", t);
+			Log.log(Log.ERROR, "lazyj.page.TemplateParser", "Cannot parse contents because", t); //$NON-NLS-1$ //$NON-NLS-2$
 			this.bOk = false;
 		}
 		
@@ -146,11 +146,11 @@ final class TemplateParser implements Observer {
 		
 		String sTag, sComplete;
 
-		while ((i = sText.indexOf("<<:", iOld)) >= 0) {
+		while ((i = sText.indexOf("<<:", iOld)) >= 0) { //$NON-NLS-1$
 			if (i > iOld)
 				llParseElements.add(sText.substring(iOld, i));
 
-			j = sText.indexOf(":>>", i);
+			j = sText.indexOf(":>>", i); //$NON-NLS-1$
 
 			final LinkedList llTag = new LinkedList();
 			
@@ -159,23 +159,23 @@ final class TemplateParser implements Observer {
 
 				sComplete = sTag;
 
-				final StringTokenizer st = new StringTokenizer(sTag, " ");
+				final StringTokenizer st = new StringTokenizer(sTag, " "); //$NON-NLS-1$
 
 				sTag = st.nextToken();
 				
 				// hack for migration of old html templates
-				if (sTag.equals("continut"))
-					sTag = "content";
+				if (sTag.equals("continut")) //$NON-NLS-1$
+					sTag = "content"; //$NON-NLS-1$
 				
 				sTag = StringFactory.get(sTag);
 				
 				llTag.add(sTag);
 
-				if (sTag.indexOf(".") >= 1 && sTag.indexOf("/") < 0 && !sTag.endsWith(".res")) {
-					if (sComplete.indexOf(" ") >= 0)
-						sComplete = sComplete.substring(sComplete.indexOf(" ") + 1);
+				if (sTag.indexOf('.') >= 1 && sTag.indexOf('/') < 0 && !sTag.endsWith(".res")) { //$NON-NLS-1$
+					if (sComplete.indexOf(' ') >= 0)
+						sComplete = sComplete.substring(sComplete.indexOf(' ') + 1);
 					else
-						sComplete = "";
+						sComplete = ""; //$NON-NLS-1$
 
 					llTag.add(sComplete);
 					llParseElements.add(llTag);
@@ -189,7 +189,7 @@ final class TemplateParser implements Observer {
 					final String sOpt = StringFactory.get(st.nextToken().trim());
 					
 					if (sOpt.length()>0){
-						if (sOpt.equals("db")){
+						if (sOpt.equals("db")){ //$NON-NLS-1$
 							hsParseDBTags.add(sTag);
 						}
 						else{
@@ -244,7 +244,7 @@ final class TemplateParser implements Observer {
 	 */
 	@Override
 	public String toString(){
-		return this.llElements!=null ? this.llElements.toString() : "null";
+		return this.llElements!=null ? this.llElements.toString() : "null"; //$NON-NLS-1$
 	}
 	
 	/**
@@ -289,9 +289,9 @@ final class TemplateParser implements Observer {
 				
 				final String sTag = itTag.next();
 				
-				if (bComments && sTag.endsWith("_start") && sComments.contains(sTag.substring(0, sTag.lastIndexOf("_")))){
+				if (bComments && sTag.endsWith("_start") && sComments.contains(sTag.substring(0, sTag.lastIndexOf('_')))){ //$NON-NLS-1$
 					// skip over a commented out section
-					final String sSearch = sTag.substring(0, sTag.lastIndexOf("_"))+"_end";
+					final String sSearch = sTag.substring(0, sTag.lastIndexOf('_'))+"_end"; //$NON-NLS-1$
 					
 					while (itElements.hasNext()){
 						o = itElements.next();
@@ -308,9 +308,9 @@ final class TemplateParser implements Observer {
 					continue;
 				}
 				
-				final boolean bRes = sTag.endsWith(".res"); 
+				final boolean bRes = sTag.endsWith(".res");  //$NON-NLS-1$
 				
-				if (sTag.indexOf(".") >= 1 && sTag.indexOf("/") < 0 && !bRes) {
+				if (sTag.indexOf('.') >= 1 && sTag.indexOf('/') < 0 && !bRes) {
 					Module cp = null;
 					Throwable ex = null;
 					
@@ -336,7 +336,7 @@ final class TemplateParser implements Observer {
 						sb.append(cp.getContent(itTag.next()).toString());
 					else
 					if (ex!=null)
-						Log.log(Log.ERROR, "lazyj.page.TemplateParser", "cannot instantiate module '"+sTag+"' from page='"+this.sFileName+"'", ex);
+						Log.log(Log.ERROR, "lazyj.page.TemplateParser", "cannot instantiate module '"+sTag+"' from page='"+this.sFileName+"'", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					
 					continue;
 				}
@@ -363,7 +363,7 @@ final class TemplateParser implements Observer {
 					if (sf!=null)
 						sValue = sf.format(sTag, sFormat, sValue);
 					else
-						Log.log(Log.WARNING, "lazyj.page.TemplateParser", "Unknown format option : '"+sFormat+"' (tag='"+sTag+"', page='"+this.sFileName+"')");
+						Log.log(Log.WARNING, "lazyj.page.TemplateParser", "Unknown format option : '"+sFormat+"' (tag='"+sTag+"', page='"+this.sFileName+"')");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 				}
 				
 				if (sValue!=null)

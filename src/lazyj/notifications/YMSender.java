@@ -28,6 +28,7 @@ import lazyj.LRUMap;
  * @author costing
  * @since Nov 17, 2007 (1.0.3)
  */
+@SuppressWarnings("nls")
 public class YMSender extends Sender {
 
 	/**

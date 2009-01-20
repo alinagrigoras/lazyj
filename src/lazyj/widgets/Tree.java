@@ -151,11 +151,11 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	 * @return tree as options with full path to them
 	 */
 	public Collection<Option<K, String>> getOptionsFullPath(final String sSeparator){
-		final Collection<Option<K, String>> ret = getOptionsFullPath(0, "", sSeparator==null ? "" : sSeparator);
+		final Collection<Option<K, String>> ret = getOptionsFullPath(0, "", sSeparator==null ? "" : sSeparator);  //$NON-NLS-1$//$NON-NLS-2$
 		
 		if (this.brothers!=null){
 			for (Tree<K, V> brother: this.brothers){
-				ret.addAll(brother.getOptionsFullPath(0, "", sSeparator==null ? "" : sSeparator));
+				ret.addAll(brother.getOptionsFullPath(0, "", sSeparator==null ? "" : sSeparator)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		

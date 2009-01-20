@@ -47,7 +47,7 @@ public class Sendmail {
 	/**
 	 * Boundary to use when separating body parts. Can be anything else you like ...
 	 */
-	private static final String	sBoundaryInit		= "----=_NextPart_000_0010_";
+	private static final String	sBoundaryInit		= "----=_NextPart_000_0010_"; //$NON-NLS-1$
 
 	/**
 	 * Everything was ok when sending.
@@ -97,7 +97,7 @@ public class Sendmail {
 	/**
 	 * Reason of the failure
 	 */
-	public String					sError				= "";
+	public String					sError				= ""; //$NON-NLS-1$
 
 	/**
 	 * Recipient addresses that were rejected by the mail server
@@ -117,7 +117,7 @@ public class Sendmail {
 	/**
 	 * What is an CRLF ?
 	 */
-	private static final String CRLF = "\r\n";
+	private static final String CRLF = "\r\n"; //$NON-NLS-1$
 	
 	/**
 	 * The simplest constructor. It only need the email address of the sender.
@@ -126,7 +126,7 @@ public class Sendmail {
 	 * @param sFrom sender email address
 	 */
 	public Sendmail(final String sFrom) {
-		this(sFrom, "127.0.0.1");
+		this(sFrom, "127.0.0.1"); //$NON-NLS-1$
 	}
 
 	/**
@@ -163,13 +163,13 @@ public class Sendmail {
 		if ((adr == null) || (adr.length() <= 0))
 			return null;
 		
-		final StringTokenizer st = new StringTokenizer(adr, ",;");
+		final StringTokenizer st = new StringTokenizer(adr, ",;"); //$NON-NLS-1$
 		final List<String> l = new LinkedList<String>();
 		
 		while (st.hasMoreTokens()) {
 			final String sAdresa = Format.extractAddress(st.nextToken().trim());
 
-			if (sAdresa!=null && sAdresa.indexOf("@") >= 1)
+			if (sAdresa!=null && sAdresa.indexOf('@') >= 1)
 				l.add(sAdresa);
 		}
 		return l;
@@ -269,7 +269,7 @@ public class Sendmail {
 	 */
 	private void print(final String sText){
 		if (this.bDebug)
-			System.err.println("Sendmail: text > "+sText);
+			System.err.println("Sendmail: text > "+sText); //$NON-NLS-1$
 		
 		this.sock_out.print(sText);
 		this.sock_out.flush();
@@ -294,7 +294,7 @@ public class Sendmail {
 		final String sLine = this.sock_in.readLine();
 		
 		if (this.bDebug)
-			System.err.println("Sendmail: read < "+sLine);
+			System.err.println("Sendmail: read < "+sLine); //$NON-NLS-1$
 		
 		return sLine;
 	}
@@ -305,6 +305,7 @@ public class Sendmail {
 	 * @param mail the mail that is sent
 	 * @return true if everything is ok, false if there was an error
 	 */
+	@SuppressWarnings("nls")
 	private boolean init(final Mail mail) {
 		this.sBoundary = sBoundaryInit + System.currentTimeMillis() + "." + r.nextLong();
 
@@ -421,6 +422,7 @@ public class Sendmail {
 	 * @param mail mail to be sent
 	 * @return true if everything is ok, false if there was an error
 	 */
+	@SuppressWarnings("nls")
 	private boolean headers(final Mail mail) {
 		try {
 			println("DATA");
@@ -496,6 +498,7 @@ public class Sendmail {
 	 * @param bHtmlPart true to write the HTML part, false to write the plain text part
 	 * @return true if everything is ok, false if there was an error
 	 */
+	@SuppressWarnings("nls")
 	private boolean writeBody(final Mail mail, final boolean bHtmlPart) {
 		String line1;
 		
@@ -558,6 +561,7 @@ public class Sendmail {
 	 * @param mail mail to be sent
 	 * @return true if everything was ok, false on any error
 	 */
+	@SuppressWarnings("nls")
 	private boolean writeEndOfMail(final Mail mail) {
 		try {
 			println("--" + this.sBoundary + "--");
@@ -597,6 +601,7 @@ public class Sendmail {
 	 * @param sFileName a file that is to be attached to this mail 
 	 * @return true if everything is ok, false on any error
 	 */
+	@SuppressWarnings("nls")
 	private boolean writeFileAttachment(final String sFileName) {
 		String sRealFile = sFileName;
 
@@ -636,6 +641,7 @@ public class Sendmail {
 	 * @param sFileName file name to be put in the attachment's headers
 	 * @return true if everything is ok, false on any error
 	 */
+	@SuppressWarnings("nls")
 	private boolean writeAttachment(final InputStream in, final String sFileName) {
 
 		String sStrippedFileName = sFileName;
@@ -700,7 +706,7 @@ public class Sendmail {
 	 * @return true if everything is ok, false on any error
 	 */
 	private boolean processAttachments(final Mail mail) {
-		final StringTokenizer st = new StringTokenizer(mail.sAttachedFiles, ";");
+		final StringTokenizer st = new StringTokenizer(mail.sAttachedFiles, ";"); //$NON-NLS-1$
 		while (st.hasMoreTokens()) {
 			if (!writeFileAttachment(st.nextToken()))
 				return false;
@@ -723,6 +729,7 @@ public class Sendmail {
 	 * 
 	 * @param mail mail to be sent
 	 */
+	@SuppressWarnings("nls")
 	private void writeConfirmation(final Mail mail) {	
 		println("--" + this.sBoundary + CRLF + "Content-Type: message/disposition-notification"+CRLF+"Content-Transfer-Encoding: 7bit"+CRLF+"Content-Disposition: inline"+CRLF+CRLF);
 		println(mail.sConfirmation);
@@ -764,6 +771,7 @@ public class Sendmail {
 	 * @param bStripCodes whether or not to encode some special characters
 	 * @return transformed String for this text part, ready to be put as it is into the mail
 	 */
+	@SuppressWarnings("nls")
 	private static final String bodyProcess(final String sOrig, final boolean bStripCodes) {		
 		String BD = Format.replace(sOrig, "\r\n", "\n");
 		BD = Format.replace(BD, "\n\n", "\n \n");

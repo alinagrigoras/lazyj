@@ -26,7 +26,7 @@ public class SPAMViewer extends Viewer {
 	 */
 	@Override
 	public String getString() {
-		return getProgramOutput("/usr/jserv/portal/bin/smtp_spamfilter/check_outgoing.sh");
+		return getProgramOutput("/usr/jserv/portal/bin/smtp_spamfilter/check_outgoing.sh"); //$NON-NLS-1$
 	}
 
 }

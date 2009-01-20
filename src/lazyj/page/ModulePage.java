@@ -32,11 +32,11 @@ public class ModulePage extends BasePage {
 		ExtProperties pTemp;
 		
 		if (s==null){
-			System.err.println("lazyj.page.ModulePage : System property 'lazyj.config.folder' is not defined");
+			System.err.println("lazyj.page.ModulePage : System property 'lazyj.config.folder' is not defined"); //$NON-NLS-1$
 			pTemp = new ExtProperties();
 		}
 		else{
-			pTemp = new ExtProperties(s, "modules");
+			pTemp = new ExtProperties(s, "modules"); //$NON-NLS-1$
 		}
 
 		moduleProp = pTemp;
@@ -57,7 +57,7 @@ public class ModulePage extends BasePage {
 	 */
 	@Override
 	protected String getResDir() {
-		return moduleProp.gets("module.res.dir");
+		return moduleProp.gets("module.res.dir"); //$NON-NLS-1$
 	}
 
 }

@@ -60,13 +60,13 @@ public class AttachHeader extends Header {
 	public AttachHeader(final String sHeader) {
 		super(sHeader);
 
-		this.sContentType = getValue("Content-Type");
-		this.sFileName = getValue("filename");
-		this.sName = getValue("name");
-		this.sContentEncoding = getValue("Content-Transfer-Encoding");
-		this.sContentDisposition = getValue("Content-Disposition");
-		this.sContentID = getValue("Content-ID");
-		if (this.sContentID.length() > 0 && this.sContentID.startsWith("<") && this.sContentID.endsWith(">"))
+		this.sContentType = getValue("Content-Type"); //$NON-NLS-1$
+		this.sFileName = getValue("filename"); //$NON-NLS-1$
+		this.sName = getValue("name"); //$NON-NLS-1$
+		this.sContentEncoding = getValue("Content-Transfer-Encoding"); //$NON-NLS-1$
+		this.sContentDisposition = getValue("Content-Disposition"); //$NON-NLS-1$
+		this.sContentID = getValue("Content-ID"); //$NON-NLS-1$
+		if (this.sContentID.length() > 0 && this.sContentID.startsWith("<") && this.sContentID.endsWith(">")) //$NON-NLS-1$ //$NON-NLS-2$
 			this.sContentID = this.sContentID.substring(1, this.sContentID.length() - 1);
 	}
 
@@ -75,6 +75,7 @@ public class AttachHeader extends Header {
 	 * 
 	 * @return the reconstructed header
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder(500);

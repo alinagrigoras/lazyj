@@ -35,7 +35,7 @@ public abstract class Viewer {
 			try {
 				this.isSource = new FileInputStream((String) o);
 			} catch (Exception e) {
-				System.err.println("Exception opening file " + (String) o + " : " + e.getMessage());
+				System.err.println("Exception opening file " + (String) o + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 
@@ -78,7 +78,7 @@ public abstract class Viewer {
 				child = rt.exec(comanda);
 				// Thread.sleep(1);
 			} catch (IOException e) {
-				System.err.println("IOException " + e + " (" + e.getMessage() + ")");
+				System.err.println("IOException " + e + " (" + e.getMessage() + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 				return null;
 			}
 
@@ -91,7 +91,7 @@ public abstract class Viewer {
 				try {
 					child_out.write(buff, 0, iVal);
 				} catch (Exception e) {
-					System.err.println("Child write exception " + e.getMessage());
+					System.err.println("Child write exception " + e.getMessage()); //$NON-NLS-1$
 					return null;
 				}
 			}
@@ -115,7 +115,7 @@ public abstract class Viewer {
 						sb.append(cbuff, 0, iCount);
 					}
 				} catch (Exception e) {
-					System.err.println("Exception ?!? " + e.getMessage());
+					System.err.println("Exception ?!? " + e.getMessage()); //$NON-NLS-1$
 					break;
 				}
 
@@ -124,21 +124,21 @@ public abstract class Viewer {
 			try {
 				child.waitFor();
 			} catch (InterruptedException e) {
-				System.err.println("Interrupted! " + e.getMessage());
+				System.err.println("Interrupted! " + e.getMessage()); //$NON-NLS-1$
 				return null;
 			}
 
 			int ev = child.exitValue();
 
 			if (ev != 0) {
-				System.err.println("Exit value = " + ev);
+				System.err.println("Exit value = " + ev); //$NON-NLS-1$
 			}
 
 			// Log.log("Program output string", sb.toString());
 
 			return sb.toString();
 		} catch (Throwable e) {			
-			System.err.println("Unexpected exception " + e.getMessage());
+			System.err.println("Unexpected exception " + e.getMessage()); //$NON-NLS-1$
 			return null;
 		}
 		finally{

@@ -26,7 +26,7 @@ public class RTFViewer extends Viewer {
 	 */
 	@Override
 	public String getString() {
-		return getProgramOutput("/usr/jserv/bin/rtf.sh");
+		return getProgramOutput("/usr/jserv/bin/rtf.sh"); //$NON-NLS-1$
 	}
 
 }

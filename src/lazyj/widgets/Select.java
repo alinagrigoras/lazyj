@@ -60,7 +60,7 @@ public class Select<K,V> implements Page {
 	 * @param selected list of selected items. Can be <code>null</code>.
 	 */
 	public Select(final Collection<Option<K,V>> options, final Set<K> selected){
-		this(options, selected, "&nbsp;&nbsp;");
+		this(options, selected, "&nbsp;&nbsp;"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class Select<K,V> implements Page {
 	public Select(final Collection<Option<K,V>> options, final Set<K> selected, final String sIndent, final BasePage pOption, final OptionFormatter formatter){
 		this.options = options;
 		this.selected = selected;
-		this.pOption = pOption!=null ? pOption : BasePage.getPage("<option value='<<:key esc:>>' <<:selected:>>><<:indent:>><<:value:>></option>\n");
+		this.pOption = pOption!=null ? pOption : BasePage.getPage("<option value='<<:key esc:>>' <<:selected:>>><<:indent:>><<:value:>></option>\n"); //$NON-NLS-1$
 		this.sIndent = sIndent;
 		this.formatter = formatter;
 	}
@@ -136,16 +136,16 @@ public class Select<K,V> implements Page {
 		for (Option<K,V> option: this.options){
 			K key = option.getKey(); 
 			
-			this.pOption.modify("key", key);
+			this.pOption.modify("key", key); //$NON-NLS-1$
 			
 			if (bIndent){
 				for (int i=option.getLevel(); i>0; i--)
-					this.pOption.append("indent", this.sIndent);
+					this.pOption.append("indent", this.sIndent); //$NON-NLS-1$
 			}
 			
-			this.pOption.append("value", option.getValue());
+			this.pOption.append("value", option.getValue()); //$NON-NLS-1$
 			
-			this.pOption.modify("selected", (this.selected!=null && this.selected.contains(key)) ? "selected" : "");
+			this.pOption.modify("selected", (this.selected!=null && this.selected.contains(key)) ? "selected" : "");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			
 			if (this.formatter!=null)
 				this.formatter.formatOption(option, this.pOption);

@@ -26,7 +26,7 @@ public class WordViewer extends Viewer {
 	 */
 	@Override
 	public String getString() {
-		return getProgramOutput("/usr/jserv/bin/word.sh");
+		return getProgramOutput("/usr/jserv/bin/word.sh"); //$NON-NLS-1$
 	}
 
 }

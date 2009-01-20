@@ -198,14 +198,14 @@ public final class ExtProperties extends Observable implements Observer {
 		FileInputStream fis = null;
 		
 		try{
-			this.sConfigFile = sBaseConfDir+(sBaseConfDir.endsWith(File.separator) ? "" : File.separator) + sConfigFilename+".properties";
+			this.sConfigFile = sBaseConfDir+(sBaseConfDir.endsWith(File.separator) ? "" : File.separator) + sConfigFilename+".properties"; //$NON-NLS-1$ //$NON-NLS-2$
 			
 			fis = new FileInputStream(this.sConfigFile);
 			
 			propLoader.load(fis);
 		}
 		catch (IOException ioe){
-			Log.log(Log.WARNING, "lazyj.ExtProperties", "cannot load '"+this.sConfigFile+"'", ioe);
+			Log.log(Log.WARNING, "lazyj.ExtProperties", "cannot load '"+this.sConfigFile+'\'', ioe);  //$NON-NLS-1$//$NON-NLS-2$
 			
 			this.sConfigFile = null;
 			
@@ -222,10 +222,10 @@ public final class ExtProperties extends Observable implements Observer {
 			}
 		}
 		
-		final String sInclude = propLoader.getProperty("include");
+		final String sInclude = propLoader.getProperty("include"); //$NON-NLS-1$
 		
 		if (sInclude!=null && sInclude.length()>0){
-			final StringTokenizer st = new StringTokenizer(sInclude, ";, \t");
+			final StringTokenizer st = new StringTokenizer(sInclude, ";, \t"); //$NON-NLS-1$
 			
 			while (st.hasMoreTokens()){
 				final String sIncludeFile = st.nextToken();
@@ -262,8 +262,8 @@ public final class ExtProperties extends Observable implements Observer {
 		String sVal = sValue;
 		
 		// see if there are any other keys' values to include
-		while ((i = sVal.indexOf("${")) >= 0) {
-			final int i2 = sVal.indexOf("}", i);
+		while ((i = sVal.indexOf("${")) >= 0) { //$NON-NLS-1$
+			final int i2 = sVal.indexOf('}', i);
 
 			if (i2 > 0) {
 				final String s = sVal.substring(i + 2, i2);
@@ -272,7 +272,7 @@ public final class ExtProperties extends Observable implements Observer {
 					return sDefault;
 				
 				sbVal.append(sVal.substring(0, i));
-				sbVal.append(gets(s, "", bProcessQueries));
+				sbVal.append(gets(s, "", bProcessQueries)); //$NON-NLS-1$
 
 				sVal = sVal.substring(i2 + 1);
 			} else
@@ -300,7 +300,7 @@ public final class ExtProperties extends Observable implements Observer {
 	 * @see #gets(String, String, boolean)
 	 */
 	public String gets(final String sKey){
-		return gets(sKey, "");
+		return gets(sKey, ""); //$NON-NLS-1$
 	}
 	
 	/**
@@ -381,7 +381,7 @@ public final class ExtProperties extends Observable implements Observer {
 	 */
 	public int geti(final String sKey, final int iDefault) {
 		try {
-			return Integer.parseInt(gets(sKey, ""+iDefault));
+			return Integer.parseInt(gets(sKey, ""+iDefault)); //$NON-NLS-1$
 		} catch (Exception e) {
 			return iDefault;
 		}
@@ -397,7 +397,7 @@ public final class ExtProperties extends Observable implements Observer {
 	 */
 	public long getl(final String sKey, final long lDefault) {
 		try {
-			return Long.parseLong(gets(sKey, ""+lDefault));
+			return Long.parseLong(gets(sKey, ""+lDefault)); //$NON-NLS-1$
 		} catch (Exception e) {
 			return lDefault;
 		}
@@ -413,7 +413,7 @@ public final class ExtProperties extends Observable implements Observer {
 	 */
 	public double getd(final String sKey, final double dDefault) {
 		try {
-			return Double.parseDouble(gets(sKey, ""+dDefault));
+			return Double.parseDouble(gets(sKey, ""+dDefault)); //$NON-NLS-1$
 		} catch (Exception e) {
 			return dDefault;
 		}
@@ -428,7 +428,7 @@ public final class ExtProperties extends Observable implements Observer {
 	public Vector<String> toVector(final String sKey){
 		final String sVal = gets(sKey);
 		
-		final StringTokenizer st = new StringTokenizer(sVal, ",");
+		final StringTokenizer st = new StringTokenizer(sVal, ","); //$NON-NLS-1$
 		
 		final Vector<String> vReturn = new Vector<String>(st.countTokens());
 		
@@ -451,9 +451,10 @@ public final class ExtProperties extends Observable implements Observer {
 	 * 
 	 * @return the original keys dump + cached values
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public String toString(){
-		return "  Original properties:\n    "+(this.prop!=null ? this.prop.toString(): "null")+"\n  Cached values:\n    "+(this.hmCached!=null ? this.hmCached.toString() : "null");
+		return "  Original properties:\n    "+(this.prop!=null ? this.prop.toString(): "null")+"\n  Cached values:\n    "+(this.hmCached!=null ? this.hmCached.toString() : "null"); //$NON-NLS-1$
 	}
 		
 	/**
@@ -464,7 +465,7 @@ public final class ExtProperties extends Observable implements Observer {
 	 */
 	public void set(final String sKey, final String sValue){
 		if (this.bReadOnly)
-			throw new IllegalArgumentException("This object is read-only, you are not allowed to modify its contents");
+			throw new IllegalArgumentException("This object is read-only, you are not allowed to modify its contents"); //$NON-NLS-1$
 		
 		final String sOld = (String) this.prop.put(sKey, sValue);
 		

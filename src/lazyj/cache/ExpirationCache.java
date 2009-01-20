@@ -141,7 +141,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 		 * Default constructor
 		 */
 		public ExpiryThread(){
-			setName("lazyj.cache.ExpirationCache.ExpiryThread");
+			setName("lazyj.cache.ExpirationCache.ExpiryThread"); //$NON-NLS-1$
 			setDaemon(true);
 		}
 		
@@ -163,11 +163,11 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 								qe.callback();
 							}
 							catch (Throwable t){
-								Log.log(Log.ERROR, "lazyj.cache.ExpirationCache", "I have encountered a problem on callback", t);
+								Log.log(Log.ERROR, "lazyj.cache.ExpirationCache", "I have encountered a problem on callback", t); //$NON-NLS-1$ //$NON-NLS-2$
 							}
 						}
 						else{
-							Log.log(Log.FINE, "lazyj.cache.ExpirationCache", "Got null value for key '"+qe.key.toString()+"', cache size: "+qe.cacheInstance.size()+" / "+qe.cacheInstance.mCache.getLimit());
+							Log.log(Log.FINE, "lazyj.cache.ExpirationCache", "Got null value for key '"+qe.key.toString()+"', cache size: "+qe.cacheInstance.size()+" / "+qe.cacheInstance.mCache.getLimit()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						}
 					}
 				}

@@ -1,6 +1,7 @@
 package lazyj.mail.comparators;
 
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import lazyj.mail.MailDate;
@@ -12,7 +13,12 @@ import lazyj.mail.MailHeader;
  * @author costing
  * @since 2006-10-13
  */
-public class DateComparator implements Comparator<MailHeader>{
+public class DateComparator implements Comparator<MailHeader>, Serializable{
+
+	/**
+	 * ignore
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Sorting method : by the date in the header 

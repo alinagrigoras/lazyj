@@ -85,7 +85,7 @@ public class Message {
 	 */
 	public static String setToList(final Set<String> set){
 		if (set==null || set.size()==0)
-			return "";
+			return ""; //$NON-NLS-1$
 		
 		final StringBuilder sb = new StringBuilder();
 		
@@ -99,6 +99,7 @@ public class Message {
 		return sb.toString();		
 	}
 	
+	@SuppressWarnings("nls")
 	@Override
 	public String toString(){
 		return this.sFrom+"->"+this.sTo+" ("+this.sSubject+") : "+this.sMessage;
@@ -116,7 +117,7 @@ public class Message {
 		if (s==null)
 			return set;
 		
-		final StringTokenizer st = new StringTokenizer(s, ",");
+		final StringTokenizer st = new StringTokenizer(s, ","); //$NON-NLS-1$
 		
 		while (st.hasMoreTokens()){
 			set.add(st.nextToken());

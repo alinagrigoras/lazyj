@@ -76,11 +76,12 @@ public class Mail extends MailHeader {
 	/**
 	 * Character set used to send the body, HTML body and everything else
 	 */
-	public String			charSet = "UTF-8";
+	public String			charSet = "UTF-8"; //$NON-NLS-1$
 
 	/**
 	 * Simple constructor, initializing the internal fields to nothing at all (as expected :) )
 	 */
+	@SuppressWarnings("nls")
 	public Mail() {
 		super();
 		this.sBody = "";
@@ -98,6 +99,7 @@ public class Mail extends MailHeader {
 	 * @param sHeader
 	 * @param level
 	 */
+	@SuppressWarnings("nls")
 	private Mail(final String sHeader, final int level) {
 		super(sHeader);
 		this.sBody = "";
@@ -129,7 +131,7 @@ public class Mail extends MailHeader {
 	 */
 	private Mail(final String sHeader, final String sBodyText, final int level) {
 		super(sHeader);
-		this.sAttachedFiles = "";
+		this.sAttachedFiles = ""; //$NON-NLS-1$
 		this.bOnlyHTML = true;
 		this.bOnlyPlain = true;
 		this.iLevel = level;
@@ -154,6 +156,7 @@ public class Mail extends MailHeader {
 	 * @param sOrig
 	 * @return cleaned-up text
 	 */
+	@SuppressWarnings("nls")
 	private static String stripCodes(final String sOrig) {
 		if ((sOrig == null) || (sOrig.length() == 0))
 			return "";
@@ -213,6 +216,7 @@ public class Mail extends MailHeader {
 	 * @param sOrig text part of the mail as it is in the email
 	 * @return cleaned, beautified, text, ready to be served to the user.
 	 */
+	@SuppressWarnings("nls")
 	public static String stripBodyCodes(final String sOrig) {
 		if ((sOrig == null) || (sOrig.length() == 0))
 			return "";
@@ -252,6 +256,7 @@ public class Mail extends MailHeader {
 	 * @param sOrig
 	 * @return true if everything went ok
 	 */
+	@SuppressWarnings("nls")
 	private boolean processBody(final String sOrig) {
 		String sMessageBody = sOrig;
 		
@@ -509,7 +514,7 @@ public class Mail extends MailHeader {
 	
 	@Override
 	public int hashCode(){
-		assert false : "method not implemented";
+		assert false : "method not implemented"; //$NON-NLS-1$
 	
 		return 1;
 	}

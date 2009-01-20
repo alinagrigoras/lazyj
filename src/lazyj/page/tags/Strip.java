@@ -36,6 +36,7 @@ public final class Strip implements StringFormat {
 	 * @param sOption either "date" or "dateOPT,OPT2,..."
 	 * @return the formatted string
 	 */
+	@SuppressWarnings("nls")
 	public String format(final String sTag, final String sOption, final String s) {
 		boolean bBR = false;
 		boolean bP  = false;
@@ -136,7 +137,7 @@ public final class Strip implements StringFormat {
 	public static void main(String[] args) {
 		Strip strip = new Strip();
 		
-		System.out.println(strip.format(null, "stripP", "asdf<a href=x bubu</a><a></a>gigi<br blabla"));
+		System.out.println(strip.format(null, "stripP", "asdf<a href=x bubu</a><a></a>gigi<br blabla")); //$NON-NLS-2$ //$NON-NLS-1$
 	}
 	
 }

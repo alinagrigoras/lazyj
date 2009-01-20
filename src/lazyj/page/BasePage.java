@@ -153,7 +153,7 @@ public class BasePage implements TemplatePage {
 		@Override
 		protected TemplateParser resolve(final String sFile) {
 			if (sFile.length()==0){
-				return new TemplateParser("<<:content:>>");
+				return new TemplateParser("<<:content:>>"); //$NON-NLS-1$
 			}
 			
 			return loadParser(sFile, true);
@@ -176,10 +176,10 @@ public class BasePage implements TemplatePage {
 				return tp;
 			}
 			
-			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not correctly parse '"+sFile+"'");
+			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not correctly parse '"+sFile+"'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		catch (Exception e){
-			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not load '"+sFile+"' because ", e);
+			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not load '"+sFile+"' because ", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		
 		return null;
@@ -193,7 +193,7 @@ public class BasePage implements TemplatePage {
 	 * @return the full path to the base folder where the templates can be found
 	 */
 	protected String getResDir(){
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -201,6 +201,7 @@ public class BasePage implements TemplatePage {
 	 * 
 	 * @param args ignored
 	 */
+	@SuppressWarnings("nls")
 	public static void main(final String args[]){
 		System.out.println(getFormattingClass("stripBR,P").getClass().getCanonicalName());
 		
@@ -239,7 +240,7 @@ public class BasePage implements TemplatePage {
 	 * &lt;&lt;:content:&gt;&gt;
 	 */
 	public BasePage() {
-		this.tp = cache.get("");
+		this.tp = cache.get(""); //$NON-NLS-1$
 
 	}
 
@@ -299,8 +300,8 @@ public class BasePage implements TemplatePage {
 			this.tp = loadParser(this.sFile, false);
 		}
 
-		if (Log.isLoggable(Log.FINER, "lazyj.page.BasePage"))
-			Log.log(Log.FINER, "lazyj.page.BasePage", "parser is : ", this.tp);
+		if (Log.isLoggable(Log.FINER, "lazyj.page.BasePage")) //$NON-NLS-1$
+			Log.log(Log.FINER, "lazyj.page.BasePage", "parser is : ", this.tp); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		setOutputStream(osOut);
 	}
@@ -333,7 +334,7 @@ public class BasePage implements TemplatePage {
 	 */
 	public void modify(final String sTag, final Object oValue) {
 		if (this.mValues.get(sTag) == null) {
-			append(sTag, oValue!=null ? oValue : "", false);
+			append(sTag, oValue!=null ? oValue : "", false); //$NON-NLS-1$
 		}
 	}
 
@@ -357,7 +358,7 @@ public class BasePage implements TemplatePage {
 	 * @param oValue value to be appended to the default tag.
 	 */
 	public void append(final Object oValue) {
-		append("content", oValue, false);
+		append("content", oValue, false); //$NON-NLS-1$
 	}
 
 	/**
@@ -379,7 +380,7 @@ public class BasePage implements TemplatePage {
 	 */
 	public void append(final String sTagName, final Object oValue, final boolean bBeginning) {
 		if (sTagName==null)
-			throw new InvalidParameterException("Tag cannot be null");
+			throw new InvalidParameterException("Tag cannot be null"); //$NON-NLS-1$
 		
 		if (oValue==null)
 			return;
@@ -461,7 +462,7 @@ public class BasePage implements TemplatePage {
 		
 		if (this.os!=null){
 			try {
-				final PrintWriter pwOut = new PrintWriter(new OutputStreamWriter(this.os, "UTF-8"));
+				final PrintWriter pwOut = new PrintWriter(new OutputStreamWriter(this.os, "UTF-8")); //$NON-NLS-1$
 				pwOut.print(sOutput);
 				pwOut.flush();
 				return true;
@@ -535,17 +536,17 @@ public class BasePage implements TemplatePage {
 	static {
 		final String s = Utils.getLazyjConfigFolder();
 
-		String sDir = "/";
+		String sDir = "/"; //$NON-NLS-1$
 		
 		try {
-			final ExtProperties pTemp = new ExtProperties(s, "basepage");
-			sDir = pTemp.gets("includes.default.dir");
+			final ExtProperties pTemp = new ExtProperties(s, "basepage"); //$NON-NLS-1$
+			sDir = pTemp.gets("includes.default.dir"); //$NON-NLS-1$
 		} catch (Throwable e) {
-			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not read properties file", e);
+			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not read properties file", e);  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		
-		if (!sDir.endsWith("/"))
-			sDir+="/";
+		if (!sDir.endsWith("/")) //$NON-NLS-1$
+			sDir+="/"; //$NON-NLS-1$
 		
 		BASE_PAGE_DIR = sDir;
 	}
@@ -564,7 +565,7 @@ public class BasePage implements TemplatePage {
 		 */
 		@Override
 		protected String getResDir() {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 
 		/**
@@ -574,7 +575,7 @@ public class BasePage implements TemplatePage {
 		 * @see #getResDir()
 		 */
 		public InternalPage(String s) {
-			super(null, s.startsWith("/") ? s : BASE_PAGE_DIR+s, true);
+			super(null, s.startsWith("/") ? s : BASE_PAGE_DIR+s, true); //$NON-NLS-1$
 		}
 	}
 
@@ -630,7 +631,7 @@ public class BasePage implements TemplatePage {
 	 */
 	public static final boolean registerRegexpTag(final String sPattern, final StringFormat sf){
 		try{
-			final Pattern p = Pattern.compile("^"+sPattern+"$");
+			final Pattern p = Pattern.compile("^"+sPattern+"$"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 			regexpTags.put(p, sf);
 			
@@ -647,26 +648,26 @@ public class BasePage implements TemplatePage {
 		final Checked check = new Checked();
 		final DDot ddot = new DDot();
 		
-		registerExactTag("check", check);
-		registerExactTag("checked", check);
-		registerExactTag("dash", new Dash());
-		registerExactTag("date", date);
-		registerExactTag("dot", new Dot());
-		registerExactTag("ddot", ddot);
-		registerExactTag("enc", new Enc());
-		registerExactTag("esc", new Esc());
-		registerExactTag("js", new JS());
-		registerExactTag("nicedate", new NiceDate());
-		registerExactTag("size", new Size());
-		registerExactTag("time", new Time());
-		registerExactTag("uenc", new UEnc());
-		registerExactTag("under", new Under());
-		registerExactTag("res", new Res());
+		registerExactTag("check", check); //$NON-NLS-1$
+		registerExactTag("checked", check); //$NON-NLS-1$
+		registerExactTag("dash", new Dash()); //$NON-NLS-1$
+		registerExactTag("date", date); //$NON-NLS-1$
+		registerExactTag("dot", new Dot()); //$NON-NLS-1$
+		registerExactTag("ddot", ddot); //$NON-NLS-1$
+		registerExactTag("enc", new Enc()); //$NON-NLS-1$
+		registerExactTag("esc", new Esc()); //$NON-NLS-1$
+		registerExactTag("js", new JS()); //$NON-NLS-1$
+		registerExactTag("nicedate", new NiceDate()); //$NON-NLS-1$
+		registerExactTag("size", new Size()); //$NON-NLS-1$
+		registerExactTag("time", new Time()); //$NON-NLS-1$
+		registerExactTag("uenc", new UEnc()); //$NON-NLS-1$
+		registerExactTag("under", new Under()); //$NON-NLS-1$
+		registerExactTag("res", new Res()); //$NON-NLS-1$
 		
-		registerRegexpTag("date.+", date);
-		registerRegexpTag("cut[0-9]+", new Cut());
-		registerRegexpTag("ddot[0-9]+", new DDot());
-		registerRegexpTag("strip([,a-z]*)", new Strip());
+		registerRegexpTag("date.+", date); //$NON-NLS-1$
+		registerRegexpTag("cut[0-9]+", new Cut()); //$NON-NLS-1$
+		registerRegexpTag("ddot[0-9]+", new DDot()); //$NON-NLS-1$
+		registerRegexpTag("strip([,a-z]*)", new Strip()); //$NON-NLS-1$
 	}
 	
 	/**

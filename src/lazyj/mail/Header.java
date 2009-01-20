@@ -99,7 +99,7 @@ public class Header {
 			char c = s.charAt(0);
 			
 
-			String sTag = "";
+			StringBuilder sTag = new StringBuilder();
 			StringBuilder sValue = new StringBuilder(s.length());
 
 			byte cb[] = s.getBytes();
@@ -111,7 +111,7 @@ public class Header {
 				c = (char) cb[i];
 
 				if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-')
-					sTag += c;
+					sTag.append(c);
 				else
 					break;
 
@@ -161,17 +161,17 @@ public class Header {
 
 				String sRez = sValue.toString();
 
-				while (sRez.length() >= 2 && sRez.startsWith("\"") && sRez.endsWith("\""))
+				while (sRez.length() >= 2 && sRez.startsWith("\"") && sRez.endsWith("\"")) //$NON-NLS-1$ //$NON-NLS-2$
 					sRez = sRez.substring(1, sRez.length() - 1);
 
-				this.mHeaders.put(sTag.toLowerCase(Locale.getDefault()), sRez);
+				this.mHeaders.put(sTag.toString().toLowerCase(Locale.getDefault()), sRez);
 			} else { // ignor acest fals tag, ciudat oricum ...
 				return false;
 			}
 
 			return true;
 		} catch (Exception e) {
-			Log.log(Log.WARNING, "lazyj.mail.Header", "processLine", e);
+			Log.log(Log.WARNING, "lazyj.mail.Header", "processLine", e);  //$NON-NLS-1$//$NON-NLS-2$
 
 			return false;
 		}
@@ -192,17 +192,17 @@ public class Header {
 	 * @return boundary
 	 */
 	private String getBoundary() {
-		String b = getValue("boundary");
+		String b = getValue("boundary"); //$NON-NLS-1$
 
-		final StringTokenizer st = new StringTokenizer(b, " \"\t\r\n");
+		final StringTokenizer st = new StringTokenizer(b, " \"\t\r\n"); //$NON-NLS-1$
 
 		if (st.hasMoreTokens())
 			b = st.nextToken();
 		else
-			b = "";
+			b = ""; //$NON-NLS-1$
 
 		if (b.length() > 0)
-			b = "--" + b;
+			b = "--" + b; //$NON-NLS-1$
 
 		return b;
 	}
@@ -216,7 +216,7 @@ public class Header {
 	public String getValue(final String sKey) {
 		final String sRez = this.mHeaders.get(sKey.trim().toLowerCase(Locale.getDefault()));
 
-		return sRez != null ? sRez : "";
+		return sRez != null ? sRez : ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -225,11 +225,11 @@ public class Header {
 	 * @param args ignored
 	 */
 	public static void main(String args[]){
-		Header h = new Header("Content-Type: text/plain;\n" + 
-				"	charset=\"us-ascii\"\n" + 
-				"Content-Transfer-Encoding: quoted-printable\n");
+		Header h = new Header("Content-Type: text/plain;\n" +  //$NON-NLS-1$
+				"	charset=\"us-ascii\"\n" +  //$NON-NLS-1$
+				"Content-Transfer-Encoding: quoted-printable\n"); //$NON-NLS-1$
 		
-		System.out.println(h.getValue("charset"));
+		System.out.println(h.getValue("charset")); //$NON-NLS-1$
 	}
 	
 }

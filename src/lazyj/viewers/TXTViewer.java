@@ -27,7 +27,7 @@ public class TXTViewer extends Viewer {
 	 */
 	@Override
 	public String getString() {
-		return getProgramOutput("/usr/jserv/bin/txt.sh");
+		return getProgramOutput("/usr/jserv/bin/txt.sh"); //$NON-NLS-1$
 	}
 
 }

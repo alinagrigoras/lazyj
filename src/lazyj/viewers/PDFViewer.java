@@ -26,7 +26,7 @@ public class PDFViewer extends Viewer {
 	 */
 	@Override
 	public String getString() {
-		return getProgramOutput("/usr/jserv/bin/pdf.sh");
+		return getProgramOutput("/usr/jserv/bin/pdf.sh"); //$NON-NLS-1$
 	}
 
 }

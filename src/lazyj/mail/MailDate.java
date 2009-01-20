@@ -73,21 +73,25 @@ public final class MailDate implements Comparable<MailDate>{
 	/**
 	 * Short names for the days of the week
 	 */
+	@SuppressWarnings("nls")
 	static final String			sShortDows[]		= { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 
 	/**
 	 * Long names for the days of the week
 	 */
+	@SuppressWarnings("nls")
 	static final String			sLongDows[]			= { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
 	/**
 	 * Long names for the months
 	 */
+	@SuppressWarnings("nls")
 	static final String			sLongMonths[]		= { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
 	/**
 	 * Short names for the months
 	 */
+	@SuppressWarnings("nls")
 	static final String			sShortMonths[]		= { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 	/**
@@ -134,8 +138,8 @@ public final class MailDate implements Comparable<MailDate>{
 		this.hour = 0;
 		this.min = 0;
 		this.sec = 0;
-		this.sDeplasareGMT = "";
-		this.sLocalZone = "";
+		this.sDeplasareGMT = ""; //$NON-NLS-1$
+		this.sLocalZone = ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -161,7 +165,7 @@ public final class MailDate implements Comparable<MailDate>{
 	 * @param sHMS
 	 */
 	private void processHMS(String sHMS) {
-		StringTokenizer st = new StringTokenizer(sHMS, ": ");
+		StringTokenizer st = new StringTokenizer(sHMS, ": "); //$NON-NLS-1$
 		try {
 			this.hour = Integer.parseInt(st.nextToken());
 			this.min = Integer.parseInt(st.nextToken());
@@ -183,7 +187,7 @@ public final class MailDate implements Comparable<MailDate>{
 		try {
 			int i;
 			int iType;
-			StringTokenizer st = new StringTokenizer(data.toLowerCase(Locale.getDefault()), " ,()");
+			StringTokenizer st = new StringTokenizer(data.toLowerCase(Locale.getDefault()), " ,()"); //$NON-NLS-1$
 			this.sOrigDate = data;
 			String s;
 
@@ -333,7 +337,7 @@ public final class MailDate implements Comparable<MailDate>{
 	 * 
 	 * @return nifty date format, sometimes with time
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "nls" })
 	@Override
 	public String toString() {
 		Date dCurrent = new Date();
@@ -369,7 +373,7 @@ public final class MailDate implements Comparable<MailDate>{
 		final String toString = toString();
 		
 		if (Math.abs((new Date()).getDate() - this.day) > 2) {
-			return toString + " " + Format.show0(this.hour) + ":" + Format.show0(this.min);
+			return toString + ' ' + Format.show0(this.hour) + ':' + Format.show0(this.min);
 		}
 		
 		return toString;
@@ -393,10 +397,10 @@ public final class MailDate implements Comparable<MailDate>{
 	@SuppressWarnings("deprecation")
 	public String toMailString() {
 		// Wed, 16 Jan 2002 21:11:19 +0200
-		String sResult = sShortDows[this.dow] + ", " + this.day + " " + sShortMonths[this.month] + " " + this.year + " " + Format.show0(this.hour) + ":" + Format.show0(this.min) + ":" + Format.show0(this.sec);
+		String sResult = sShortDows[this.dow] + ", " + this.day + ' ' + sShortMonths[this.month] + ' ' + this.year + ' ' + Format.show0(this.hour) + ':' + Format.show0(this.min) + ':' + Format.show0(this.sec); //$NON-NLS-1$
 
 		if ((this.sDeplasareGMT != null) && (this.sDeplasareGMT.length() > 0))
-			sResult += " " + this.sDeplasareGMT;
+			sResult += ' ' + this.sDeplasareGMT;
 		else {
 			final Date d = new Date();
 			int o = d.getTimezoneOffset();
@@ -410,7 +414,7 @@ public final class MailDate implements Comparable<MailDate>{
 			
 			o /= 60;
 
-			sResult += " "+sign+(o<10?"0":"") + o + "00";
+			sResult += ' '+sign+(o<10?"0":"") + o + "00"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 
 		return sResult;

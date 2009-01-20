@@ -1,4 +1,10 @@
 1.0.6:
+	2009-01-20:
+	lazyj.DBFunctions
+		- add: a few of methods to help in debugging connection problems
+	framework-wide:
+		- cleanup: nls 
+
 	2009-01-19:
 	lazyj.DBSession:
 		- add: make available the encoding and decoding functions to everybody

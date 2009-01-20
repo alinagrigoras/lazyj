@@ -156,6 +156,7 @@ public class MailHeader extends Header implements Comparable<MailHeader> {
 	/**
 	 * Empty constructor, initialize fields to default values.
 	 */
+	@SuppressWarnings("nls")
 	public MailHeader() {
 		super("");
 		this.sFrom = "";
@@ -185,6 +186,7 @@ public class MailHeader extends Header implements Comparable<MailHeader> {
 	 * 
 	 * @param sHeader original mail header
 	 */
+	@SuppressWarnings("nls")
 	public MailHeader(final String sHeader) {
 		super(sHeader);
 		this.sFrom = getValue("From");
@@ -257,6 +259,7 @@ public class MailHeader extends Header implements Comparable<MailHeader> {
 	 * 
 	 * @return a correct mail header, built from the internal fields
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public String toString() {
 		String sResult = "";
@@ -300,7 +303,7 @@ public class MailHeader extends Header implements Comparable<MailHeader> {
 	
 	@Override
 	public int hashCode(){
-		assert false : "method not implemented";
+		assert false : "method not implemented"; //$NON-NLS-1$
 	
 		return 1;
 	}

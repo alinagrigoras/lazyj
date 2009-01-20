@@ -8,6 +8,7 @@ import java.util.HashMap;
  * @author costing
  * @since 2006-10-06
  */
+@SuppressWarnings("nls")
 public final class FileTypes {
 
 	/**

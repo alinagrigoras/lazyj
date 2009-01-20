@@ -23,23 +23,23 @@ public class Factory {
 	public static Viewer getViewer(final String sFileName, final Object o) {
 		final String sLowerFileName = sFileName.toLowerCase(Locale.getDefault());
 
-		if (sLowerFileName.endsWith(".doc")) {
+		if (sLowerFileName.endsWith(".doc")) { //$NON-NLS-1$
 			return new WordViewer(o);
 		}
 
-		if (sLowerFileName.endsWith(".pdf")) {
+		if (sLowerFileName.endsWith(".pdf")) { //$NON-NLS-1$
 			return new PDFViewer(o);
 		}
 
-		if (sLowerFileName.endsWith(".txt")) {
+		if (sLowerFileName.endsWith(".txt")) { //$NON-NLS-1$
 			return new TXTViewer(o);
 		}
 
-		if (sLowerFileName.endsWith(".rtf")) {
+		if (sLowerFileName.endsWith(".rtf")) { //$NON-NLS-1$
 			return new RTFViewer(o);
 		}
 
-		if (sLowerFileName.endsWith(".html") || sLowerFileName.endsWith(".htm")) {
+		if (sLowerFileName.endsWith(".html") || sLowerFileName.endsWith(".htm")) { //$NON-NLS-1$ //$NON-NLS-2$
 			return new HTMLViewer(o);
 		}
 

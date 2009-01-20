@@ -26,7 +26,7 @@ public class HTMLViewer extends Viewer {
 	 */
 	@Override
 	public String getString() {
-		return getProgramOutput("/usr/jserv/bin/html.sh");
+		return getProgramOutput("/usr/jserv/bin/html.sh"); //$NON-NLS-1$
 	}
 
 }

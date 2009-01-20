@@ -1,6 +1,7 @@
 package lazyj.mail.comparators;
 
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import lazyj.mail.MailHeader;
@@ -11,7 +12,12 @@ import lazyj.mail.MailHeader;
  * @author costing
  * @since 2006-10-13
  */
-public class AddressComparator implements Comparator<MailHeader> {
+public class AddressComparator implements Comparator<MailHeader>, Serializable {
+	/**
+	 * nothing
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Sorting method : by the source email address 
 	 * 

@@ -24,7 +24,7 @@ public final class Format {
 	 * @return the nice human-readable size
 	 */
 	public static String size(final long dim) {
-		return size(dim, "B");
+		return size(dim, "B"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public final class Format {
 	public static String size(final long size, final String unit){
 		final double dDiv = 1024;
 		
-		String sSize = unit!=null ? unit.toUpperCase(Locale.getDefault()) : "B";
+		String sSize = unit!=null ? unit.toUpperCase(Locale.getDefault()) : "B"; //$NON-NLS-1$
 
 		final boolean bMinus = size<0;
 		
@@ -47,57 +47,57 @@ public final class Format {
 		while (d > dDiv) {
 			d /= dDiv;
 
-			if (sSize.equals("") || sSize.equals("B"))
-				sSize = "K";
-			else if (sSize.equals("K"))
-				sSize = "M";
-			else if (sSize.equals("M"))
-				sSize = "G";
-			else if (sSize.equals("G"))
-				sSize = "T";
-			else if (sSize.equals("T"))
-				sSize = "P";
-			else if (sSize.equals("P"))
-				sSize = "X";
+			if (sSize.equals("") || sSize.equals("B")) //$NON-NLS-1$ //$NON-NLS-2$
+				sSize = "K"; //$NON-NLS-1$
+			else if (sSize.equals("K")) //$NON-NLS-1$
+				sSize = "M"; //$NON-NLS-1$
+			else if (sSize.equals("M")) //$NON-NLS-1$
+				sSize = "G"; //$NON-NLS-1$
+			else if (sSize.equals("G")) //$NON-NLS-1$
+				sSize = "T"; //$NON-NLS-1$
+			else if (sSize.equals("T")) //$NON-NLS-1$
+				sSize = "P"; //$NON-NLS-1$
+			else if (sSize.equals("P")) //$NON-NLS-1$
+				sSize = "X"; //$NON-NLS-1$
 		}
 
-		while (d < 0.1d && sSize.length() > 0 && !sSize.equals("B")) {
+		while (d < 0.1d && sSize.length() > 0 && !sSize.equals("B")) { //$NON-NLS-1$
 			d *= dDiv;
 
 			switch (sSize.charAt(0)) {
 				case 'X':
-					sSize = "P";
+					sSize = "P"; //$NON-NLS-1$
 					break;
 				case 'P':
-					sSize = "T";
+					sSize = "T"; //$NON-NLS-1$
 					break;
 				case 'T':
-					sSize = "G";
+					sSize = "G"; //$NON-NLS-1$
 					break;
 				case 'G':
-					sSize = "M";
+					sSize = "M"; //$NON-NLS-1$
 					break;
 				case 'M':
-					sSize = "K";
+					sSize = "K"; //$NON-NLS-1$
 					break;
 				case 'K':
-					sSize = "B";
+					sSize = "B"; //$NON-NLS-1$
 					break;
 			}
 		}
 
-		if (dDiv < 1024d && sSize.equals("B"))
-			sSize = "b";
+		if (dDiv < 1024d && sSize.equals("B")) //$NON-NLS-1$
+			sSize = "b"; //$NON-NLS-1$
 
 		String sRez = point(d);
 		
-		if (bMinus && !sRez.equals("0"))
-			sRez = "-"+sRez;
+		if (bMinus && !sRez.equals("0")) //$NON-NLS-1$
+			sRez = '-'+sRez;
 		
-		if (!sSize.toLowerCase(Locale.getDefault()).equals("b"))
-			sSize += "B";
+		if (!sSize.toLowerCase(Locale.getDefault()).equals("b")) //$NON-NLS-1$
+			sSize += 'B';
 
-		return sRez + (sSize.equals("") ? "" : (" " + sSize));
+		return sRez + (sSize.equals("") ? "" : (' ' + sSize));  //$NON-NLS-1$//$NON-NLS-2$
 	}
 	
 	/**
@@ -117,26 +117,26 @@ public final class Format {
 		
 		if (d < 10) {
 			d = Math.round(d * 1000) / 1000.0d;
-			sRez = "" + d;
+			sRez = "" + d; //$NON-NLS-1$
 		} else if (d < 100) {
 			d = Math.round(d * 100) / 100.0d;
-			sRez = "" + d;
+			sRez = "" + d; //$NON-NLS-1$
 		} else if (d < 1000) {
 			d = Math.round(d * 10) / 10.0d;
-			sRez = "" + d;
+			sRez = "" + d; //$NON-NLS-1$
 		} else {
-			sRez = "" + ((long) d);
+			sRez = "" + ((long) d); //$NON-NLS-1$
 		}
 
-		while (sRez.indexOf(".") >= 0 && sRez.endsWith("0")) {
+		while (sRez.indexOf('.') >= 0 && sRez.endsWith("0")) { //$NON-NLS-1$
 			sRez = sRez.substring(0, sRez.length() - 1);
 		}
 
-		if (sRez.endsWith("."))
+		if (sRez.endsWith(".")) //$NON-NLS-1$
 			sRez = sRez.substring(0, sRez.length() - 1);
 
-		if (bMinus && !sRez.equals("0"))
-			sRez = "-"+sRez;
+		if (bMinus && !sRez.equals("0")) //$NON-NLS-1$
+			sRez = '-'+sRez;
 		
 		return sRez;
 	}
@@ -153,7 +153,7 @@ public final class Format {
 		if (address==null || address.length()==0)
 			return address;
 		
-		final StringTokenizer st = new StringTokenizer(address, "<>\"'`");
+		final StringTokenizer st = new StringTokenizer(address, "<>\"'`"); //$NON-NLS-1$
 
 		if (st.hasMoreTokens())
 			return st.nextToken().trim();
@@ -171,7 +171,7 @@ public final class Format {
 		if (address==null || address.length()==0)
 			return null;
 		
-		final StringTokenizer st = new StringTokenizer(address, "<>\"'`");
+		final StringTokenizer st = new StringTokenizer(address, "<>\"'`"); //$NON-NLS-1$
 
 		String s = null;
 		
@@ -207,16 +207,16 @@ public final class Format {
 			c = vc[i];
 			switch (c) {
 				case '&':
-					sb.append("&amp;");
+					sb.append("&amp;"); //$NON-NLS-1$
 					break;
 				case '<':
-					sb.append("&lt;");
+					sb.append("&lt;"); //$NON-NLS-1$
 					break;
 				case '>':
-					sb.append("&gt;");
+					sb.append("&gt;"); //$NON-NLS-1$
 					break;
 				case '\"':
-					sb.append("&quot;");
+					sb.append("&quot;"); //$NON-NLS-1$
 					break;
 				default:
 					sb.append(c);
@@ -234,7 +234,7 @@ public final class Format {
 	 */
 	public static String encode(final String text) {
 		try {
-			return URLEncoder.encode(text, "UTF-8");
+			return URLEncoder.encode(text, "UTF-8"); //$NON-NLS-1$
 		} catch (UnsupportedEncodingException e) {
 			return null;
 		}
@@ -248,7 +248,7 @@ public final class Format {
 	 */
 	public static String decode(final String text) {
 		try {
-			return URLDecoder.decode(text, "UTF-8");
+			return URLDecoder.decode(text, "UTF-8"); //$NON-NLS-1$
 		} catch (UnsupportedEncodingException e) {
 			return null;
 		}
@@ -297,7 +297,7 @@ public final class Format {
 	 */
 	public static String escSQL(final String text) {
 		if (text==null || text.length()==0)
-			return "";
+			return ""; //$NON-NLS-1$
 		
 		final char[] vc = text.toCharArray();
 		final int l = vc.length;
@@ -344,7 +344,7 @@ public final class Format {
 	 */
 	public static String escJS(final String text) {
 		if (text==null || text.length()==0)
-			return "";
+			return ""; //$NON-NLS-1$
 		
 		final char[] vc = text.toCharArray();
 		final int l = vc.length;
@@ -448,7 +448,7 @@ public final class Format {
 	 * @return text with &lt;BR&gr; instead of the \n in the original text
 	 */
 	public static final String formatBR(final String text) {
-		return replace(replace(text, "\\r", ""), "\\n", "<BR>");
+		return replace(replace(text, "\\r", ""), "\\n", "<BR>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
 	/**
@@ -457,6 +457,7 @@ public final class Format {
 	 * @param text original text
 	 * @return text with \n instead of &lt;BR&gt;
 	 */
+	@SuppressWarnings("nls")
 	public static final String formatN(final String text) {
 		return replace(replace(text, "<br>", "\n"), "<BR>", "\n");
 	}
@@ -464,6 +465,7 @@ public final class Format {
 	/**
 	 * Commonly used date formats
 	 */
+	@SuppressWarnings("nls")
 	private final static SimpleDateFormat[]	sdfFormats	= new SimpleDateFormat[] { 
 				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"), // 0
 				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), // 1
@@ -528,7 +530,7 @@ public final class Format {
 		}
 
 		// if nothing worked so far, maybe this is a time only, so try to add the current date to it and parse it again 
-		final String sNew = sdfFormats[2].format(new Date()) + " " + s;
+		final String sNew = sdfFormats[2].format(new Date()) + ' ' + s;
 			
 		for (int i = 0; i < 2; i++){
 			try {
@@ -551,9 +553,9 @@ public final class Format {
 	 */
 	public static final String show0(int i) {
 		if (i < 10)
-			return "0" + i;
+			return "0" + i; //$NON-NLS-1$
 		
-		return "" + i;
+		return "" + i; //$NON-NLS-1$
 	}
 	
 	/**
@@ -566,11 +568,11 @@ public final class Format {
 	public static final String showNiceDate(final Date d) {
 		final Date now = new Date();
 		if (now.getDate() == d.getDate() && now.getMonth() == d.getMonth() && now.getYear() == d.getYear())
-			return "today";
+			return "today"; //$NON-NLS-1$
 
 		final Date y = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24);
 		if (y.getDate() == d.getDate() && y.getMonth() == d.getMonth() && y.getYear() == d.getYear())
-			return "yesterday";
+			return "yesterday"; //$NON-NLS-1$
 
 		return showNamedDate(d);
 	}
@@ -582,7 +584,7 @@ public final class Format {
 	 * @return date and time
 	 */
 	public static final String showDate(final Date d) {
-		return showNamedDate(d) + " " + showTime(d);
+		return showNamedDate(d) + ' ' + showTime(d);
 	}
 
 	/**
@@ -598,7 +600,7 @@ public final class Format {
 	/**
 	 * Long date format
 	 */
-	private static final SimpleDateFormat sdfLongDate = new SimpleDateFormat("dd MMMM yyyy");
+	private static final SimpleDateFormat sdfLongDate = new SimpleDateFormat("dd MMMM yyyy"); //$NON-NLS-1$
 	
 	/**
 	 * Show the full month name (11 January 2006)
@@ -615,7 +617,7 @@ public final class Format {
 	/**
 	 * Short date format
 	 */
-	private static final SimpleDateFormat sdfShortDate = new SimpleDateFormat("dd MMM yyyy");
+	private static final SimpleDateFormat sdfShortDate = new SimpleDateFormat("dd MMM yyyy"); //$NON-NLS-1$
 	
 	/**
 	 * Show the abreviated month name (11 Jan 2006)
@@ -632,7 +634,7 @@ public final class Format {
 	/**
 	 * Only time
 	 */
-	private static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+	private static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm"); //$NON-NLS-1$
 	
 	/**
 	 * Show the time only (12:34)
@@ -694,44 +696,44 @@ public final class Format {
 		
 		int dotplaces = decimals;
 		
-		String append = "";
+		String append = ""; //$NON-NLS-1$
 		if (aproximated) {
 			if (Math.abs(d) > 1E9) {
 				d /= 1E9;
 				dotplaces = (dotplaces == 0) ? 2 : dotplaces;
-				append = " millions";
+				append = " millions"; //$NON-NLS-1$
 			} else if (Math.abs(d) > 1E6) {
 				d /= 1E6;
 				dotplaces = (dotplaces == 0) ? 2 : dotplaces;
-				append = " billions";
+				append = " billions"; //$NON-NLS-1$
 			}
 		}
 
 		long l = (long) d;
 		double f = Math.abs(d) - Math.abs(l);
 
-		String sRez = "";
+		String sRez = ""; //$NON-NLS-1$
 
 		if (l == 0)
-			sRez = "0";
+			sRez = "0"; //$NON-NLS-1$
 
 		while (Math.abs(l) > 0) {
 			if (sRez.length() > 0) {
-				int i = sRez.indexOf(",");
+				int i = sRez.indexOf(',');
 
 				if (i < 0)
 					i = sRez.length();
 
 				switch (i) {
 					case 1:
-						sRez = "00" + sRez;
+						sRez = "00" + sRez; //$NON-NLS-1$
 						break;
 					case 2:
-						sRez = "0" + sRez;
+						sRez = '0' + sRez;
 						break;
 				}
 
-				sRez = "," + sRez;
+				sRez = ',' + sRez;
 			}
 
 			sRez = (Math.abs(l) % 1000) + sRez;
@@ -744,17 +746,17 @@ public final class Format {
 
 			f = Math.round(f);
 
-			String sTemp = "" + (long) f;
+			String sTemp = "" + (long) f; //$NON-NLS-1$
 
 			while (sTemp.length() < dotplaces)
-				sTemp = "0" + sTemp;
+				sTemp = '0' + sTemp;
 
 			if ((long) f > 0) {
-				sRez += "." + sTemp;
+				sRez += '.' + sTemp;
 			}
 		}
 
-		return (d < 0) ? "-" + sRez + append : sRez + append;
+		return (d < 0) ? '-' + sRez + append : sRez + append;
 	}
 
 	/**
@@ -769,7 +771,7 @@ public final class Format {
 		long l = lInterval;
 		
 		if (l <= 0)
-			sRez = "-";
+			sRez = "-"; //$NON-NLS-1$
 		else {
 			l /= 1000;
 
@@ -782,14 +784,14 @@ public final class Format {
 			long d = l;
 
 			if (d > 0)
-				sRez = d + "d " + h + ":" + show0((int)m);
+				sRez = d + "d " + h + ':' + show0((int)m); //$NON-NLS-1$
 			else if (h > 0)
-				sRez = h + ":" + show0((int)m);
+				sRez = h + ':' + show0((int)m);
 			else {
-				sRez = m + "m";
+				sRez = m + "m"; //$NON-NLS-1$
 
 				if (s > 0)
-					sRez += " " + s + "s";
+					sRez += ' ' + s + 's';
 			}
 		}
 
@@ -809,7 +811,7 @@ public final class Format {
 	 */
 	public static final char hexChar(final int val) {
 		if (val<0 || val>15)
-			throw new IllegalArgumentException("Hex digits are between 0 and 15, "+val+" is not allowed here");
+			throw new IllegalArgumentException("Hex digits are between 0 and 15, "+val+" is not allowed here"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		return hexTable[val];
 	}
@@ -821,7 +823,7 @@ public final class Format {
 	 * @return the 2 hexa digit representation
 	 */
 	public static final String byteToHex(byte val) {
-		return "" + hexChar((val >>> 4) & 0x0F) + hexChar(val & 0x0F);
+		return "" + hexChar((val >>> 4) & 0x0F) + hexChar(val & 0x0F); //$NON-NLS-1$
 	}
 	
 }

@@ -70,6 +70,7 @@ public abstract class Sender {
 	 * @param sClass
 	 * @return instance or null
 	 */
+	@SuppressWarnings("nls")
 	public final Object getClassInstance(final String sClass){
 		if (sClass==null || sClass.length()==0)
 			return null;

@@ -79,12 +79,12 @@ public final class Notifier implements Observer {
 	private synchronized final void reload(){
 		this.senders.clear();
 		
-		final int iSenders = this.propConfig.geti("senders", 0);
+		final int iSenders = this.propConfig.geti("senders", 0); //$NON-NLS-1$
 		
 		for (int i=0; i<iSenders; i++){
 			final Sender s = getSender(this.propConfig, i);
 			
-			if (s!=null && s.init(this.propConfig, "sender_"+i+".")){
+			if (s!=null && s.init(this.propConfig, "sender_"+i+'.')){ //$NON-NLS-1$
 				this.senders.add(s);
 			}
 		}		
@@ -95,6 +95,7 @@ public final class Notifier implements Observer {
 	 * @param idx
 	 * @return sender class for this configuration index
 	 */
+	@SuppressWarnings("nls")
 	private Sender getSender(final ExtProperties prop, final int idx) {
 		final String sClass = prop.gets("sender_"+idx+".class");
 		

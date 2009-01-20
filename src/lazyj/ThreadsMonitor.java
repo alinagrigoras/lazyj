@@ -30,7 +30,7 @@ public final class ThreadsMonitor extends Thread {
 	 * Set thread name
 	 */
 	private ThreadsMonitor() {
-		super("lazyj.ThreadsMonitor - killing runaway servlets");
+		super("lazyj.ThreadsMonitor - killing runaway servlets"); //$NON-NLS-1$
 		setDaemon(true);
 	}
 	
@@ -44,7 +44,7 @@ public final class ThreadsMonitor extends Thread {
 				final BoundedThreadContainer btc = queue.take();
 				
 				if (btc.getThread().isAlive()){					
-					Log.log(Log.WARNING, btc.getPath(), "ThreadsMonitor killing one thread", btc.getThread());
+					Log.log(Log.WARNING, btc.getPath(), "ThreadsMonitor killing one thread", btc.getThread()); //$NON-NLS-1$
 				
 					btc.getThread().interrupt();
 				}

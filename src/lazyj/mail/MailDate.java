@@ -414,7 +414,7 @@ public final class MailDate implements Comparable<MailDate>{
 			
 			o /= 60;
 
-			sResult += ' '+sign+(o<10?"0":"") + o + "00"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			sResult += " "+sign+(o<10?"0":"") + o + "00"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 
 		return sResult;
@@ -485,5 +485,19 @@ public final class MailDate implements Comparable<MailDate>{
 	@SuppressWarnings("deprecation")
 	public Date getDate() {
 		return new Date(this.year - 1900, this.month, this.day, this.hour, this.min, this.sec);
+	}
+	
+	/**
+	 * Testing code
+	 * 
+	 * @param args command line arguments
+	 */
+	public static void main(String[] args) {
+		final MailDate md = new MailDate(new Date());
+		
+		System.err.println(md.toString());
+		System.err.println(md.toString2());
+		System.err.println(md.toFullString());
+		System.err.println(md.toMailString());
 	}
 }

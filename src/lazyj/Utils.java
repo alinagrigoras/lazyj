@@ -854,6 +854,28 @@ public final class Utils {
 	 * @since 1.0.5
 	 */
 	public static String htmlToText(final String sHTML){
+		return htmlToText(sHTML, 0);
+	}
+	
+	/**
+	 * Don't collapse multiple blank characters in a single space.
+	 */
+	public static final int HTML_OPTION_KEEP_SPACES = 1;
+	
+	/**
+	 * Don't collapse multiple new lines in a single new line
+	 */
+	public static final int HTML_OPTION_KEEP_NEWLINES = 2;
+	
+	/**
+	 * Simple convertor from HTML to plain text. Can be used for example to automatically add a plain text email body part when
+	 * all you have is the HTML input.
+	 * 
+	 * @param sHTML HTML input
+	 * @param options a binary OR between any Utils.HTML_OPTION_* constants
+	 * @return plain text version of the HTML
+	 */
+	public static String htmlToText(final String sHTML, final int options){
 		// first, remove all the comments
 		
 		Matcher m = PATTERN_HTML_COMMENT.matcher(sHTML);
@@ -868,8 +890,10 @@ public final class Utils {
 		m = PATTERN_HTML_HEAD.matcher(s);
 		s = m.replaceAll("");
 
-		m = PATTERN_HTML_SPACES.matcher(s);
-		s = m.replaceAll(" ");
+		if ( (options & HTML_OPTION_KEEP_SPACES) == 0){
+			m = PATTERN_HTML_SPACES.matcher(s);
+			s = m.replaceAll(" ");
+		}
 		
 		m = PATTERN_HTML_BR.matcher(s);
 		s = m.replaceAll("\n");
@@ -891,12 +915,18 @@ public final class Utils {
 		s = s.replace("&mdash;", "-");
 		s = s.replace("&quot;", "\"");
 		s = s.replace("&hellip;", "...");
+		s = s.replace("&rsquo;", "'");
+		s = s.replace("&lsquo;", "`");
+		s = s.replace("&rdquo;", "\"");
+		s = s.replace("&ldquo;", "\"");
 		
 		m = PATTERN_HTML_SPECIAL.matcher(s);
 		s = m.replaceAll("");
-		
-		m = PATTERN_HTML_LINES.matcher(s);
-		s = m.replaceAll("\n");		
+
+		if ( (options & HTML_OPTION_KEEP_NEWLINES) == 0){
+			m = PATTERN_HTML_LINES.matcher(s);
+			s = m.replaceAll("\n");
+		}
 
 		m = PATTERN_HTML_TRIM.matcher(s);
 		s = m.replaceAll("");		

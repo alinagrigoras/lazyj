@@ -890,6 +890,7 @@ public final class Utils {
 		s = s.replace("&ndash;", "-");
 		s = s.replace("&mdash;", "-");
 		s = s.replace("&quot;", "\"");
+		s = s.replace("&hellip;", "...");
 		
 		m = PATTERN_HTML_SPECIAL.matcher(s);
 		s = m.replaceAll("");

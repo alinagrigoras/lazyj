@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -563,10 +564,10 @@ public final class Utils {
 		for (int i = 0; i < iSize; i++) {
 			final char c = chars[i];
 			
-			if (c=='&'){
+			if (c=='&' && i<iSize-1 && ((chars[i+1]>='a' && chars[i+1]<='z') || (chars[i+1]>='A' && chars[i+1]<='Z')) ){
 				final int idx = sText.indexOf(';', i+1);
 				
-				if (idx>0){
+				if (idx>0 && idx-i<9){
 					final String s = sText.substring(i+1, idx);
 					
 					final String v = HTML_CHAR_MAP.get(s);
@@ -581,6 +582,12 @@ public final class Utils {
 			
 			// some weird quotes that are not properly converted by the normalizer
 			switch (c){
+				case 0xA9:
+					sb.append("(C)");
+					continue;
+				case '\u2014':
+					sb.append('-');
+					continue;
 				case '\u2019':
 					sb.append('\'');
 					continue;
@@ -833,7 +840,7 @@ public final class Utils {
 	/**
 	 * Special HTML characters 
 	 */
-	private static final Pattern PATTERN_HTML_SPECIAL = Pattern.compile("&.*?;", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+	private static final Pattern PATTERN_HTML_SPECIAL = Pattern.compile("&[a-zA-Z]{2,6};", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	
 	/**
 	 * New lines, possibly surrounded by spaces
@@ -919,6 +926,10 @@ public final class Utils {
 		s = s.replace("&lsquo;", "`");
 		s = s.replace("&rdquo;", "\"");
 		s = s.replace("&ldquo;", "\"");
+		
+		for (Map.Entry<String, String> me: HTML_CHAR_MAP.entrySet()){
+			s = s.replace('&'+me.getKey()+';', me.getValue());
+		}
 		
 		m = PATTERN_HTML_SPECIAL.matcher(s);
 		s = m.replaceAll("");

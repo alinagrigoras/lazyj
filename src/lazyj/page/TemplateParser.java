@@ -53,7 +53,17 @@ final class TemplateParser implements Observer {
 	 * Database tags
 	 */
 	private HashSet<String> hsDBTags = new HashSet<String>();
+	
+	/**
+	 * The rest of the tags, the ones that don't have "db" flag
+	 */
+	private HashSet<String> hsNonDBTags = new HashSet<String>();
 
+	/**
+	 * All tags
+	 */
+	private HashSet<String> hsAllTags = new HashSet<String>();
+	
 	/**
 	 * Is everything ok?
 	 */
@@ -137,6 +147,7 @@ final class TemplateParser implements Observer {
 		
 		final LinkedList llParseElements = new LinkedList();
 		final HashSet<String> hsParseDBTags = new HashSet<String>();
+		final HashSet<String> hsParseNonDBTags = new HashSet<String>();
 		
 		int i = 0;
 		int iOld = 0;
@@ -184,13 +195,15 @@ final class TemplateParser implements Observer {
 					iOld = i;
 					continue;
 				}
+				
+				boolean bIsDBTag = false;
 
 				while (st.hasMoreTokens()){
 					final String sOpt = StringFactory.get(st.nextToken().trim());
 					
 					if (sOpt.length()>0){
 						if (sOpt.equals("db")){ //$NON-NLS-1$
-							hsParseDBTags.add(sTag);
+							bIsDBTag = true;
 						}
 						else{
 							final StringFormat sf = BasePage.getExactClass(sOpt);
@@ -199,6 +212,11 @@ final class TemplateParser implements Observer {
 						}
 					}
 				}
+				
+				if (bIsDBTag)
+					hsParseDBTags.add(sTag);
+				else
+					hsParseNonDBTags.add(sTag);
 
 				llParseElements.add(llTag);
 				
@@ -219,8 +237,14 @@ final class TemplateParser implements Observer {
 		else if (iOld < sText.length())
 			llParseElements.add(sText.substring(iOld));
 		
+		final HashSet<String> hsParseAllTags = new HashSet<String>(hsParseNonDBTags);
+		hsParseAllTags.addAll(hsParseDBTags);
+		
 		this.llElements = llParseElements;
 		this.hsDBTags = hsParseDBTags;
+		this.hsNonDBTags = hsParseNonDBTags;
+	
+		this.hsAllTags = hsParseAllTags; 
 		
 		return true;
 	}
@@ -252,8 +276,26 @@ final class TemplateParser implements Observer {
 	 * 
 	 * @return the set of tag names with the "db" option
 	 */
-	public HashSet<String> getDBTags(){
+	public Set<String> getDBTags(){
 		return this.hsDBTags;
+	}
+	
+	/**
+	 * Get the set of tag names that don't have "db" option attached to them.
+	 * 
+	 * @return set of non-"db" tags
+	 */
+	public Set<String> getNonDBTags(){
+		return this.hsNonDBTags;
+	}
+	
+	/**
+	 * Get all the distinct tags present in this template
+	 * 
+	 * @return set of tags in this template
+	 */
+	public Set<String> getTagsSet(){
+		return this.hsAllTags;
 	}
 	
 	/**

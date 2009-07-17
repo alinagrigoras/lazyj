@@ -738,6 +738,23 @@ public class BasePage implements TemplatePage {
 	}
 	
 	/**
+	 * Cache the tags set
+	 */
+	private Set<String> allTags = null;
+	
+	/**
+	 * Get the set of all tags in the template
+	 * 
+	 * @return all tags in the template
+	 */
+	public Set<String> getTagsSet(){
+		if (this.allTags==null)
+			this.allTags = new HashSet<String>(this.tp.getTagsSet());
+		
+		return this.allTags;
+	}
+	
+	/**
 	 * Create a page based on a predefined template. Use this constructor when the contents is not on disk,
 	 * but be aware that in this case the template is <B>not cached</B>!
 	 * 

@@ -3,6 +3,7 @@
  */
 package lazyj.page;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,7 +33,7 @@ final class TemplateParser implements Observer {
 	/**
 	 * Page elements, either strings or tags
 	 */
-	private LinkedList<Object> llElements;
+	private List<Object> llElements = null;
 	
 	/**
 	 * Keep an eye on the underlying template file
@@ -52,17 +53,17 @@ final class TemplateParser implements Observer {
 	/**
 	 * Database tags
 	 */
-	private HashSet<String> hsDBTags = new HashSet<String>();
+	private Set<String> hsDBTags = null;
 	
 	/**
 	 * The rest of the tags, the ones that don't have "db" flag
 	 */
-	private HashSet<String> hsNonDBTags = new HashSet<String>();
+	private Set<String> hsNonDBTags = null;
 
 	/**
 	 * All tags
 	 */
-	private HashSet<String> hsAllTags = new HashSet<String>();
+	private Set<String> hsAllTags = null;
 	
 	/**
 	 * Is everything ok?
@@ -76,7 +77,7 @@ final class TemplateParser implements Observer {
 	 * @param bCache whether or not to cache the contents. Caching also means that the file is scheduled to be re-read from disk when it changes
 	 *        (checks every one minute)
 	 */
-	public TemplateParser(final String sTemplateFileName, final boolean bCache){
+	TemplateParser(final String sTemplateFileName, final boolean bCache){
 		this.sFileName = sTemplateFileName;
 		
 		final String sText = Utils.readFile(sTemplateFileName);
@@ -115,7 +116,7 @@ final class TemplateParser implements Observer {
 	 * 
 	 * @param sTemplate html template to parse
 	 */
-	public TemplateParser(final String sTemplate){
+	TemplateParser(final String sTemplate){
 		try{
 			this.bOk = parse(sTemplate);
 		}
@@ -130,7 +131,7 @@ final class TemplateParser implements Observer {
 	/**
 	 * @return true if everything went ok with the parsing
 	 */
-	public boolean isOk(){
+	boolean isOk(){
 		return this.bOk;
 	}
 	
@@ -145,9 +146,12 @@ final class TemplateParser implements Observer {
 		if (sText == null)
 			return false;
 		
+		final int defaultDBTags = this.hsDBTags!=null ? this.hsDBTags.size()+1 : 8;
+		final int defaultNonDBTags = this.hsNonDBTags!=null ? this.hsNonDBTags.size()+1 : 8;
+		
 		final LinkedList llParseElements = new LinkedList();
-		final HashSet<String> hsParseDBTags = new HashSet<String>();
-		final HashSet<String> hsParseNonDBTags = new HashSet<String>();
+		final HashSet<String> hsParseDBTags = new HashSet<String>(defaultDBTags);
+		final HashSet<String> hsParseNonDBTags = new HashSet<String>(defaultNonDBTags);
 		
 		int i = 0;
 		int iOld = 0;
@@ -183,17 +187,14 @@ final class TemplateParser implements Observer {
 				llTag.add(sTag);
 
 				if (sTag.indexOf('.') >= 1 && sTag.indexOf('/') < 0 && !sTag.endsWith(".res")) { //$NON-NLS-1$
-					if (sComplete.indexOf(' ') >= 0)
-						sComplete = sComplete.substring(sComplete.indexOf(' ') + 1);
+					final int iSpaceIdx = sComplete.indexOf(' '); 
+					
+					if (iSpaceIdx >= 0)
+						sComplete = sComplete.substring(iSpaceIdx + 1).trim();
 					else
 						sComplete = ""; //$NON-NLS-1$
 
-					llTag.add(sComplete);
-					llParseElements.add(llTag);
-					
-					i = j + 3;
-					iOld = i;
-					continue;
+					llTag.add(sComplete);					
 				}
 				
 				boolean bIsDBTag = false;
@@ -240,11 +241,17 @@ final class TemplateParser implements Observer {
 		final HashSet<String> hsParseAllTags = new HashSet<String>(hsParseNonDBTags);
 		hsParseAllTags.addAll(hsParseDBTags);
 		
-		this.llElements = llParseElements;
-		this.hsDBTags = hsParseDBTags;
-		this.hsNonDBTags = hsParseNonDBTags;
-	
-		this.hsAllTags = hsParseAllTags; 
+		// first make all collections read-only
+		final List llElementsTemp = Collections.unmodifiableList(llParseElements);
+		final Set hsDBTagsTemp = Collections.unmodifiableSet(hsParseDBTags);
+		final Set hsNonDBTagsTemp = Collections.unmodifiableSet(hsParseNonDBTags);
+		final Set hsAllTagsTemp = Collections.unmodifiableSet(hsParseAllTags); 
+		
+		// and then set the object fields to the read-only instances
+		this.llElements = llElementsTemp;
+		this.hsDBTags = hsDBTagsTemp; 
+		this.hsNonDBTags = hsNonDBTagsTemp;
+		this.hsAllTags = hsAllTagsTemp;
 		
 		return true;
 	}
@@ -276,7 +283,7 @@ final class TemplateParser implements Observer {
 	 * 
 	 * @return the set of tag names with the "db" option
 	 */
-	public Set<String> getDBTags(){
+	Set<String> getDBTags(){
 		return this.hsDBTags;
 	}
 	
@@ -285,7 +292,7 @@ final class TemplateParser implements Observer {
 	 * 
 	 * @return set of non-"db" tags
 	 */
-	public Set<String> getNonDBTags(){
+	Set<String> getNonDBTags(){
 		return this.hsNonDBTags;
 	}
 	
@@ -294,7 +301,7 @@ final class TemplateParser implements Observer {
 	 * 
 	 * @return set of tags in this template
 	 */
-	public Set<String> getTagsSet(){
+	Set<String> getTagsSet(){
 		return this.hsAllTags;
 	}
 	
@@ -307,7 +314,7 @@ final class TemplateParser implements Observer {
 	 * @return the string to be passed to the client
 	 */
 	@SuppressWarnings("unchecked")
-	public StringBuilder process(final Map<String, StringBuilder> mValues, final Set<String> sComments, final ExtendedServlet callingServlet){
+	StringBuilder process(final Map<String, StringBuilder> mValues, final Set<String> sComments, final ExtendedServlet callingServlet){
 		final StringBuilder sb = new StringBuilder(this.iPrevSize);
 		
 		if (this.llElements==null || this.llElements.size()==0)
@@ -343,44 +350,49 @@ final class TemplateParser implements Observer {
 						}
 					}
 					
-					// we reached the end of template looking for a closing comment
-					if (!itElements.hasNext())
-						break;
-					
 					continue;
 				}
 				
 				final boolean bRes = sTag.endsWith(".res");  //$NON-NLS-1$
 				
-				if (sTag.indexOf('.') >= 1 && sTag.indexOf('/') < 0 && !bRes && !mValues.containsKey(sTag)) {
-					Module cp = null;
-					Throwable ex = null;
-					
-					try{
-						cp = (Module) Class.forName(sTag).newInstance();
+				// if the tag looks like a module, the second element in the list is the complete parameter string
+				// so if we consider that it's not a module then we have to skip that parameter and evaluate the rest
+				boolean bSkipSecond = false;
+				
+				if (sTag.indexOf('.') >= 1 && sTag.indexOf('/') < 0 && !bRes) {					
+					if (mValues.containsKey(sTag)){
+						bSkipSecond = true;
 					}
-					catch (Throwable t){
-						ex = t;
-					}
-					
-					if (cp==null && callingServlet!=null){
-						final ClassLoader loader = callingServlet.getClass().getClassLoader();
+					else{
+						Module cp = null;
+						Throwable ex = null;
 						
 						try{
-							cp = (Module) Class.forName(sTag, true, loader).newInstance();
+							cp = (Module) Class.forName(sTag).newInstance();
 						}
 						catch (Throwable t){
 							ex = t;
 						}
+						
+						if (cp==null && callingServlet!=null){
+							final ClassLoader loader = callingServlet.getClass().getClassLoader();
+							
+							try{
+								cp = (Module) Class.forName(sTag, true, loader).newInstance();
+							}
+							catch (Throwable t){
+								ex = t;
+							}
+						}
+						
+						if (cp!=null)
+							sb.append(cp.getContent(itTag.next()).toString());
+						else
+						if (ex!=null)
+							Log.log(Log.ERROR, "lazyj.page.TemplateParser", "cannot instantiate module '"+sTag+"' from page='"+this.sFileName+"'", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						
+						continue;
 					}
-					
-					if (cp!=null)
-						sb.append(cp.getContent(itTag.next()).toString());
-					else
-					if (ex!=null)
-						Log.log(Log.ERROR, "lazyj.page.TemplateParser", "cannot instantiate module '"+sTag+"' from page='"+this.sFileName+"'", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-					
-					continue;
 				}
 
 				final StringBuilder sbValue = bRes ? new StringBuilder() : mValues.get(sTag);
@@ -392,6 +404,12 @@ final class TemplateParser implements Observer {
 				
 				while (itTag.hasNext() && sValue!=null){
 					final Object oNext = itTag.next();
+					
+					if (bSkipSecond){
+						// ignore the full list of parameters
+						bSkipSecond = false;
+						continue;
+					}
 					
 					if (oNext instanceof StringFormat){
 						sValue = ((StringFormat) oNext).format(sTag, null, sValue);

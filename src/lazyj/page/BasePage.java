@@ -738,20 +738,13 @@ public class BasePage implements TemplatePage {
 	}
 	
 	/**
-	 * Cache the tags set
-	 */
-	private Set<String> allTags = null;
-	
-	/**
 	 * Get the set of all tags in the template
 	 * 
 	 * @return all tags in the template
+	 * @since 1.0.6
 	 */
 	public Set<String> getTagsSet(){
-		if (this.allTags==null)
-			this.allTags = new HashSet<String>(this.tp.getTagsSet());
-		
-		return this.allTags;
+		return this.tp.getTagsSet();
 	}
 	
 	/**

@@ -352,7 +352,7 @@ final class TemplateParser implements Observer {
 				
 				final boolean bRes = sTag.endsWith(".res");  //$NON-NLS-1$
 				
-				if (sTag.indexOf('.') >= 1 && sTag.indexOf('/') < 0 && !bRes) {
+				if (sTag.indexOf('.') >= 1 && sTag.indexOf('/') < 0 && !bRes && !mValues.containsKey(sTag)) {
 					Module cp = null;
 					Throwable ex = null;
 					

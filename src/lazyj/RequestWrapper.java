@@ -96,9 +96,9 @@ public final class RequestWrapper {
 	 * @return value
 	 */
 	public String gets(final String sParam, final String sDefault){
-		String sValue = gets(sParam);
+		final String sValue = gets(sParam);
 		
-		if (sParam.length()==0)
+		if (sValue.length()==0)
 			return sDefault;
 		
 		return sValue;

@@ -239,8 +239,8 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 
 				this.response.setContentType(cs.sContentType);
 				this.response.setHeader("Content-Language", "en"); //$NON-NLS-1$ //$NON-NLS-2$
-				this.response.setHeader("Content-Length", ""+cs.length()); //$NON-NLS-1$ //$NON-NLS-2$
-				RequestWrapper.setNotCache(this.response);
+				this.response.setHeader("Content-Length", String.valueOf(cs.length())); //$NON-NLS-1$
+				RequestWrapper.setCacheTimeout(this.response, (int) ((cs.lGenerated+cs.lifetime-System.currentTimeMillis())/1000));
 
 				try {
 					this.osOut.write(cs.getContent());
@@ -268,6 +268,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			this.osOut = new StringBufferOutputStream(sKey, lTimeout);
 		} else { // this request cannot be cached, do nothing
 			log(Log.FINEST, "uncacheable request"); //$NON-NLS-1$
+			RequestWrapper.setNotCache(this.response);
 		}
 		
 		return true;
@@ -344,10 +345,8 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		 */
 		@Override
 		public void close() throws IOException{
-			ExtendedServlet.this.response.setDateHeader("Date", System.currentTimeMillis()); //$NON-NLS-1$
-
 			ExtendedServlet.this.pwOut.flush();
-
+			
 			if (!ExtendedServlet.this.response.containsHeader("Location") && !ExtendedServlet.this.bRedirect) { //$NON-NLS-1$
 				long lExpires = this.lTimeout * 1000; 
 				
@@ -360,8 +359,12 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 
 				PageCache.put(cs);
 				
+				ExtendedServlet.this.response.setHeader("Content-Length", String.valueOf(buff.length)); //$NON-NLS-1$
+				RequestWrapper.setCacheTimeout(ExtendedServlet.this.response, (int) (lExpires/1000));
+				
 				this.origos.write(buff);
-			} else {
+			}
+			else {
 				this.origos.write(this.baos.toByteArray());
 			}
 
@@ -895,7 +898,8 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	public final String getHostName() {
 		String hostName = ""; //$NON-NLS-1$
 		try {
-			InetAddress host = InetAddress.getByName(this.request.getRemoteAddr());
+			final InetAddress host = InetAddress.getByName(this.request.getRemoteAddr());
+			
 			hostName = host.getHostName();
 			if (hostName == null)
 				hostName = this.request.getRemoteAddr();

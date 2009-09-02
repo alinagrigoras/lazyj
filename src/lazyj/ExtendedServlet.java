@@ -239,7 +239,8 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 
 				this.response.setContentType(cs.sContentType);
 				this.response.setHeader("Content-Language", "en"); //$NON-NLS-1$ //$NON-NLS-2$
-				this.response.setHeader("Content-Length", String.valueOf(cs.length())); //$NON-NLS-1$
+				this.response.setContentLength(cs.length());
+				
 				RequestWrapper.setCacheTimeout(this.response, (int) ((cs.lGenerated+cs.lifetime-System.currentTimeMillis())/1000));
 
 				try {
@@ -359,7 +360,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 
 				PageCache.put(cs);
 				
-				ExtendedServlet.this.response.setHeader("Content-Length", String.valueOf(buff.length)); //$NON-NLS-1$
+				ExtendedServlet.this.response.setContentLength(buff.length);
 				RequestWrapper.setCacheTimeout(ExtendedServlet.this.response, (int) (lExpires/1000));
 				
 				this.origos.write(buff);

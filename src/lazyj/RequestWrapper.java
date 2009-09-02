@@ -269,9 +269,25 @@ public final class RequestWrapper {
 	 * @param response
 	 */
 	public static void setNotCache(final HttpServletResponse response){
-		response.setHeader("Expires", "0"); //$NON-NLS-1$ //$NON-NLS-2$
-		response.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-		response.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-		response.setDateHeader("Date", System.currentTimeMillis()); //$NON-NLS-1$
+		setCacheTimeout(response, 0);
+	}
+	
+	/**
+	 * Set the caching timeout for some generated content.
+	 * 
+	 * @param response the response object 
+	 * @param seconds expiration time, in seconds relative to "now". A strict positive value
+	 *        would enable the caching while a zero or negative one would disable the caching.
+	 */
+	public static void setCacheTimeout(final HttpServletResponse response, final int seconds){
+		if (seconds<=0){
+			// disable caching
+			response.setHeader("Expires", "0"); //$NON-NLS-1$ //$NON-NLS-2$
+			response.setHeader("Cache-Control", "no-cache,no-store"); //$NON-NLS-1$ //$NON-NLS-2$			
+		}
+		else{
+			// enable caching for the given time interval
+			response.setHeader("Cache-Control", "max-age="+seconds); //$NON-NLS-1$ //$NON-NLS-2$			
+		}
 	}
 }

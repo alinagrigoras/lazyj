@@ -1,9 +1,14 @@
 package lazyj;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 
 /**
  * Keep references to common strings to avoid filling the memory with garbage.
- * It actually makes more sense to let Java do it for us , with this class we just keep statistics over what happened.
+ * We don't use String.intern() any more because it seems to never clean up. Instead it is now
+ * relaying on a WeakHashMap.
  * 
  * @author costing
  * @since Aug 10, 2007 (1.0.2)
@@ -25,6 +30,11 @@ public final class StringFactory {
 	 */
 	private static transient long		lCacheIgnore		= 0;
 
+	/**
+	 * Actual cache, the WeakHashMap
+	 */
+	private static Map<String, WeakReference<String>> 	hmCache = new WeakHashMap<String, WeakReference<String>>(1024);
+	
 	/**
 	 * Get the global string pointer for this byte array
 	 * 
@@ -63,15 +73,17 @@ public final class StringFactory {
 			return s;
 		}
 		
-		final String sRet = s.intern();
-		
-		// the string comparison here is actually valid, we want to see if from the string cache we got back the same pointer or a different one
-		if (sRet == s){
-			lCacheHit++;
-		}
-		else{
-			lCacheMiss++;
-		}
+        final WeakReference<String> t = hmCache.get(s);
+
+        String sRet;
+        
+        if (t == null || (sRet = t.get()) == null) {
+            hmCache.put(s, new WeakReference<String>(s));
+            lCacheMiss++;
+            return s;
+        }
+        
+        lCacheHit++;
 
 		return sRet;
 	}
@@ -80,11 +92,9 @@ public final class StringFactory {
 	 * Statistics function: the number of strings in the cache.
 	 * 
 	 * @return the number of strings in the cache
-	 * @deprecated
 	 */
-	@Deprecated
 	public static synchronized int getCacheSize() {
-		return -1;
+		return hmCache.size();
 	}
 
 	/**

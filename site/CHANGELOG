@@ -1,4 +1,13 @@
 1.0.6:
+	2009-09-02:
+	lazyj.StringFactory:
+		- improvement: use a WeakHashMap instead of String.intern()
+	lazyj.ExtendedServlet:
+		- improvement: properly set HTTP cache expiration and content-length, for both the 
+		  already-cached content and the newly generated one
+	lazyj.RequestWrapper:
+		- api: a new method to control the caching expiration (setCacheTimeout(..)) 
+
 	2009-07-20:
 	lazyj.page.TemplateParser:
 		- fix: allow module-like tags to be evaluated as normal tags if a value is set for them

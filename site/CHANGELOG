@@ -1,4 +1,17 @@
 1.0.6:
+	2009-09-16:
+	lazyj.mail.Sendmail:
+		- refactoring of the code to first build the entire mail in memory then
+		  send it to the SMTP server
+	lazyj.mail.MailUtils:
+		- newly added, provides for now only MX DNS lookups
+	lazyj.mail.MailFilter
+		- new interface that defines how a mail filter should behave
+	lazyj.mail.filter.DKIMSigner
+		- first filter, implements DomainKeys signing of the email
+		  http://dkim.org/specs/rfc4871-dkimbase.html
+		  http://www.agitos.de/dkim-for-java-mail-open-source-library-2.html
+
 	2009-09-02:
 	lazyj.StringFactory:
 		- improvement: use a WeakHashMap instead of String.intern()

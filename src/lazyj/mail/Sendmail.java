@@ -1,8 +1,10 @@
 package lazyj.mail;
 
+import static lazyj.Format.hexChar;
+
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +26,6 @@ import java.util.StringTokenizer;
 
 import lazyj.Format;
 import lazyj.Log;
-
-
-import static lazyj.Format.hexChar;
 
 import com.oreilly.servlet.Base64Encoder;
 
@@ -117,7 +117,12 @@ public class Sendmail {
 	/**
 	 * What is an CRLF ?
 	 */
-	private static final String CRLF = "\r\n"; //$NON-NLS-1$
+	public static final String CRLF = "\r\n"; //$NON-NLS-1$
+
+	/**
+	 * Filters
+	 */
+	private List<MailFilter> filters = null;
 	
 	/**
 	 * The simplest constructor. It only need the email address of the sender.
@@ -152,7 +157,50 @@ public class Sendmail {
 
 		this.sFullUserEmail = sFrom;
 	}
+	
+	/**
+	 * Register another filter that is to be called before sending each mail 
+	 * 
+	 * @param filter
+	 * @return true if registration was successful, false if not (filter already registered)
+	 */
+	public boolean registerFilter(final MailFilter filter){
+		if (filter==null)
+			return false;
+		
+		if (this.filters==null)
+			this.filters = new LinkedList<MailFilter>();
+		else
+			if (this.filters.contains(filter))
+				return false;
+		
+		this.filters.add(filter);
+		
+		return true;
+	}
 
+	/**
+	 * Unregister a filter
+	 * 
+	 * @param filter
+	 * @return true if this filter was previously registered
+	 */
+	public boolean unregisterFilter(final MailFilter filter){
+		if (filter==null)
+			return false;
+		
+		boolean bReturn = false;
+		
+		if (this.filters!=null){
+			bReturn = this.filters.remove(filter);
+			
+			if (this.filters.size()==0)
+				this.filters = null;
+		}
+		
+		return bReturn;
+	}
+	
 	/**
 	 * Split a recipient field and extract a list of addresses from it.
 	 * 
@@ -263,25 +311,29 @@ public class Sendmail {
 	}
 	
 	/**
-	 * Send something to the server
+	 * Send some text to the SMTP server
 	 * 
 	 * @param sText
+	 * @param flush
 	 */
-	private void print(final String sText){
+	private void print(final String sText, final boolean flush){
 		if (this.bDebug)
 			System.err.println("Sendmail: text > "+sText); //$NON-NLS-1$
 		
 		this.sock_out.print(sText);
-		this.sock_out.flush();
+		
+		if (flush)
+			this.sock_out.flush();		
 	}
 	
 	/**
 	 * Send text + new line
 	 * 
 	 * @param sLine
+	 * @param flush
 	 */
-	private void println(final String sLine){
-		print(sLine+CRLF);
+	private void println(final String sLine, final boolean flush){
+		print(sLine+CRLF, flush);
 	}
 	
 	/**
@@ -332,7 +384,7 @@ public class Sendmail {
 				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : unexpected response from server (didn't respond with 220...)");
 				this.iSentOk = SENT_ERROR;
 				this.sError = "unexpected mail server response: " + line1;
-				println("QUIT");
+				println("QUIT", true);
 				return false;
 			}
 			
@@ -341,7 +393,7 @@ public class Sendmail {
 			if (sFrom==null){
 				this.iSentOk = SENT_ERROR;
 				this.sError = "incorrect FROM field";
-				println("QUIT");
+				println("QUIT", true);
 				return false;
 			}
 			
@@ -350,13 +402,13 @@ public class Sendmail {
 			if (this.sHELOOverride!=null)
 				sServerName = this.sHELOOverride;
 			
-			println("HELO "+sServerName);
+			println("HELO "+sServerName, true);
 			line1 = readLine();
 			if (line1 == null || !line1.startsWith("250")) {
 				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : error after HELO");
 				this.iSentOk = SENT_ERROR;
 				this.sError = "error after telling server HELO "+sServerName+": " + line1;
-				println("QUIT");
+				println("QUIT", true);
 				return false;
 			}
 			
@@ -372,13 +424,13 @@ public class Sendmail {
 			if (this.sMAILFROMOverride!=null)
 				sBounce = this.sMAILFROMOverride;
 			
-			println("MAIL FROM: " + sBounce);
+			println("MAIL FROM: " + sBounce, true);
 			line1 = readLine();
 			if (line1 == null || !line1.startsWith("250")) {
 				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : error after telling server MAIL FROM: " + sBounce, line1);
 				this.iSentOk = SENT_ERROR;
 				this.sError = "error after telling server `MAIL FROM: " + sBounce + "` : " + line1;
-				println("QUIT");
+				println("QUIT", true);
 				return false;
 			}
 
@@ -386,13 +438,13 @@ public class Sendmail {
 			int iCount = 0;
 			while (itAdrese.hasNext()) {
 				String sCurrentAddr = itAdrese.next();
-				println("RCPT TO: " + sCurrentAddr);
+				println("RCPT TO: " + sCurrentAddr, true);
 				line1 = readLine();
 
 				if (line1 == null || !line1.startsWith("250")) {
 					Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : error telling RCPT TO '" + sCurrentAddr + "' : " + line1);
 
-					println("QUIT");
+					println("QUIT", true);
 					this.iSentOk = SENT_WARNING;
 					this.lInvalidAddresses.add(sCurrentAddr);
 				} else {
@@ -420,75 +472,90 @@ public class Sendmail {
 	 * Send mail's headers
 	 * 
 	 * @param mail mail to be sent
-	 * @return true if everything is ok, false if there was an error
+	 * @param output 
+	 * @param sBody
 	 */
 	@SuppressWarnings("nls")
-	private boolean headers(final Mail mail) {
-		try {
-			println("DATA");
-			String line1 = readLine();
-			if (line1 == null || !line1.startsWith("354")) {
-				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "headers : error telling server DATA: " + line1);
-				this.iSentOk = SENT_ERROR;
-				this.sError = "error telling server DATA: " + line1;
-				println("QUIT");
-				return false;
-			}
+	private void headers(final Mail mail, final StringBuilder output, final String sBody) {
+		final Map<String, String> mailHeaders = new LinkedHashMap<String, String>();
+		
+		mailHeaders.put("Date", new MailDate(new Date()).toMailString());
+		
+		mailHeaders.put("From", this.sFullUserEmail);
+		
+		mailHeaders.put("To", mail.sTo);
 
-			final StringBuilder sbHeaders = new StringBuilder();
-			
-			//"Return-Path: " + (mail.sReturnPath != null ? mail.sReturnPath : this.sFullUserEmail) + CRLF;
-			
-			sbHeaders.append("Date: ").append(new MailDate(new Date()).toMailString()).append(CRLF);
-			
-			sbHeaders.append("From: ").append(this.sFullUserEmail).append(CRLF);
-			
-			sbHeaders.append("To: ").append(mail.sTo).append(CRLF);
+		if (mail.sCC != null && mail.sCC.length() > 0)
+			mailHeaders.put("CC", mail.sCC);
 
-			if (mail.sCC != null && mail.sCC.length() > 0)
-				sbHeaders.append("CC: ").append(mail.sCC).append(CRLF);
+		if (mail.sReplyTo != null && mail.sReplyTo.length() > 0)
+			mailHeaders.put("Reply-To", mail.sReplyTo);
 
-			if (mail.sReplyTo != null && mail.sReplyTo.length() > 0)
-				sbHeaders.append("Reply-To: ").append(mail.sReplyTo).append(CRLF);
+		mailHeaders.put("Message-ID", "<"+System.currentTimeMillis()+"-"+r.nextLong()+"@lazyj>");
+		mailHeaders.put("Subject", mail.sSubject);
+		mailHeaders.put("X-Priority", String.valueOf(mail.iPriority));
+		mailHeaders.put("MIME-Version", "1.0");
+		mailHeaders.put("X-Mailer", "LazyJ.sf.net");
 
-			sbHeaders.append("Message-ID: <").append(System.currentTimeMillis()).append("-").append(r.nextLong()).append("@lazyj>").append(CRLF).
-						append("Subject: ").append(mail.sSubject).append(CRLF).
-						append("X-Priority: ").append(mail.iPriority).append(CRLF).
-						append("MIME-Version: 1.0").append(CRLF).
-						append("X-Mailer: LazyJ.sf.net").append(CRLF);
+		if (mail.bRequestRcpt)
+			mailHeaders.put("Disposition-Notification-To", this.sFullUserEmail);
 
-			final Iterator<Map.Entry<String, String>> it = mail.hmHeaders.entrySet().iterator();
-
-			while (it.hasNext()) {
-				final Map.Entry<String, String> me = it.next();
-
-				sbHeaders.append(me.getKey()).append(": ").append(me.getValue()).append(CRLF);
-			}
-
-			if (mail.bRequestRcpt)
-				sbHeaders.append("Disposition-Notification-To: ").append(this.sFullUserEmail).append(CRLF);
-
-			if (!mail.bConfirmation) {
-				if (mail.hasAttachments())
-					sbHeaders.append("Content-Type: multipart/mixed;").append(CRLF);
-				else
-					sbHeaders.append("Content-Type: multipart/alternative;").append(CRLF);
-			} else {
-				sbHeaders.append("References: <").append(mail.sOrigMessageID).append(">").append(CRLF).
-						append("Content-Type: multipart/report;").append(CRLF).append("	report-type=disposition-notification;").append(CRLF);
-			}
-
-			sbHeaders.append("        boundary=\"").append(this.sBoundary).append("\"").append(CRLF).append(CRLF).append("This message is in MIME format.").append(CRLF);
-
-			sbHeaders.append(CRLF);
-			
-			print(sbHeaders.toString());
-		} catch (Throwable e) {
-			this.iSentOk = SENT_ERROR;
-			this.sError = "Exception : " + e.getMessage();
-			return false;
+		String sContentType = "multipart/alternative;";
+		
+		if (!mail.bConfirmation) {
+			if (mail.hasAttachments())
+				sContentType = "multipart/mixed;";
 		}
-		return true;
+		else {
+			mailHeaders.put("References", "<"+mail.sOrigMessageID+">");
+			
+			sContentType = "multipart/report; report-type=disposition-notification; ";
+		}
+
+		sContentType += " boundary=\""+this.sBoundary+"\"";
+		
+		mailHeaders.put("Content-Type", sContentType);
+
+		mailHeaders.putAll(mail.hmHeaders);
+					
+		if (this.filters!=null){
+			for (MailFilter filter: this.filters)
+				filter.filter(mailHeaders, sBody, mail);
+		}
+		
+		final Iterator<Map.Entry<String, String>> it = mailHeaders.entrySet().iterator();
+
+		while (it.hasNext()) {
+			final Map.Entry<String, String> me = it.next();
+
+			String sValue = me.getValue();
+			
+			output.append(me.getKey()).append(": ");
+			
+			int count = me.getKey().length()+2;
+			
+			while (count+sValue.length()>=75){
+				int idx = 0;
+				while (idx<sValue.length() && sValue.charAt(idx)==' ')
+					idx++;
+
+				if (idx==sValue.length())
+					break;
+				
+				int idxmax = sValue.lastIndexOf(' ', 75-count);
+				
+				if (idxmax<idx)
+					idxmax = 75;
+				
+				output.append(sValue.substring(0, idxmax)).append(CRLF);
+				count = 1;
+				sValue=sValue.substring(idxmax);
+				if (sValue.charAt(0)!=' ')
+					sValue = ' '+sValue;
+			}
+			
+			output.append(sValue).append(CRLF);
+		}
 	}
 
 	/**
@@ -496,38 +563,41 @@ public class Sendmail {
 	 * 
 	 * @param mail mail to be sent
 	 * @param bHtmlPart true to write the HTML part, false to write the plain text part
+	 * @param output output buffer
 	 * @return true if everything is ok, false if there was an error
 	 */
 	@SuppressWarnings("nls")
-	private boolean writeBody(final Mail mail, final boolean bHtmlPart) {
-		String line1;
-		
-		line1 = "--" + this.sBoundary + CRLF;
+	private boolean writeBody(final Mail mail, final boolean bHtmlPart, final StringBuilder output) {
+		output.append("--").append(this.sBoundary).append(CRLF);
 
 		if (bHtmlPart) {
 			if ((mail.sHTMLBody == null) || (mail.sHTMLBody.length() <= 0))
 				return true;
 
-			line1 += "Content-Type: text/html; charset=" + (mail.sContentType != null && mail.sContentType.length() > 0 ? mail.sContentType : "iso-8859-1");
+			output.append("Content-Type: text/html; charset=" + (mail.sContentType != null && mail.sContentType.length() > 0 ? mail.sContentType : "iso-8859-1")).append(CRLF);
 		} else {
 			if ((mail.sBody == null) || (mail.sBody.length() <= 0))
 				return true;
 
-			line1 += "Content-Type: text/plain; charset=" + (mail.sContentType != null && mail.sContentType.length() > 0 ? mail.sContentType : "iso-8859-1");
+			output.append("Content-Type: text/plain; charset=" + (mail.sContentType != null && mail.sContentType.length() > 0 ? mail.sContentType : "iso-8859-1")).append(CRLF);
 		}
 
-		line1 += CRLF + "Content-Transfer-Encoding: quoted-printable"+CRLF;
-		println(line1);
+		output.append("Content-Transfer-Encoding: quoted-printable").append(CRLF);
+		output.append(CRLF);
+
 		mail.sEncoding = "quoted-printable";
 
+		String line1;
+		
 		try {
-			line1 = bodyProcess(bHtmlPart ? mail.sHTMLBody : mail.sBody, (mail.sEncoding.length() > 0));
-		} catch (Exception e) {
+			line1 = bodyProcess(bHtmlPart ? mail.sHTMLBody : mail.sBody, true);
+		}
+		catch (Exception e) {
 			Log.log(Log.ERROR, "lazyj.mail.Sendmail", "writeBody : bodyProcess error : sBody ("+(bHtmlPart ? "html" : "text")+" : '"+ mail.sBody+"'", e);
 			line1 = mail.sBody;
 		}
 
-		StringTokenizer st = new StringTokenizer(line1, "\n", true);
+		final StringTokenizer st = new StringTokenizer(line1, "\n", true);
 
 		int count = 1;
 
@@ -547,36 +617,55 @@ public class Sendmail {
 				l = l.substring(0, l.indexOf("\n"));
 
 			if (l.equals("."))
-				println("..");
+				output.append("..");
 			else
-				println(l);
+				output.append(l);
+			
+			output.append(CRLF);
 		}
+		
+		output.append(CRLF);
 
 		return true;
 	}
 
 	/**
-	 * Finish sending the mail.
+	 * Do the real sending
+	 * @param header full header
+	 * @param body full body
 	 * 
-	 * @param mail mail to be sent
 	 * @return true if everything was ok, false on any error
 	 */
 	@SuppressWarnings("nls")
-	private boolean writeEndOfMail(final Mail mail) {
+	private boolean writeMail(final String header, final String body) {
 		try {
-			println("--" + this.sBoundary + "--");
-
-			println(".");
-
+			println("DATA", true);
 			String line1 = readLine();
+			if (line1 == null || !line1.startsWith("354")) {
+				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "headers : error telling server DATA: " + line1);
+				this.iSentOk = SENT_ERROR;
+				this.sError = "error telling server DATA: " + line1;
+				println("QUIT", true);
+				return false;
+			}
+			
+			print(header, false);
+			
+			print(CRLF, false);
+			
+			print(body, false);
+			
+			println(".", true);
+
+			line1 = readLine();
 			if (line1 == null || !line1.startsWith("250")) {
 				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "writeEndOfMail : error sending the mail : " + line1);
-				println("QUIT");
+				println("QUIT", true);
 				this.sError = line1;
 				return false;
 			}
 
-			println("QUIT");
+			println("QUIT", true);
 
 			this.sock_in.close();
 			this.sock_out.close();
@@ -599,10 +688,11 @@ public class Sendmail {
 	 * Attach a file to this mail
 	 * 
 	 * @param sFileName a file that is to be attached to this mail 
+	 * @param out output buffer
 	 * @return true if everything is ok, false on any error
 	 */
 	@SuppressWarnings("nls")
-	private boolean writeFileAttachment(final String sFileName) {
+	private boolean writeFileAttachment(final String sFileName, final StringBuilder out) {
 		String sRealFile = sFileName;
 
 		final File f = new File(sRealFile);
@@ -623,7 +713,7 @@ public class Sendmail {
 			return false;
 		}
 
-		final boolean b = writeAttachment(in, sFileName);
+		final boolean b = writeAttachment(in, sFileName, out);
 
 		try {
 			in.close();
@@ -639,10 +729,11 @@ public class Sendmail {
 	 * 
 	 * @param in stream with the file contents
 	 * @param sFileName file name to be put in the attachment's headers
+	 * @param out output buffer
 	 * @return true if everything is ok, false on any error
 	 */
 	@SuppressWarnings("nls")
-	private boolean writeAttachment(final InputStream in, final String sFileName) {
+	private boolean writeAttachment(final InputStream in, final String sFileName, final StringBuilder out) {
 
 		String sStrippedFileName = sFileName;
 
@@ -651,18 +742,23 @@ public class Sendmail {
 		while (st.hasMoreTokens())
 			sStrippedFileName = st.nextToken();
 
-		String sAttachHeader = "--" + this.sBoundary + CRLF + "Content-Type: " + FileTypes.getMIMETypeOf(sFileName) + ";" + CRLF + "        name=\"" + sStrippedFileName + "\"" + CRLF + "Content-Transfer-Encoding: base64" + CRLF +
-		// "Content-ID: <MyMail.JavaServlets.1.1."+(new Random()).nextInt(31)+">\r\n"+
-		"Content-Disposition: attachment;"+ CRLF + "        filename=\"" + sStrippedFileName + "\""+CRLF;
+		out.append("--").append(this.sBoundary).append(CRLF);
+		out.append("Content-Type: ").append(FileTypes.getMIMETypeOf(sFileName)).append(";").append(CRLF);
+		out.append(" name=\"").append(sStrippedFileName).append("\"").append(CRLF);
+		out.append("Content-Transfer-Encoding: base64").append(CRLF);
+		out.append("Content-Disposition: attachment;").append(CRLF);
+		out.append(" filename=\"").append(sStrippedFileName).append("\"").append(CRLF);
 
-		println(sAttachHeader);
-
+		out.append(CRLF);
+		
 		Base64Encoder encoder = null;
 
 		try {
-			encoder = new Base64Encoder(new BufferedOutputStream(this.sock.getOutputStream()));
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			
+			encoder = new Base64Encoder(baos);
 
-			byte[] buf = new byte[4 * 1024]; // 4K buffer
+			final byte[] buf = new byte[4 * 1024]; // 4K buffer
 			int bytesRead;
 
 			while ((bytesRead = in.read(buf)) != -1) {
@@ -670,7 +766,10 @@ public class Sendmail {
 			}
 			
 			encoder.flush();
-		} catch (Exception e) {
+			
+			out.append(baos.toString("US-ASCII"));
+		}
+		catch (Throwable e) {
 			Log.log(Log.FATAL, "lazyj.mail.Sendmail", "writeAttachment" + e);
 			this.iSentOk = SENT_ERROR;
 			this.sError = "exception while writing an attachment : " + e.getMessage();
@@ -695,7 +794,9 @@ public class Sendmail {
 			}
 		}
 
-		println("");
+		out.append(CRLF);
+		out.append(CRLF);
+		
 		return true;
 	}
 
@@ -703,12 +804,14 @@ public class Sendmail {
 	 * Iterate through all the files that should be attached to this mail and process them.
 	 * 
 	 * @param mail mail to be sent
+	 * @param out output buffer
 	 * @return true if everything is ok, false on any error
 	 */
-	private boolean processAttachments(final Mail mail) {
+	private boolean processAttachments(final Mail mail, final StringBuilder out) {
 		final StringTokenizer st = new StringTokenizer(mail.sAttachedFiles, ";"); //$NON-NLS-1$
+		
 		while (st.hasMoreTokens()) {
-			if (!writeFileAttachment(st.nextToken()))
+			if (!writeFileAttachment(st.nextToken(), out))
 				return false;
 		}
 
@@ -717,7 +820,7 @@ public class Sendmail {
 			while (itAt.hasNext()) {
 				final Attachment at = itAt.next();
 				if (at.sFileName.length() > 0)
-					writeAttachment(at.getDecodedInputStream(), at.sFileName);
+					writeAttachment(at.getDecodedInputStream(), at.sFileName, out);
 			}
 		}
 
@@ -728,11 +831,18 @@ public class Sendmail {
 	 * If this is a confirmation to a previously received mail, this method writes the actual response.
 	 * 
 	 * @param mail mail to be sent
+	 * @param out output buffer
 	 */
 	@SuppressWarnings("nls")
-	private void writeConfirmation(final Mail mail) {	
-		println("--" + this.sBoundary + CRLF + "Content-Type: message/disposition-notification"+CRLF+"Content-Transfer-Encoding: 7bit"+CRLF+"Content-Disposition: inline"+CRLF+CRLF);
-		println(mail.sConfirmation);
+	private void writeConfirmation(final Mail mail, final StringBuilder out) {	
+		out.append("--").append(this.sBoundary).append(CRLF);
+		out.append("Content-Type: message/disposition-notification").append(CRLF);
+		out.append("Content-Transfer-Encoding: 7bit").append(CRLF);
+		out.append("Content-Disposition: inline").append(CRLF);
+		out.append(CRLF);
+		
+		out.append(mail.sConfirmation).append(CRLF);
+		out.append(CRLF);
 	}
 
 	/**
@@ -743,24 +853,43 @@ public class Sendmail {
 	 * @return true if everything is ok, false on any error.
 	 */
 	public boolean send(final Mail mail) {
-		if (!(init(mail) && headers(mail) && writeBody(mail, false) && writeBody(mail, true))) {
+		if (!init(mail))
 			return false;
-		}
-
+			
+		final StringBuilder sbBody = new StringBuilder(10240);
+		
+		sbBody.append("This message is in MIME format.").append(CRLF).append(CRLF);
+		
+		if (!writeBody(mail, false, sbBody))
+			return false;
+		
+		if (!writeBody(mail, true, sbBody))
+			return false;
+		
 		if (mail.hasAttachments()) {
-			if (!processAttachments(mail)) {
+			if (!processAttachments(mail, sbBody)) {
 				return false;
 			}
 		}
 
 		if (mail.bConfirmation) {
-			writeConfirmation(mail);
+			writeConfirmation(mail, sbBody);
 		}
-
-		if (!writeEndOfMail(mail)) {
+		
+		sbBody.append("--").append(this.sBoundary).append("--").append(CRLF);
+	
+		final String sBody = sbBody.toString();
+		
+		final StringBuilder sbHeader = new StringBuilder(1024);
+		
+		headers(mail, sbHeader, sBody);
+		
+		final String sHeader = sbHeader.toString();
+		
+		if (!writeMail(sHeader, sBody)) {
 			return false;
 		}
-
+		
 		return true;
 	}
 

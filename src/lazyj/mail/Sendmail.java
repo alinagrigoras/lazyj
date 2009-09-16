@@ -548,13 +548,20 @@ public class Sendmail {
 					idxmax = 75-count;
 				
 				output.append(sValue.substring(0, idxmax)).append(CRLF);
+				
+				if (idxmax==sValue.length()){
+					sValue=null;
+					break;
+				}
+				
 				count = 1;
 				sValue=sValue.substring(idxmax);
 				if (sValue.charAt(0)!=' ')
 					sValue = ' '+sValue;
 			}
 			
-			output.append(sValue).append(CRLF);
+			if (sValue!=null)
+				output.append(sValue).append(CRLF);
 		}
 	}
 

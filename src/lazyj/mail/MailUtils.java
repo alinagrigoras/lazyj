@@ -51,7 +51,7 @@ public class MailUtils {
 			this.prio = Integer.parseInt(st.nextToken());
 			this.server = st.nextToken();
 			
-			if (this.server.endsWith("."))
+			if (this.server.endsWith(".")) //$NON-NLS-1$
 				this.server = this.server.substring(0, this.server.length()-1);
 		}
 		
@@ -107,13 +107,13 @@ public class MailUtils {
 	 */
 	public static List<MXRecord> getMXServers(final String domain){
 		 final Hashtable<String, String> env = new Hashtable<String, String>();
-		 env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
+		 env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory"); //$NON-NLS-1$ //$NON-NLS-2$
 		 
 		 try{
 			 final DirContext ictx = new InitialDirContext( env );
-			 final Attributes attrs = ictx.getAttributes( domain, new String[] { "MX" });
+			 final Attributes attrs = ictx.getAttributes( domain, new String[] { "MX" }); //$NON-NLS-1$
 		 
-			 final Attribute attr = attrs.get( "MX" );
+			 final Attribute attr = attrs.get( "MX" ); //$NON-NLS-1$
 		 
 			 if( attr == null || attr.size() == 0){
 				 return null;

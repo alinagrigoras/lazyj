@@ -23,16 +23,36 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import sun.misc.BASE64Encoder;
-
+import lazyj.Format;
 import lazyj.mail.Mail;
 import lazyj.mail.MailFilter;
 import lazyj.mail.Sendmail;
+import sun.misc.BASE64Encoder;
 
 /**
+ * Example to generate the key:<br>
+ * - private key generation: openssl genrsa -out rsa.private 1024 <br>
+ * - extract public key: openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM <br>
+ * - convert private key to PKCS8 (to load in Java): openssl pkcs8 -topk8 -nocrypt -in rsa.private -inform PEM -out rsa.private.der -outform DER <br>
+ * - publish the contents of the public key in DNS: <br>
+ *   _domainkey              IN      TXT     "t=y; o=-;"<br>
+ *   dkim._domainkey         IN      TXT     "k=rsa; t=y; h=sha256; v=DKIM1; p=[contents of rsa.public, only between BEGIN and END, on a single line]"<br>
+ * <br>
+ * And then the code is simple:<br>
+ * <code><pre>
+ * Mail mail = new Mail();
+ * //fill in the mail
+ * 
+ * DKIMSigner signer = new DKIMSigner("domain.com", "dkim", "rsa.private.der");
+ * Sendmail sendmail = new Sendmail(m.sFrom);
+ * sendmail.registerFilter(signer);
+ * sendmail.send(mail);
+ * </pre></code>
+ * 
  * @author costing
  * @since Sep 15, 2009
  */
+@SuppressWarnings("nls")
 public class DKIMSigner implements MailFilter {
 
 	/**
@@ -165,6 +185,13 @@ public class DKIMSigner implements MailFilter {
 		return this.headers.remove(sHeader);
 	}
 	
+	/**
+	 * Remove all headers, start clean
+	 */
+	public void clearHeader(){
+		this.headers.clear();
+	}
+	
 	/* (non-Javadoc)
 	 * @see lazyj.mail.MailFilter#filter(java.util.Map, java.lang.String, java.lang.String, lazyj.mail.Mail)
 	 */
@@ -174,12 +201,12 @@ public class DKIMSigner implements MailFilter {
 		
 		fields.put("v", "1");
 		fields.put("a", "rsa-sha256");
-		fields.put("q", "dns/txt");
-		fields.put("t", String.valueOf(System.currentTimeMillis()/1000));
+		fields.put("c", "relaxed/simple");
 		fields.put("s", this.dnsSelector);
 		fields.put("d", this.domain);
-		fields.put("l", String.valueOf(sBody.length()));
-		fields.put("c", "relaxed/simple");
+		fields.put("i", Format.extractAddress(mail.sFrom));
+		fields.put("q", "dns/txt");
+		fields.put("t", String.valueOf(System.currentTimeMillis()/1000));
 		
 		final List<String> foundHeaders = new LinkedList<String>();
 		
@@ -197,14 +224,18 @@ public class DKIMSigner implements MailFilter {
 		
 		for (String header: foundHeaders){
 			if (hField.length()>0)
-				hField+=": ";
+				hField+=":";
 			
-			hField += header.toLowerCase();
+			hField += header;
 		}
 		
 		fields.put("h", hField);
 		
-		fields.put("bh", base64Encode(this.digester.digest(simpleBody(sBody).getBytes())));
+		final String sCanonBody = simpleBody(sBody);
+		
+		fields.put("l", String.valueOf(sCanonBody.length()));
+		
+		fields.put("bh", base64Encode(this.digester.digest(sCanonBody.getBytes())));
 		
 		fields.put("b", "");
 		
@@ -220,11 +251,13 @@ public class DKIMSigner implements MailFilter {
 		}
 		
 		final String sKeyValue = sbValue.toString();
+				
+		sbHeader.append(relaxedHeader(DKIM, sKeyValue));
 		
-		sbHeader.append(relaxedHeader(DKIM, sKeyValue)).append(Sendmail.CRLF);
+		final String sHeaders = sbHeader.toString();
 		
 		try{
-			this.signer.update(sKeyValue.getBytes());
+			this.signer.update(sHeaders.getBytes());
 			byte[] signedSignature = this.signer.sign();
 			
 			mailHeaders.put(DKIM, sKeyValue+base64Encode(signedSignature));

@@ -545,7 +545,7 @@ public class Sendmail {
 				int idxmax = sValue.lastIndexOf(' ', 75-count);
 				
 				if (idxmax<idx)
-					idxmax = 75;
+					idxmax = 75-count;
 				
 				output.append(sValue.substring(0, idxmax)).append(CRLF);
 				count = 1;
@@ -852,6 +852,7 @@ public class Sendmail {
 	 * @param mail mail to be sent
 	 * @return true if everything is ok, false on any error.
 	 */
+	@SuppressWarnings("nls")
 	public boolean send(final Mail mail) {
 		if (!init(mail))
 			return false;

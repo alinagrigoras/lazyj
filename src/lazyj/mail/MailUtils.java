@@ -6,6 +6,7 @@ package lazyj.mail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,14 +20,16 @@ import javax.naming.directory.InitialDirContext;
  * 
  * @author costing
  * @since Sep 15, 2009
+ * @since 1.0.6
  */
 public class MailUtils {
 
 	/**
-	 * MX response involves an order
+	 * Wrapper around a MX DNS entry
 	 * 
 	 * @author costing
 	 * @since Sep 15, 2009
+	 * @see MailUtils#getMXServers(String)
 	 */
 	public static class MXRecord implements Comparable<MXRecord>{
 		
@@ -141,5 +144,37 @@ public class MailUtils {
 		 }
 		 
 		 return null;
+	}
+	
+	/**
+	 * Remove servers that show up more than once in a MX list of a domain.
+	 * 
+	 * @param original
+	 * @return the list of servers where each server appears only once, and only the "best" one is kept.
+	 * @see #getMXServers(String) 
+	 */
+	public static List<MXRecord> removeDuplicates(final List<MXRecord> original){
+		if (original==null)
+			return null;
+		
+		final List<MXRecord> ret = new LinkedList<MXRecord>(original);
+		
+		if (ret.size()<=1)
+			return ret;
+		
+		for (int i=0; i<ret.size()-1; i++){
+			final MXRecord ref = ret.get(i);
+			
+			for (int j=i+1; j<ret.size(); j++){
+				final MXRecord temp = ret.get(j);
+				
+				if (ref.getServer().equalsIgnoreCase(temp.getServer())){
+					ret.remove(j);
+					j--;
+				}
+			}
+		}
+		
+		return ret;
 	}
 }

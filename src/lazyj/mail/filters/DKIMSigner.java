@@ -30,13 +30,21 @@ import lazyj.mail.Sendmail;
 import sun.misc.BASE64Encoder;
 
 /**
- * Example to generate the key:<br>
- * - private key generation: openssl genrsa -out rsa.private 1024 <br>
- * - extract public key: openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM <br>
- * - convert private key to PKCS8 (to load in Java): openssl pkcs8 -topk8 -nocrypt -in rsa.private -inform PEM -out rsa.private.der -outform DER <br>
- * - publish the contents of the public key in DNS: <br>
+ * This class is used as a {@link Sendmail} filter to sign the mail with a private key.<br>
+ * <br>
+ * Here is an example of how you can generate the keys:<br>
+ * <ul>
+ * <li>private key generation:<br>
+ *     openssl genrsa -out rsa.private 1024</li>
+ * <li>extract public key:<br>
+ *     openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM</li>
+ * <li>convert private key to PKCS8 (to load in Java):<br>
+ *     openssl pkcs8 -topk8 -nocrypt -in rsa.private -inform PEM -out rsa.private.der -outform DER </li>
+ * <li>publish the contents of the public key in DNS by adding the following entries to your domain:<br>
  *   _domainkey              IN      TXT     "t=y; o=-;"<br>
- *   dkim._domainkey         IN      TXT     "k=rsa; t=y; h=sha256; v=DKIM1; p=[contents of rsa.public, only between BEGIN and END, on a single line]"<br>
+ *   dkim._domainkey         IN      TXT     "k=rsa; t=y; h=sha256; v=DKIM1; p=[contents of rsa.public, only between BEGIN and END, on a single line]"</li>
+ * <li>once the testing phase is complete, remove "t=y" from the above, to signal the recipients that you are serious about using this method of verification</li>
+ * </ul>
  * <br>
  * And then the code is simple:<br>
  * <code><pre>
@@ -48,9 +56,18 @@ import sun.misc.BASE64Encoder;
  * sendmail.registerFilter(signer);
  * sendmail.send(mail);
  * </pre></code>
+ * <br>
+ * <br>
+ * References:
+ * <ul>
+ * <li><a target=_blank href="http://dkim.org/specs/rfc4871-dkimbase.html">http://dkim.org/specs/rfc4871-dkimbase.html</a></li>
+ * <li><a target=_blank href="http://testing.dkim.org/reflector.html">http://testing.dkim.org/reflector.html</a></li>
+ * </ul>
  * 
  * @author costing
  * @since Sep 15, 2009
+ * @since 1.0.6
+ * @see Sendmail#registerFilter(MailFilter)
  */
 @SuppressWarnings("nls")
 public class DKIMSigner implements MailFilter {

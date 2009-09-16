@@ -6,7 +6,8 @@ import java.util.Map;
  * Classes that can alter the contents of an email should implement this interface. 
  * 
  * @author costing
- * @since 2009-09-15
+ * @since Sep 15, 2009
+ * @since 1.0.6
  * @see Sendmail#registerFilter(MailFilter)
  */
 public interface MailFilter {

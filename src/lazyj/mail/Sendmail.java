@@ -163,6 +163,7 @@ public class Sendmail {
 	 * 
 	 * @param filter
 	 * @return true if registration was successful, false if not (filter already registered)
+	 * @since 1.0.6
 	 */
 	public boolean registerFilter(final MailFilter filter){
 		if (filter==null)
@@ -184,6 +185,7 @@ public class Sendmail {
 	 * 
 	 * @param filter
 	 * @return true if this filter was previously registered
+	 * @since 1.0.6
 	 */
 	public boolean unregisterFilter(final MailFilter filter){
 		if (filter==null)

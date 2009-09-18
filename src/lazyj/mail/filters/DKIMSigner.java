@@ -321,10 +321,12 @@ public class DKIMSigner implements MailFilter {
 	}
 	
 	/**
-	 * Encode a byte array
+	 * Encode a byte array to a single-line BASE64-encoded string.
+	 * The output is ~4/3 the size of the original data.
 	 * 
 	 * @param b bytes to encode
 	 * @return BASE64-encoding
+	 * @see BASE64Encoder
 	 */
 	public static String base64Encode(final byte[] b){
 		final BASE64Encoder base64Enc = new BASE64Encoder();
@@ -354,6 +356,7 @@ public class DKIMSigner implements MailFilter {
      * 
      * @param data
      * @return contents, or <code>null</code> if there was a problem decoding it
+     * @see BASE64Decoder
      */
     public static byte[] base64Decode(final String data){
         final BASE64Decoder decoder = new BASE64Decoder();

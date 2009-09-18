@@ -27,6 +27,7 @@ import lazyj.Format;
 import lazyj.mail.Mail;
 import lazyj.mail.MailFilter;
 import lazyj.mail.Sendmail;
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**
@@ -328,8 +329,41 @@ public class DKIMSigner implements MailFilter {
 	public static String base64Encode(final byte[] b){
 		final BASE64Encoder base64Enc = new BASE64Encoder();
 		
-		String encoded = base64Enc.encode(b);
-		encoded = encoded.replace("\n", "");
-		return encoded.replace("\r", "");
+		final String encoded = base64Enc.encode(b);
+		
+		if (encoded.indexOf('\n')>=0 || encoded.indexOf('\r')>=0){
+			final char[] chars = encoded.toCharArray();
+			
+			final StringBuilder sb = new StringBuilder(chars.length);
+			
+			for (int i=0; i<chars.length; i++){
+				char c = chars[i];
+				
+				if (c!='\r' && c!='\n')
+					sb.append(c);
+			}
+			
+			return sb.toString();
+		}
+		
+		return encoded;
 	}
+	
+    /**
+     * Decode some Base64-encoded data
+     * 
+     * @param data
+     * @return contents, or <code>null</code> if there was a problem decoding it
+     */
+    public static byte[] base64Decode(final String data){
+        final BASE64Decoder decoder = new BASE64Decoder();
+
+        try{
+            return decoder.decodeBuffer(data);
+        }
+        catch (IOException ioe){
+            return null;
+        }
+    }
+
 }

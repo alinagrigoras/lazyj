@@ -42,6 +42,9 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 import lazyj.cache.ExpirationCache;
 import lazyj.page.BasePage;
 
@@ -681,9 +684,9 @@ public final class Utils {
 	 */
 	public static byte[] compress(final byte[] buffer){
 		try{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
-			GZIPOutputStream gzipos = new GZIPOutputStream(baos);
+			final GZIPOutputStream gzipos = new GZIPOutputStream(baos);
 		
 			gzipos.write(buffer);
 			gzipos.flush();
@@ -706,11 +709,11 @@ public final class Utils {
 	 */
 	public static byte[] uncompress(final byte[] buffer){
 		try{
-			GZIPInputStream gzipis = new GZIPInputStream(new ByteArrayInputStream(buffer));
+			final GZIPInputStream gzipis = new GZIPInputStream(new ByteArrayInputStream(buffer));
 			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			
-			byte[] tmp = new byte[1024];
+			final byte[] tmp = new byte[1024];
 			int len;
 			
 			while ( (len=gzipis.read(tmp))>0 ){
@@ -1022,5 +1025,54 @@ public final class Utils {
 	 */
 	public static void main(String[] args) {
 		getLazyjConfigFolder();
+	}
+
+	/**
+	 * Encode a byte array to a single-line BASE64-encoded string.
+	 * The output is ~4/3 the size of the original data.
+	 * 
+	 * @param b bytes to encode
+	 * @return BASE64-encoding
+	 * @see BASE64Encoder
+	 */
+	public static String base64Encode(final byte[] b){
+		final BASE64Encoder base64Enc = new BASE64Encoder();
+		
+		final String encoded = base64Enc.encode(b);
+		
+		if (encoded.indexOf('\n')>=0 || encoded.indexOf('\r')>=0){
+			final char[] chars = encoded.toCharArray();
+			
+			final StringBuilder sb = new StringBuilder(chars.length);
+			
+			for (int i=0; i<chars.length; i++){
+				char c = chars[i];
+				
+				if (c!='\r' && c!='\n')
+					sb.append(c);
+			}
+			
+			return sb.toString();
+		}
+		
+		return encoded;
+	}
+
+	/**
+	 * Decode some Base64-encoded data
+	 * 
+	 * @param data
+	 * @return contents, or <code>null</code> if there was a problem decoding it
+	 * @see BASE64Decoder
+	 */
+	public static byte[] base64Decode(final String data){
+	    final BASE64Decoder decoder = new BASE64Decoder();
+	
+	    try{
+	        return decoder.decodeBuffer(data);
+	    }
+	    catch (IOException ioe){
+	        return null;
+	    }
 	}
 }

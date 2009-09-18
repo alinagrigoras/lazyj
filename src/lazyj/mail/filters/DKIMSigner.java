@@ -24,11 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import lazyj.Format;
+import lazyj.Utils;
 import lazyj.mail.Mail;
 import lazyj.mail.MailFilter;
 import lazyj.mail.Sendmail;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * This class is used as a {@link Sendmail} filter to sign the mail with a private key.<br>
@@ -253,7 +252,7 @@ public class DKIMSigner implements MailFilter {
 		
 		fields.put("l", String.valueOf(sCanonBody.length()));
 		
-		fields.put("bh", base64Encode(this.digester.digest(sCanonBody.getBytes())));
+		fields.put("bh", Utils.base64Encode(this.digester.digest(sCanonBody.getBytes())));
 		
 		fields.put("b", "");
 		
@@ -278,7 +277,7 @@ public class DKIMSigner implements MailFilter {
 			this.signer.update(sHeaders.getBytes());
 			byte[] signedSignature = this.signer.sign();
 			
-			mailHeaders.put(DKIM, sKeyValue+base64Encode(signedSignature));
+			mailHeaders.put(DKIM, sKeyValue+Utils.base64Encode(signedSignature));
 		}
 		catch (SignatureException se){
 			// ignore
@@ -319,54 +318,5 @@ public class DKIMSigner implements MailFilter {
 		
 		return ret;
 	}
-	
-	/**
-	 * Encode a byte array to a single-line BASE64-encoded string.
-	 * The output is ~4/3 the size of the original data.
-	 * 
-	 * @param b bytes to encode
-	 * @return BASE64-encoding
-	 * @see BASE64Encoder
-	 */
-	public static String base64Encode(final byte[] b){
-		final BASE64Encoder base64Enc = new BASE64Encoder();
-		
-		final String encoded = base64Enc.encode(b);
-		
-		if (encoded.indexOf('\n')>=0 || encoded.indexOf('\r')>=0){
-			final char[] chars = encoded.toCharArray();
-			
-			final StringBuilder sb = new StringBuilder(chars.length);
-			
-			for (int i=0; i<chars.length; i++){
-				char c = chars[i];
-				
-				if (c!='\r' && c!='\n')
-					sb.append(c);
-			}
-			
-			return sb.toString();
-		}
-		
-		return encoded;
-	}
-	
-    /**
-     * Decode some Base64-encoded data
-     * 
-     * @param data
-     * @return contents, or <code>null</code> if there was a problem decoding it
-     * @see BASE64Decoder
-     */
-    public static byte[] base64Decode(final String data){
-        final BASE64Decoder decoder = new BASE64Decoder();
-
-        try{
-            return decoder.decodeBuffer(data);
-        }
-        catch (IOException ioe){
-            return null;
-        }
-    }
 
 }

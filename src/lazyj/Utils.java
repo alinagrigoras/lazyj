@@ -20,6 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.Provider;
+import java.security.Security;
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +36,9 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.spec.SecretKeySpec;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -1019,12 +1024,122 @@ public final class Utils {
 		return bDefault;
 	}
 	
+	/**
+	 * Encrypt or decrypt using Blowfish algorithm
+	 * 
+	 * @param input
+	 * @param key
+	 * @param mode
+	 * @return the data
+	 * @throws Exception
+	 */
+	private static byte[] blowfishCrypt(final byte[] input, final byte[] key, final int mode) throws Exception {
+		final Provider sunJce = new com.sun.crypto.provider.SunJCE();
+		Security.addProvider(sunJce);
+
+		final SecretKeySpec skeySpec = new SecretKeySpec(key, "Blowfish");
+       
+		final Cipher cipher = Cipher.getInstance("Blowfish/ECB/PKCS5Padding");
+		cipher.init(mode, skeySpec);
+
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final ByteArrayInputStream bis = new ByteArrayInputStream(input);
+		final CipherOutputStream cos = new CipherOutputStream(bos, cipher);
+
+		int length = 0;
+		final byte[] buffer =  new byte[1024];
+
+		while ((length = bis.read(buffer)) != -1) {
+			cos.write(buffer, 0, length);
+		}
+
+		bis.close();
+		cos.close();
+
+		return bos.toByteArray();
+	}
+	
+	/**
+	 * Encrypt some input data using Blowfish with the given key
+	 * 
+	 * @param input
+	 * @param key
+	 * @return encrypted data
+	 */
+	public static byte[] blowfishCrypt(final byte[] input, final byte[] key){
+		try{
+			return blowfishCrypt(input, key, Cipher.ENCRYPT_MODE);
+		}
+		catch (Exception e){
+			return null;
+		}
+	}
+	
+	/**
+	 * Encrypt some input text using Blowfish with the given key
+	 * 
+	 * @param input
+	 * @param key
+	 * @return Base64-encoded encrypted text, <code>null</code> on error
+	 */
+	public static String blowfishCrypt(final String input, final String key){
+		try{
+			return base64Encode(blowfishCrypt(input.getBytes(), key.getBytes()));
+		}
+		catch (Exception e){
+			return null;
+		}
+	}
+	
+	/**
+	 * Decrypt using Blowfish and the given key
+	 * 
+	 * @param input
+	 * @param key
+	 * @return decrypted data
+	 */
+	public static byte[] blowfishDecrypt(final byte[] input, final byte[] key){
+		try{
+			return blowfishCrypt(input, key, Cipher.DECRYPT_MODE);
+		}
+		catch (Exception e){
+			return null;
+		}
+	}
+	
+	/**
+	 * Decrypt a Base64-encoded text using Blowfish and the given key
+	 * 
+	 * @param input
+	 * @param key
+	 * @return decoded text, or <code>null</code> on error
+	 */
+	public static String blowfishDecrypt(final String input, final String key){
+		try{
+			return new String(blowfishDecrypt(base64Decode(input), key.getBytes()));
+		}
+		catch (Exception e){
+			return null;
+		}
+	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		getLazyjConfigFolder();
+		String orig = "something longer to make more sense";
+		
+		String key = "blabla";
+		
+		byte[] input = orig.getBytes();
+		
+		byte[] k = key.getBytes();
+		
+		byte[] enc = blowfishCrypt(input, k);
+		
+		System.err.println("Original: "+input.length+", enc: "+enc.length);
+		
+		System.err.println(blowfishDecrypt(blowfishCrypt(orig, key), key));
 	}
 
 	/**

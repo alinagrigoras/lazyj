@@ -499,18 +499,19 @@ public class BasePage implements TemplatePage {
 	/**
 	 * Shortcut for easy hiding of pieces of html. It will act on TAGNAME_start and TAGNAME_end tags in the template.
 	 * If the flag is true then the contents will be displayed. If not everything between *_start and *_end will be cut.
+	 * At the same time it will do the oposite on "!TAGNAME_start" and "!TAGNAME_end" (like an if/else clause in the template).
 	 * 
 	 * @param sTagName base name of the two tags
 	 * @param bShow true if you want to display the contents, false if you want to hide it
 	 */
 	public void comment(final String sTagName, final boolean bShow) {
-		final String sTag = StringFactory.get(sTagName);
-		
 		if (bShow) {
-			this.sComments.remove(sTag);
+			this.sComments.remove(sTagName);
+			this.sComments.add(StringFactory.get("!"+sTagName));
 		}
 		else {
-			this.sComments.add(sTag);
+			this.sComments.add(StringFactory.get(sTagName));
+			this.sComments.remove("!"+sTagName);
 		}
 	}
 

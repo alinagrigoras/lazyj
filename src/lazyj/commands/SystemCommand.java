@@ -3,6 +3,8 @@ package lazyj.commands;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -62,21 +64,21 @@ public final class SystemCommand extends Thread{
 
     /**
      * Execute the given command
-     * @param sCommand command to execute
+     * @param command to execute
      * @return the output. or <code>null</code> if any problem
      */
-    public static CommandOutput executeCommand(final String sCommand){
-        return executeCommand(sCommand, false);
+    public static CommandOutput executeCommand(final List<String> command){
+        return executeCommand(command, false);
     }
 
     /**
      * Execute the given command, optionally redirecting the stderr to stdout
-     * @param sCommand command to execute
+     * @param command command to execute
      * @param bRedirectStderr if true then stderr will be mangled with stdout
      * @return the output, or <code>null</code> if there was a problem
      */
-    public static CommandOutput executeCommand(final String sCommand, final boolean bRedirectStderr){
-        final ProcessBuilder pb = new ProcessBuilder(java.util.Arrays.asList(sCommand.split("\\s"))); //$NON-NLS-1$
+    public static CommandOutput executeCommand(final List<String> command, final boolean bRedirectStderr){
+        final ProcessBuilder pb = new ProcessBuilder(command);
 
         pb.redirectErrorStream(bRedirectStderr);
 
@@ -121,6 +123,28 @@ public final class SystemCommand extends Thread{
         }
 
         return new CommandOutput(sb.toString(), sbErr.toString());
+    }
+    
+    /**
+     * Have the command executed via a bash interpreter 
+     * 
+     * @param command
+     * @return the output
+     */
+    public static CommandOutput bash(final String command){
+    	return bash(command, false);
+    }
+    
+    /**
+     * Have the command executed via a bash interpreter 
+     * 
+     * @param command
+     * @param bRedirectStderr
+     * @return the output
+     */
+    @SuppressWarnings("nls")
+	public static CommandOutput bash(final String command, final boolean bRedirectStderr){
+    	return executeCommand(Arrays.asList("/bin/bash", "-c", command));
     }
 
 }

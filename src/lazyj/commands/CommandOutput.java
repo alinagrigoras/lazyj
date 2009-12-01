@@ -22,7 +22,7 @@ public class CommandOutput {
      * @param _stdout stdout
      * @param _stderr stderr
      */
-    CommandOutput(final String _stdout, final String _stderr){
+    public CommandOutput(final String _stdout, final String _stderr){
         this.stdout = _stdout;
         this.stderr = _stderr;
     }

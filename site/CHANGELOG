@@ -1,4 +1,8 @@
 1.0.6:
+	2009-12-01:
+	lazyj.commands.*
+		- added this package to help in getting the output from a system command
+
 	2009-09-16:
 	lazyj.mail.Sendmail:
 		- refactoring of the code to first build the entire mail in memory then

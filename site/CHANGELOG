@@ -1,4 +1,8 @@
 1.0.6:
+	2009-12-12:
+	lazyj.page.tags.Interval
+		- added
+
 	2009-12-01:
 	lazyj.commands.*
 		- added this package to help in getting the output from a system command

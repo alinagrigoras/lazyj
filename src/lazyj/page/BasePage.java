@@ -33,6 +33,7 @@ import lazyj.page.tags.Date;
 import lazyj.page.tags.Dot;
 import lazyj.page.tags.Enc;
 import lazyj.page.tags.Esc;
+import lazyj.page.tags.Interval;
 import lazyj.page.tags.JS;
 import lazyj.page.tags.NiceDate;
 import lazyj.page.tags.Size;
@@ -387,6 +388,10 @@ public class BasePage implements TemplatePage {
 
 		final String sTag = StringFactory.get(sTagName);
 		
+		// this tag is not defined in the template, discard the useless value
+		if (!this.tp.getTagsSet().contains(sTagName))
+			return;
+		
 		StringBuilder sb = this.mValues.get(sTag);
 		
 		final CharSequence value;
@@ -648,6 +653,7 @@ public class BasePage implements TemplatePage {
 		final Date date = new Date();
 		final Checked check = new Checked();
 		final DDot ddot = new DDot();
+		final Interval interval = new Interval();
 		
 		registerExactTag("check", check); //$NON-NLS-1$
 		registerExactTag("checked", check); //$NON-NLS-1$
@@ -664,11 +670,13 @@ public class BasePage implements TemplatePage {
 		registerExactTag("uenc", new UEnc()); //$NON-NLS-1$
 		registerExactTag("under", new Under()); //$NON-NLS-1$
 		registerExactTag("res", new Res()); //$NON-NLS-1$
+		registerExactTag("interval", interval); //$NON-NLS-1$
 		
 		registerRegexpTag("date.+", date); //$NON-NLS-1$
 		registerRegexpTag("cut[0-9]+", new Cut()); //$NON-NLS-1$
 		registerRegexpTag("ddot[0-9]+", new DDot()); //$NON-NLS-1$
 		registerRegexpTag("strip([,a-z]*)", new Strip()); //$NON-NLS-1$
+		registerRegexpTag("interval(ms|s|m|h|d|w|mo|y)", interval); //$NON-NLS-1$
 	}
 	
 	/**

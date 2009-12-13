@@ -389,7 +389,8 @@ public class BasePage implements TemplatePage {
 		final String sTag = StringFactory.get(sTagName);
 		
 		// this tag is not defined in the template, discard the useless value
-		if (!this.tp.getTagsSet().contains(sTagName))
+		final Set<String> tagsSet = this.tp.getTagsSet(); 
+		if (tagsSet==null || !tagsSet.contains(sTagName))
 			return;
 		
 		StringBuilder sb = this.mValues.get(sTag);

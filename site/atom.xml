@@ -4,13 +4,40 @@
   <title>LazyJ</title>
   <link href="http://lazyj.sourceforge.net/"/>
 
-  <updated>2007-11-23T00:00:00.000Z</updated>
+  <updated>2009-12-20T00:00:00.000Z</updated>
   <author>
     <name>Costin Grigoras</name>
     <email>costing@gmail.com</email>
   </author>
   <id>http://lazyj.sourceforge.net/</id>
   <subtitle>LazyJ news, releases</subtitle>
+
+  <entry>
+    <id>5</id>
+    <title type="html">LazyJ 1.0.6</title>
+    <link rel="alternate" href="http://lazyj.sourceforge.net/"/>
+    <published>2009-12-20T00:00:00.000Z</published>
+    <updated>2009-12-20T00:00:00.000Z</updated>
+    <summary type="html">LazyJ 1.0.6 was released on 20.12.2009</summary>
+    <content type="html"> 
+        <![CDATA[
+	    <b>LazyJ 1.0.6</b> was released on 20.12.2009. You can always download the latest version from <a href="http://lazyj.sourceforge.net/download/lazyj.jar">here</a>.<br>
+	    <br>
+	    Full changelog is <a href="http://lazyj.sourceforge.net/CHANGELOG">here</a>.<br>
+	    <br>
+	    Short summary of changes:<ul>
+		<li>Use StringBuilder instead of StringBuffer</li>
+		<li>Extended access to DBFunctions, to create any custom connection</li>
+		<li>Expose page tags to everybody</li>
+		<li>Add mail filters and DKIM signing support</li>
+		<li>Add support to execute system commands and get the output of them</li>
+		<li>Add a new formatting option: <i>interval</i></li>
+	    </ul>
+        ]]>
+    </content>
+    <category term="Java WEB RAD framework"/>
+  </entry>
+
 
   <entry>
     <id>4</id>

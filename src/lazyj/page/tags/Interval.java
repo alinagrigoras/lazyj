@@ -26,6 +26,7 @@ public final class Interval implements StringFormat {
      * @return time representation
      * @see Format#toInterval(long)
      */
+	@SuppressWarnings("nls")
 	public String format(final String sTag, final String sOption, final String s) {
 		if (s==null || s.length()==0){
 			// empty string

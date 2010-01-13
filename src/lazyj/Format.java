@@ -22,8 +22,33 @@ public final class Format {
 	 * 
 	 * @param dim file size, in bytes
 	 * @return the nice human-readable size
+	 * @see #size(double, String)
 	 */
-	public static String size(final long dim) {
+	public static String size(final long dim){
+		return size((double) dim);
+	}
+	
+	/**
+	 * Nicely show a size, starting from a given measurement unit.
+	 * 
+	 * @param size file size, in the specified unit
+	 * @param unit unit. Can be nothing(==B) or one of the following: B, K, M, G, T, P
+	 * @return nice human-readable size
+	 * @since 1.0.7
+	 */
+	public static String size(final long size, final String unit){
+		return size((double) size, unit);
+	}
+	
+	/**
+	 * Nicely show the size of a file. Something like 12.1KB, 0.75MB ...
+	 * 
+	 * @param dim file size, in bytes
+	 * @return the nice human-readable size
+	 * @see #size(double, String)
+	 * @since 1.0.7
+	 */
+	public static String size(final double dim) {
 		return size(dim, "B"); //$NON-NLS-1$
 	}
 	
@@ -35,7 +60,7 @@ public final class Format {
 	 * @return nice human-readable size
 	 * @since 1.0.5
 	 */
-	public static String size(final long size, final String unit){
+	public static String size(final double size, final String unit){
 		final double dDiv = 1024;
 		
 		String sSize = unit!=null ? unit.toUpperCase(Locale.getDefault()) : "B"; //$NON-NLS-1$
@@ -86,8 +111,8 @@ public final class Format {
 			}
 		}
 
-		if (dDiv < 1024d && sSize.equals("B")) //$NON-NLS-1$
-			sSize = "b"; //$NON-NLS-1$
+		//if (dDiv < 1024d && sSize.equals("B")) //$NON-NLS-1$
+		//	sSize = "b"; //$NON-NLS-1$
 
 		String sRez = point(d);
 		
@@ -786,12 +811,12 @@ public final class Format {
 			if (d > 0)
 				sRez = d + "d " + h + ':' + show0((int)m); //$NON-NLS-1$
 			else if (h > 0)
-				sRez = h + ":" + show0((int)m);
+				sRez = h + ":" + show0((int)m); //$NON-NLS-1$
 			else {
 				sRez = m + "m"; //$NON-NLS-1$
 
 				if (s > 0)
-					sRez += " " + s + 's';
+					sRez += " " + s + 's'; //$NON-NLS-1$
 			}
 		}
 

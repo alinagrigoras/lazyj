@@ -1,3 +1,11 @@
+1.0.7:
+	2010-01-13:
+	lazyj.page.tags.Size
+		- now supports specifying the measurement unit (defaulting to B)
+	
+	lazyj.Format
+		- size() with double parameters
+
 1.0.6:
 	2009-12-12:
 	lazyj.page.tags.Interval

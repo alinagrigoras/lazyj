@@ -513,11 +513,11 @@ public class BasePage implements TemplatePage {
 	public void comment(final String sTagName, final boolean bShow) {
 		if (bShow) {
 			this.sComments.remove(sTagName);
-			this.sComments.add(StringFactory.get("!"+sTagName));
+			this.sComments.add(StringFactory.get("!"+sTagName)); //$NON-NLS-1$
 		}
 		else {
 			this.sComments.add(StringFactory.get(sTagName));
-			this.sComments.remove("!"+sTagName);
+			this.sComments.remove("!"+sTagName); //$NON-NLS-1$
 		}
 	}
 
@@ -678,6 +678,7 @@ public class BasePage implements TemplatePage {
 		registerRegexpTag("ddot[0-9]+", new DDot()); //$NON-NLS-1$
 		registerRegexpTag("strip([,a-z]*)", new Strip()); //$NON-NLS-1$
 		registerRegexpTag("interval(ms|s|m|h|d|w|mo|y)", interval); //$NON-NLS-1$
+		registerRegexpTag("size[BKMGTPXbkmgtpx]", interval); //$NON-NLS-1$
 	}
 	
 	/**

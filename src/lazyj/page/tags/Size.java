@@ -20,14 +20,17 @@ public final class Size implements StringFormat {
 	 * Use this to display file sizes. You should provide the file size in bytes as the value to this tag.
 	 * 
 	 * @param sTag tag name, ignored
-	 * @param sOption always "size"
-	 * @param s string to format, the file size in bytes
+	 * @param sOption "size" (bytes) or "size[UNIT]" where UNIT can be one of B,K,M,G,T,P,X
+	 * @param s string to format, the size in the unit above 
 	 * @return human-friendly size
 	 * @see Format#size(long)
 	 */
 	public String format(final String sTag, final String sOption, final String s) {
 		try {
-			return Format.size(Long.parseLong(s));
+			if (sOption.length()>4)
+				return Format.size(Double.parseDouble(s), sOption.substring(4));
+			
+			return Format.size(Double.parseDouble(s));
 		} catch (NumberFormatException e) {
 			return null;
 		}

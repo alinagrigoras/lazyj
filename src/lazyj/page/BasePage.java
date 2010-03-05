@@ -655,6 +655,7 @@ public class BasePage implements TemplatePage {
 		final Checked check = new Checked();
 		final DDot ddot = new DDot();
 		final Interval interval = new Interval();
+		final Size size = new Size();
 		
 		registerExactTag("check", check); //$NON-NLS-1$
 		registerExactTag("checked", check); //$NON-NLS-1$
@@ -666,7 +667,7 @@ public class BasePage implements TemplatePage {
 		registerExactTag("esc", new Esc()); //$NON-NLS-1$
 		registerExactTag("js", new JS()); //$NON-NLS-1$
 		registerExactTag("nicedate", new NiceDate()); //$NON-NLS-1$
-		registerExactTag("size", new Size()); //$NON-NLS-1$
+		registerExactTag("size", size); //$NON-NLS-1$
 		registerExactTag("time", new Time()); //$NON-NLS-1$
 		registerExactTag("uenc", new UEnc()); //$NON-NLS-1$
 		registerExactTag("under", new Under()); //$NON-NLS-1$
@@ -678,7 +679,7 @@ public class BasePage implements TemplatePage {
 		registerRegexpTag("ddot[0-9]+", new DDot()); //$NON-NLS-1$
 		registerRegexpTag("strip([,a-z]*)", new Strip()); //$NON-NLS-1$
 		registerRegexpTag("interval(ms|s|m|h|d|w|mo|y)", interval); //$NON-NLS-1$
-		registerRegexpTag("size[BKMGTPXbkmgtpx]", interval); //$NON-NLS-1$
+		registerRegexpTag("size[BKMGTPXbkmgtpx]", size); //$NON-NLS-1$
 	}
 	
 	/**

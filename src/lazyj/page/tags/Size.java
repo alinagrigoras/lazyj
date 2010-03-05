@@ -27,7 +27,7 @@ public final class Size implements StringFormat {
 	 */
 	public String format(final String sTag, final String sOption, final String s) {
 		try {
-			if (sOption.length()>4)
+			if (sOption!=null && sOption.length()>4)
 				return Format.size(Double.parseDouble(s), sOption.substring(4));
 			
 			return Format.size(Double.parseDouble(s));

@@ -3,6 +3,8 @@
 	lazyj.mail.FileTypes
 		- update MIME types to Ubuntu 9.10 ones
 		- add MIME types for ROOT and JDL
+	lazyj.mail.Sendmail
+		- better splitting on new lines of very long headers without spaces
 
 	2010-01-13:
 	lazyj.page.tags.Size

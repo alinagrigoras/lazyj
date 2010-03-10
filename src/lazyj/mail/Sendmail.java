@@ -229,21 +229,22 @@ public class Sendmail {
 	 * Extract all the destination email addresses by parsing the To, CC and BCC fields.
 	 * 
 	 * @param mail a mail from which to extract all destination mails
-	 * @return an Iterator over the adresses
+	 * @return an Iterator over the addresses
 	 */
 	private Iterator<String> addresses(final Mail mail) {
-		List<String> adr = new LinkedList<String>();
+		final List<String> adr = new LinkedList<String>();
+		
 		List<String> lTemp = adrFromString(mail.sTo);
 		if ((lTemp != null) && (!lTemp.isEmpty()))
-			adr.addAll(adrFromString(mail.sTo));
+			adr.addAll(lTemp);
 
 		lTemp = adrFromString(mail.sCC);
 		if ((lTemp != null) && (!lTemp.isEmpty()))
-			adr.addAll(adrFromString(mail.sCC));
+			adr.addAll(lTemp);
 
 		lTemp = adrFromString(mail.sBCC);
 		if ((lTemp != null) && (!lTemp.isEmpty()))
-			adr.addAll(adrFromString(mail.sBCC));
+			adr.addAll(lTemp);
 
 		return adr.iterator();
 	}
@@ -537,17 +538,22 @@ public class Sendmail {
 			int count = me.getKey().length()+2;
 			
 			while (count+sValue.length()>=75){
-				int idx = 0;
-				while (idx<sValue.length() && sValue.charAt(idx)==' ')
-					idx++;
-
-				if (idx==sValue.length())
-					break;
-				
 				int idxmax = sValue.lastIndexOf(' ', 75-count);
 				
-				if (idxmax<idx)
-					idxmax = 75-count;
+				if (idxmax<=0){
+					idxmax = sValue.lastIndexOf(',', 75-count);
+									
+					if (idxmax<=0){
+						idxmax = sValue.lastIndexOf(';', 75-count);
+						
+						if (idxmax<=0)
+							idxmax = 75-count;
+						else
+							idxmax++;
+					}
+					else
+						idxmax++;
+				}
 				
 				output.append(sValue.substring(0, idxmax)).append(CRLF);
 				

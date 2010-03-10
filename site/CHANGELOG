@@ -1,4 +1,9 @@
 1.0.7:
+	2010-03-10:
+	lazyj.mail.FileTypes
+		- update MIME types to Ubuntu 9.10 ones
+		- add MIME types for ROOT and JDL
+
 	2010-01-13:
 	lazyj.page.tags.Size
 		- now supports specifying the measurement unit (defaulting to B)

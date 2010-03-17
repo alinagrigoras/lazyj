@@ -558,4 +558,15 @@ public final class FileTypes {
 	public static String getMIMETypeOfExtension(final String fileNameExtension){
 		return d.get(fileNameExtension.toLowerCase());
 	}
+	
+	/**
+	 * Register a new file extension
+	 * 
+	 * @param sExt file extension
+	 * @param sType MIME type for this file
+	 * @return old type, if it was defined
+	 */
+	public static String registerExtension(final String sExt, final String sType){
+		return d.put(sExt, sType);
+	}
 }

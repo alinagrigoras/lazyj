@@ -163,7 +163,11 @@ public class DKIMSigner implements MailFilter {
 		
 		try{
 			privKeyBytes = new byte[(int) privKeyFile.length()];
-			dis.read(privKeyBytes);
+			int count = dis.read(privKeyBytes);
+			
+			if (count != privKeyBytes.length)
+				throw new IOException("Could not read the entire contents");
+			
 			dis.close();
 		}
 		finally{

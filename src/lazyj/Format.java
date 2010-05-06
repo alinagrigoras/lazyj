@@ -105,7 +105,7 @@ public final class Format {
 				case 'M':
 					sSize = "K"; //$NON-NLS-1$
 					break;
-				case 'K':
+				default:
 					sSize = "B"; //$NON-NLS-1$
 					break;
 			}
@@ -473,7 +473,7 @@ public final class Format {
 	 * @return text with &lt;BR&gr; instead of the \n in the original text
 	 */
 	public static final String formatBR(final String text) {
-		return replace(replace(text, "\\r", ""), "\\n", "<BR>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		return replace(replace(text, "\r", ""), "\n", "<BR>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
 	/**
@@ -749,14 +749,11 @@ public final class Format {
 				if (i < 0)
 					i = sRez.length();
 
-				switch (i) {
-					case 1:
-						sRez = "00" + sRez; //$NON-NLS-1$
-						break;
-					case 2:
-						sRez = '0' + sRez;
-						break;
-				}
+				if (i==1)
+					sRez = "00" + sRez; //$NON-NLS-1$
+				else
+				if (i==2)
+					sRez = '0' + sRez;
 
 				sRez = ',' + sRez;
 			}

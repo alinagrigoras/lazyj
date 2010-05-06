@@ -118,7 +118,7 @@ public final class SystemCommand extends Thread{
         try{
             p.waitFor();
         }
-        catch (Exception e){
+        catch (Throwable e){
             // ignore
         }
 

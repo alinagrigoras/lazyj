@@ -175,11 +175,6 @@ public final class DateFileWatchdog extends Observable {
 		final ConcurrentHashMap<Long, DFWEntry>cmap = new ConcurrentHashMap<Long, DFWEntry>();
 
 		/**
-		 * Flag to tell it when to die
-		 */
-		private boolean hasToRun;
-
-		/**
 		 * Set the thread title and make the thread daemon
 		 */
 		public DFWManager() {
@@ -191,15 +186,6 @@ public final class DateFileWatchdog extends Observable {
 			catch (Throwable t) {
 				// well, we tried :)
 			}
-			
-			this.hasToRun = true;
-		}
-		
-		/**
-		 * Notify the thread that it's time to exit
-		 */
-		public void signalStop(){
-			this.hasToRun = false;
 		}
 
 		/**
@@ -265,7 +251,7 @@ public final class DateFileWatchdog extends Observable {
 		public void run() {
 			Log.log(Log.FINE, "lazyj.DateFileWatchdog", "started");  //$NON-NLS-1$//$NON-NLS-2$
 			
-			while (this.hasToRun) {
+			while (true) {
 				try {
 					DFWEntry dfe = null;
 					

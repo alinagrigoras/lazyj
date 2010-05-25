@@ -602,35 +602,25 @@ public class Sendmail {
 
 		mail.sEncoding = "quoted-printable";
 
-		String line1;
+		String sText;
 		
 		try {
-			line1 = bodyProcess(bHtmlPart ? mail.sHTMLBody : mail.sBody, true);
+			sText = bodyProcess(bHtmlPart ? mail.sHTMLBody : mail.sBody, true);
 		}
 		catch (Exception e) {
-			Log.log(Log.ERROR, "lazyj.mail.Sendmail", "writeBody : bodyProcess error : sBody ("+(bHtmlPart ? "html" : "text")+" : '"+ mail.sBody+"'", e);
-			line1 = mail.sBody;
+			this.sError = "writeBody : bodyProcess error : sBody ("+(bHtmlPart ? "html" : "text")+" : '"+ mail.sBody+"'";
+			Log.log(Log.ERROR, "lazyj.mail.Sendmail", this.sError, e);
+			
+			this.sError += " : "+e;
+			
+			return false;
 		}
 
-		final StringTokenizer st = new StringTokenizer(line1, "\n", true);
-
-		int count = 1;
+		final StringTokenizer st = new StringTokenizer(sText, "\n");
 
 		while (st.hasMoreTokens()) {
-			String l = st.nextToken();
-
-			if (l.equals("\n")) {
-				count++;
-				if (count % 2 == 0)
-					continue;
-			} else
-				count = 1;
-
-			if (l.indexOf("\r\n") >= 0)
-				l = l.substring(0, l.indexOf("\r\n"));
-			if (l.indexOf("\n") >= 0)
-				l = l.substring(0, l.indexOf("\n"));
-
+			final String l = st.nextToken();
+			
 			if (l.equals("."))
 				output.append("..");
 			else

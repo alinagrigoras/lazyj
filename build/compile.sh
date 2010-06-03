@@ -10,4 +10,4 @@ done
 
 export JAVA_HOME=${JAVA_HOME:-/usr}
 
-find src -type f -name \*.java | xargs $JAVA_HOME/bin/javac -g -O -classpath "$CP" -d build/classes && build/build.sh
+find src -type f -name \*.java | xargs $JAVA_HOME/bin/javac -source 1.5 -g -O -classpath "$CP" -d build/classes && build/build.sh

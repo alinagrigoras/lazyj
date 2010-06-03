@@ -216,7 +216,6 @@ public class DKIMSigner implements MailFilter {
 	/* (non-Javadoc)
 	 * @see lazyj.mail.MailFilter#filter(java.util.Map, java.lang.String, java.lang.String, lazyj.mail.Mail)
 	 */
-	@Override
 	public void filter(final Map<String, String> mailHeaders, final String sBody, final Mail mail) {
 		final Map<String, String> fields = new LinkedHashMap<String, String>();
 		

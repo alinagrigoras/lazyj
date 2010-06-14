@@ -355,6 +355,13 @@ public class Sendmail {
 	}
 	
 	/**
+	 * Generate random boundary
+	 */
+	private void generateBoundary(){
+		this.sBoundary = sBoundaryInit + System.currentTimeMillis() + "." + r.nextLong(); //$NON-NLS-1$
+	}
+	
+	/**
 	 * Initial communication with the server. Sends all the command until the "data" section.
 	 * 
 	 * @param mail the mail that is sent
@@ -362,7 +369,7 @@ public class Sendmail {
 	 */
 	@SuppressWarnings("nls")
 	private boolean init(final Mail mail) {
-		this.sBoundary = sBoundaryInit + System.currentTimeMillis() + "." + r.nextLong();
+		generateBoundary();
 
 		try {
 			try {
@@ -506,8 +513,11 @@ public class Sendmail {
 		String sContentType = "multipart/alternative;";
 		
 		if (!mail.bConfirmation) {
-			if (mail.hasAttachments())
+			if (mail.hasAttachments()){
 				sContentType = "multipart/mixed;";
+				
+				mailHeaders.put("X-MS-Has-Attach", "Yes");
+			}
 		}
 		else {
 			mailHeaders.put("References", "<"+mail.sOrigMessageID+">");
@@ -583,19 +593,21 @@ public class Sendmail {
 	 */
 	@SuppressWarnings("nls")
 	private boolean writeBody(final Mail mail, final boolean bHtmlPart, final StringBuilder output) {
-		output.append("--").append(this.sBoundary).append(CRLF);
-
+		String sType = "text/plain";
+		
 		if (bHtmlPart) {
 			if ((mail.sHTMLBody == null) || (mail.sHTMLBody.length() <= 0))
 				return true;
-
-			output.append("Content-Type: text/html; charset=" + (mail.sContentType != null && mail.sContentType.length() > 0 ? mail.sContentType : "iso-8859-1")).append(CRLF);
-		} else {
+			
+			sType = "text/html";
+		}
+		else {
 			if ((mail.sBody == null) || (mail.sBody.length() <= 0))
 				return true;
-
-			output.append("Content-Type: text/plain; charset=" + (mail.sContentType != null && mail.sContentType.length() > 0 ? mail.sContentType : "iso-8859-1")).append(CRLF);
 		}
+		
+		output.append("--").append(this.sBoundary).append(CRLF);
+		output.append("Content-Type: "+sType+"; charset=" + (mail.sContentType != null && mail.sContentType.length() > 0 ? mail.sContentType : "iso-8859-1")).append(CRLF);
 
 		output.append("Content-Transfer-Encoding: quoted-printable").append(CRLF);
 		output.append(CRLF);
@@ -866,11 +878,28 @@ public class Sendmail {
 		
 		sbBody.append("This message is in MIME format.").append(CRLF).append(CRLF);
 		
+		final String sOldBoundary = this.sBoundary;
+		
+		if (mail.hasAttachments()){
+			sbBody.append("--").append(this.sBoundary).append(CRLF);
+			sbBody.append("Content-Type: multipart/alternative;").append(CRLF);
+			
+			generateBoundary();
+			
+			sbBody.append("\tboundary=\""+this.sBoundary+"\"").append(CRLF).append(CRLF).append(CRLF);
+		}
+			
 		if (!writeBody(mail, false, sbBody))
 			return false;
 		
 		if (!writeBody(mail, true, sbBody))
 			return false;
+		
+		if (mail.hasAttachments()){
+			sbBody.append("--").append(this.sBoundary).append("--").append(CRLF);
+			
+			this.sBoundary = sOldBoundary;
+		}
 		
 		if (mail.hasAttachments()) {
 			if (!processAttachments(mail, sbBody)) {

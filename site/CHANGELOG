@@ -1,4 +1,9 @@
 1.0.7:
+	2010-06-14:
+	lazyj.mail.Sendmail
+		- correctly send the HTML / plain text parts when there is an attachment
+		- fix boundaries when only one of plain/html parts was given 
+		
 	2010-03-10:
 	lazyj.mail.FileTypes
 		- update MIME types to Ubuntu 9.10 ones

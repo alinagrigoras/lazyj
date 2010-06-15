@@ -1806,7 +1806,7 @@ public class DBFunctions {
 			final String vs[] = new String[count];
 
 			for (int i = 1; i <= count; i++)
-				vs[i] = rsmd.getColumnName(i);
+				vs[i-1] = rsmd.getColumnName(i);
 
 			return vs;
 		} catch (Throwable e) {

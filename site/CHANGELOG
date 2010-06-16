@@ -1,4 +1,8 @@
 1.0.7:
+	2010-06-16
+	lazyj.page.BasePage
+		- avoid NPE when the template file exists but has size 0, thus the parser is null
+		
 	2010-06-14:
 	lazyj.mail.Sendmail
 		- correctly send the HTML / plain text parts when there is an attachment

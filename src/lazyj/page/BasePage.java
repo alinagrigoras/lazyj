@@ -383,7 +383,7 @@ public class BasePage implements TemplatePage {
 		if (sTagName==null)
 			throw new InvalidParameterException("Tag cannot be null"); //$NON-NLS-1$
 		
-		if (oValue==null)
+		if (oValue==null || this.tp==null)
 			return;
 
 		final String sTag = StringFactory.get(sTagName);

@@ -1201,7 +1201,7 @@ public final class Utils {
 	 * @see FileLinesIterable
 	 * @see FileLinesIterator
 	 */
-	public Iterable<String> getFileLines(final String file) throws IOException {
+	public static Iterable<String> getFileLines(final String file) throws IOException {
 		return new FileLinesIterable(new BufferedReader(new FileReader(file)));
 	}
 }

@@ -8,11 +8,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,11 +49,10 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
 import lazyj.cache.ExpirationCache;
 import lazyj.page.BasePage;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * Various utility functions, that are commonly used by everybody. Currently there are:<br>
@@ -1189,5 +1190,18 @@ public final class Utils {
 	    catch (IOException ioe){
 	        return null;
 	    }
+	}
+	
+	/**
+	 * Get an iterator over the lines in a file
+	 * 
+	 * @param file file to read
+	 * @return the iterator
+	 * @throws IOException an exception from the underlying IO
+	 * @see FileLinesIterable
+	 * @see FileLinesIterator
+	 */
+	public Iterable<String> getFileLines(final String file) throws IOException {
+		return new FileLinesIterable(new BufferedReader(new FileReader(file)));
 	}
 }

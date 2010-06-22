@@ -1,4 +1,12 @@
 1.0.7:
+	2010-06-22
+	lazyj.Utils
+		- add #getFileLines(final String file)
+	
+	lazyj.FileLinesIterator
+	lazyj.FileLinesIterable
+		- added
+
 	2010-06-16
 	lazyj.page.BasePage
 		- avoid NPE when the template file exists but has size 0, thus the parser is null

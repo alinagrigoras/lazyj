@@ -313,7 +313,7 @@ final class TemplateParser implements Observer {
 	 * @param callingServlet servlet that created the page, probably null unless {@link BasePage#setCallingServlet(ExtendedServlet)} is called
 	 * @return the string to be passed to the client
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "null" })
 	StringBuilder process(final Map<String, StringBuilder> mValues, final Set<String> sComments, final ExtendedServlet callingServlet){
 		final StringBuilder sb = new StringBuilder(this.iPrevSize);
 		

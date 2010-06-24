@@ -529,7 +529,7 @@ public final class Format {
 		}
 		
 		try{
-			long l = Long.parseLong(s);
+			long l = (long) Double.parseDouble(s);
 			
             if (l<2000000000)
                 l*=1000;

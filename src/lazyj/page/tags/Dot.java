@@ -26,7 +26,7 @@ public class Dot implements StringFormat {
 	 */
 	public String format(final String sTag, final String sOption, final String s) {
 		try {
-			return Format.showDottedLong(Long.parseLong(s));
+			return Format.showDottedLong((long) Double.parseDouble(s));
 		} catch (NumberFormatException e) {
 			return null;
 		}

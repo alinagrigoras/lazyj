@@ -534,6 +534,18 @@ public class BasePage implements TemplatePage {
 			modify(sTag, db.gets(sTag));
 		}
 	}
+	
+	/**
+	 * Get the template fields that have the "db" option.
+	 * 
+	 * @return set of tags, can be <code>null</code>
+	 */
+	public Set<String> getDBTags(){
+		if (this.tp == null)
+			return null;
+		
+		return this.tp.getDBTags();
+	}
 
 	/**
 	 * Base path for the system-wide html templates that are made available to be included in any app.
@@ -756,6 +768,9 @@ public class BasePage implements TemplatePage {
 	 * @since 1.0.6
 	 */
 	public Set<String> getTagsSet(){
+		if (this.tp==null)
+			return null;
+		
 		return this.tp.getTagsSet();
 	}
 	

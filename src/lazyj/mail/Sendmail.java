@@ -943,36 +943,30 @@ public class Sendmail {
 		StringBuilder sbBody = new StringBuilder(BD.length() + 2000);
 
 		if (bStripCodes) {
-			int i, len = BD.length();
-			for (i = 0; i < len; i++) {
-				char c = BD.charAt(i);
+			final int len = BD.length();
+			for (int i = 0; i < len; i++) {
+				final char c = BD.charAt(i);
 				if (c > 127 || c == '=') {
-					byte[] vb = Character.valueOf(c).toString().getBytes();
+					final byte[] vb = Character.valueOf(c).toString().getBytes();
 					
-					for (byte b : vb)
+					for (final byte b : vb)
 						sbBody.append('=').append(hexChar((b >>> 4) & 0x0F)).append(hexChar(b & 0x0F));
 				}
 				else
 					sbBody.append(c);
 			}
-			BD = sbBody.toString();
 
-			while ((i = BD.indexOf(" \n")) >= 0) {
-				BD = BD.substring(0, i) + "=20\n" + BD.substring(i + 2);
-			}
+			BD = Format.replace(sbBody.toString(), " \n", "=20\n");
+			
+			sbBody = new StringBuilder(BD.length() + 500);
 		}
 
-		sbBody = new StringBuilder(BD.length() + 500);
-
-		StringTokenizer st1 = new StringTokenizer(BD, "\n");
-
-		StringBuilder sbResultPartial;
-		String sTemp1;
+		final StringTokenizer st1 = new StringTokenizer(BD, "\n");
 
 		while (st1.hasMoreTokens()) {
-			sTemp1 = st1.nextToken();
+			String sTemp1 = st1.nextToken();
 
-			sbResultPartial = new StringBuilder(sTemp1.length() + 20);
+			final StringBuilder sbResultPartial = new StringBuilder(sTemp1.length() + 20);
 
 			while ((sTemp1.length() > 0) && (sTemp1.charAt(sTemp1.length() - 1) == ' '))
 				sTemp1 = sTemp1.substring(0, sTemp1.length() - 1);
@@ -980,8 +974,9 @@ public class Sendmail {
 			if ((sTemp1.length() == 0) || ((sTemp1.length() == 1) && (sTemp1.charAt(0) == 13)))
 				sTemp1 = "";
 
-			StringTokenizer st2 = new StringTokenizer(sTemp1, " ;,!", true);
+			final StringTokenizer st2 = new StringTokenizer(sTemp1, " ;,!", true);
 			int size = 0;
+			
 			while (st2.hasMoreTokens()) {
 				String sTemp2 = st2.nextToken();
 				if (size + sTemp2.length() < LINE_MAX_LENGTH) {
@@ -1023,13 +1018,8 @@ public class Sendmail {
 			if (sResultPartial.startsWith("."))
 				sResultPartial = "." + sResultPartial;
 
-			int pDot = 0;
-			while ((pDot = sResultPartial.indexOf("\n.", pDot)) >= 0) {
-				pDot = sResultPartial.indexOf(".", pDot);
-				sResultPartial = sResultPartial.substring(0, pDot) + "." + sResultPartial.substring(pDot);
-				pDot++;
-			}
-
+			sResultPartial = Format.replace(sResultPartial, "\n.", "\n..");
+			
 			sbBody.append(sResultPartial).append("\n");
 		}
 

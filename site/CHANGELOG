@@ -1,4 +1,8 @@
 1.0.7:
+	2010-09-08
+	lazyj.DBFunctions
+		- add getEquivalentInsert(..) methods
+
 	2010-06-22
 	lazyj.Utils
 		- add #getFileLines(final String file)

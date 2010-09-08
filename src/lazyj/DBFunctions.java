@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
@@ -1888,7 +1889,7 @@ public class DBFunctions {
 	/**
 	 * Get the SQL INSERT statement that would generate the current row with all the columns (their aliases more precisely).
 	 * 
-	 * @param sTable
+	 * @param sTable table name
 	 * @return the INSERT statement, or <code>null</code> if any problem
 	 */
 	public final String getEquivalentInsert(final String sTable){
@@ -1901,12 +1902,25 @@ public class DBFunctions {
 	/**
 	 * Get the SQL INSERT statement that would generate the current row, for the given list of columns
 	 * 
-	 * @param sTable
-	 * @param columns
+	 * @param sTable table name
+	 * @param columns what column names are to be taken into account
 	 * @return the INSERT statement, or <code>null</code> if there was any problem
 	 */
 	@SuppressWarnings("nls")
 	public final String getEquivalentInsert(final String sTable, final String[] columns){
+		return getEquivalentInsert(sTable, columns, null);
+	}
+	
+	/**
+	 * Get the SQL INSERT statement that would generate the current row, for the given list of columns
+	 * 
+	 * @param sTable table name
+	 * @param columns what column names are to be taken into account. Non-existing column names are ignored.
+	 * @param overrides value overrides. Column names that don't exist in the columns selection are appended to the output.
+	 * @return the INSERT statement, or <code>null</code> if there was any problem
+	 */
+	@SuppressWarnings("nls")
+	public final String getEquivalentInsert(final String sTable, final String[] columns, final Map<String, ?> overrides){
 		final ResultSetMetaData meta = getMetaData();
 		
 		if (meta==null)
@@ -1936,14 +1950,27 @@ public class DBFunctions {
 			else
 				bFirst = false;
 			
-			sb.append(columns[i]);
+			sb.append(Format.escSQL(columns[i]));
 			
-			String sValue = gets(idx); 
+			final String sValue;
+			
+			if (overrides!=null && overrides.containsKey(columns[i])){
+				final Object o = overrides.get(columns[i]);
+				
+				sValue = o!=null ? o.toString() : null;	 
+			}
+			else
+				sValue = gets(idx+1, null);
 
+			if (sValue==null){
+				sbValues.append("null");
+				continue;
+			}
+			
 			final int iType;
 			
 			try{
-				 iType = meta.getColumnType(idx);
+				 iType = meta.getColumnType(idx+1);
 			}
 			catch (SQLException sqle){
 				return null;
@@ -1951,11 +1978,43 @@ public class DBFunctions {
 			
 			if (iType == 1 || iType == 12 || iType == -1 || iType == -15 || iType == -9 || iType == -16 || iType == 2009 ||	// string types
 					iType == 91 || iType == 92 || iType == 93 // date / time / timestamp
-			){
-				sValue = '\''+Format.escSQL(sValue)+'\''; 
+			)
+			{
+				sbValues.append('\'').append(Format.escSQL(sValue)).append('\''); 
 			}
-			
-			sbValues.append(sValue);
+			else{
+				sbValues.append(Format.escSQL(sValue));
+			}
+		}
+		
+		if (overrides!=null){
+			for (final Map.Entry<String, ?> me: overrides.entrySet()){
+				if (columnNames.contains(me.getKey()))
+					continue;
+								
+				if (!bFirst){
+					sb.append(',');
+					sbValues.append(',');
+				}
+				else
+					bFirst = false;
+				
+				sb.append(Format.escSQL(me.getKey()));
+				
+				final Object o = me.getValue();
+				
+				if (o==null){
+					sbValues.append("null");
+				}
+				else{
+					final String s = o.toString();
+					
+					if (!(o instanceof Number))
+						sbValues.append('\'').append(Format.escSQL(s)).append('\'');
+					else
+						sbValues.append(Format.escSQL(s));
+				}
+			}
 		}
 		
 		sb.append(')').append(sbValues).append(");"); //$NON-NLS-1$

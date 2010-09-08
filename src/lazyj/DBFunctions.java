@@ -7,11 +7,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
@@ -1881,5 +1883,83 @@ public class DBFunctions {
 		}
 
 		return hm;
+	}
+	
+	/**
+	 * Get the SQL INSERT statement that would generate the current row with all the columns (their aliases more precisely).
+	 * 
+	 * @param sTable
+	 * @return the INSERT statement, or <code>null</code> if any problem
+	 */
+	public final String getEquivalentInsert(final String sTable){
+		if ((this.dbc == null) || this.rsRezultat == null)
+			return null;
+		
+		return getEquivalentInsert(sTable, getColumnNames());
+	}
+	
+	/**
+	 * Get the SQL INSERT statement that would generate the current row, for the given list of columns
+	 * 
+	 * @param sTable
+	 * @param columns
+	 * @return the INSERT statement, or <code>null</code> if there was any problem
+	 */
+	@SuppressWarnings("nls")
+	public final String getEquivalentInsert(final String sTable, final String[] columns){
+		final ResultSetMetaData meta = getMetaData();
+		
+		if (meta==null)
+			return null;
+		
+		final StringBuilder sb = new StringBuilder("INSERT INTO "+sTable+" (");
+
+		final StringBuilder sbValues = new StringBuilder(" VALUES (");
+		
+		final List<String> columnNames = Arrays.asList(getColumnNames());
+		
+		if ((this.dbc == null) || this.rsRezultat == null)
+			return null;
+
+		boolean bFirst = true;
+		
+		for (int i=0; i<columns.length; i++){
+			final int idx = columnNames.indexOf(columns[i]);
+			
+			if (idx<0)
+				continue;
+			
+			if (!bFirst){
+				sb.append(',');
+				sbValues.append(',');
+			}
+			else
+				bFirst = false;
+			
+			sb.append(columns[i]);
+			
+			String sValue = gets(idx); 
+
+			final int iType;
+			
+			try{
+				 iType = meta.getColumnType(idx);
+			}
+			catch (SQLException sqle){
+				return null;
+			}
+			
+			if (iType == 1 || iType == 12 || iType == -1 || iType == -15 || iType == -9 || iType == -16 || iType == 2009 ||	// string types
+					iType == 91 || iType == 92 || iType == 93 // date / time / timestamp
+			){
+				sValue = '\''+Format.escSQL(sValue)+'\''; 
+			}
+			
+			sbValues.append(sValue);
+		}
+		
+		sb.append(')').append(sbValues).append(");"); //$NON-NLS-1$
+		
+		return sb.toString();
 	}
 }

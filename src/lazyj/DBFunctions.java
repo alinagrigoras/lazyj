@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1926,7 +1928,9 @@ public class DBFunctions {
 		if (meta==null)
 			return null;
 		
-		final StringBuilder sb = new StringBuilder("INSERT INTO "+sTable+" (");
+		final StringBuilder sb = new StringBuilder("INSERT INTO ");
+		
+		sb.append(sTable).append(" (");
 
 		final StringBuilder sbValues = new StringBuilder(" VALUES (");
 		
@@ -2018,6 +2022,131 @@ public class DBFunctions {
 		}
 		
 		sb.append(')').append(sbValues).append(");"); //$NON-NLS-1$
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * SQL date format
+	 */
+	private static final DateFormat SQL_DATE = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss.SSS");
+	
+	/**
+	 * Get the value formatted for SQL statements
+	 * 
+	 * @param o value to format
+	 * @return formatted string, depending on the object type
+	 */
+	private static String getFormattedValue(final Object o){
+		if (o==null){
+			return "null";
+		}
+	
+		if (o instanceof String || o instanceof StringBuilder || o instanceof StringBuffer){
+			return "'"+Format.escSQL((String) o)+"'";
+		}
+		
+		if (o instanceof Number){
+			return o.toString();
+		}
+		
+		if (o instanceof Date){
+			synchronized (SQL_DATE){
+				return "'"+Format.escSQL(SQL_DATE.format((Date) o))+"'";
+			}
+		}
+		
+		return "'"+Format.escSQL(o.toString())+"'";
+	}
+	
+	/**
+	 * Create an INSERT statement for these values
+	 * 
+	 * @param tableName table name
+	 * @param values column - value mapping
+	 * @return the SQL statement, or <code>null</code> if there was any problem
+	 */
+	public static String composeInsert(final String tableName, final Map<String, ?> values){
+		if (tableName==null || values==null)
+			return null;
+		
+		final StringBuilder sb = new StringBuilder("INSERT INTO ").append(tableName).append(" (");
+		
+		final StringBuilder sbValues = new StringBuilder(") VALUES (");
+		
+		boolean bFirst = true;
+		
+		for (final Map.Entry<String, ?> me: values.entrySet()){
+			final String sKey = me.getKey();
+			
+			if (sKey==null || sKey.length()==0)
+				continue;
+		
+			if (bFirst){
+				bFirst = false;
+			}
+			else{
+				sb.append(',');
+				sbValues.append(',');
+			}
+			
+			sb.append(Format.escSQL(sKey));
+			
+			sbValues.append(getFormattedValue(me.getValue()));
+		}
+		
+		sb.append(sbValues).append(");");
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Compose an UPDATE SQL statement 
+	 * 
+	 * @param tableName table name
+	 * @param values column - value mapping
+	 * @param primaryKeys the set of primary keys from the values map
+	 * @return the UPDATE statement
+	 */
+	public static String composeUpdate(final String tableName, final Map<String, ?> values, final Collection<String> primaryKeys){
+		if (tableName==null || values==null)
+			return null;
+		
+		final StringBuilder sb = new StringBuilder("UPDATE ").append(tableName).append(" SET ");
+		
+		final StringBuilder sbWhere = new StringBuilder();
+		
+		boolean bFirst = true;
+		
+		for (Map.Entry<String, ?> me: values.entrySet()){
+			final String sKey = me.getKey();
+			
+			if (sKey==null || sKey.length()==0)
+				continue;
+			
+			if (primaryKeys!=null && primaryKeys.contains(sKey)){
+				if (sbWhere.length()==0)
+					sbWhere.append(" WHERE ");
+				else
+					sbWhere.append(" AND ");
+				
+				sbWhere.append(Format.escSQL(sKey)).append('=').append(getFormattedValue(me.getValue()));
+				
+				continue;
+			}
+			
+			if (bFirst)
+				bFirst = false;
+			else
+				sb.append(',');
+		
+			sb.append(Format.escSQL(sKey)).append('=').append(getFormattedValue(me.getValue()));
+		}
+		
+		if (sbWhere.length()>0)
+			sb.append(sbWhere);
+		
+		sb.append(";");
 		
 		return sb.toString();
 	}

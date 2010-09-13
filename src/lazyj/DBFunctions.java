@@ -1934,9 +1934,6 @@ public class DBFunctions {
 		final StringBuilder sbValues = new StringBuilder(" VALUES (");
 		
 		final List<String> columnNames = Arrays.asList(getColumnNames());
-		
-		if ((this.dbc == null) || this.rsRezultat == null)
-			return null;
 
 		boolean bFirst = true;
 		

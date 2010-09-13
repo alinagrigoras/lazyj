@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1976,8 +1977,12 @@ public class DBFunctions {
 				return null;
 			}
 			
-			if (iType == 1 || iType == 12 || iType == -1 || iType == -15 || iType == -9 || iType == -16 || iType == 2009 ||	// string types
-					iType == 91 || iType == 92 || iType == 93 // date / time / timestamp
+			if (
+					iType == Types.CHAR || iType == Types.NCHAR || iType == Types.VARCHAR || iType == Types.NVARCHAR || iType == Types.LONGVARCHAR || iType == Types.LONGNVARCHAR ||
+					iType == Types.DATE || iType == Types.TIME || iType == Types.TIMESTAMP ||
+					iType == Types.BLOB || iType == Types.CLOB || iType == Types.NCLOB || 
+					iType == Types.BINARY || iType == Types.VARBINARY || iType == Types.LONGVARBINARY ||
+					iType == Types.JAVA_OBJECT ||iType == Types.SQLXML
 			)
 			{
 				sbValues.append('\'').append(Format.escSQL(sValue)).append('\''); 

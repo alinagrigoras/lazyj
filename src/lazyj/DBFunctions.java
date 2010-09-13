@@ -1908,7 +1908,6 @@ public class DBFunctions {
 	 * @param columns what column names are to be taken into account
 	 * @return the INSERT statement, or <code>null</code> if there was any problem
 	 */
-	@SuppressWarnings("nls")
 	public final String getEquivalentInsert(final String sTable, final String[] columns){
 		return getEquivalentInsert(sTable, columns, null);
 	}
@@ -2029,7 +2028,7 @@ public class DBFunctions {
 	/**
 	 * SQL date format
 	 */
-	private static final DateFormat SQL_DATE = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss.SSS");
+	private static final DateFormat SQL_DATE = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss.SSS"); //$NON-NLS-1$
 	
 	/**
 	 * Get the value formatted for SQL statements
@@ -2037,6 +2036,7 @@ public class DBFunctions {
 	 * @param o value to format
 	 * @return formatted string, depending on the object type
 	 */
+	@SuppressWarnings("nls")
 	private static String getFormattedValue(final Object o){
 		if (o==null){
 			return "null";
@@ -2066,6 +2066,7 @@ public class DBFunctions {
 	 * @param values column - value mapping
 	 * @return the SQL statement, or <code>null</code> if there was any problem
 	 */
+	@SuppressWarnings("nls")
 	public static String composeInsert(final String tableName, final Map<String, ?> values){
 		if (tableName==null || values==null)
 			return null;
@@ -2108,6 +2109,7 @@ public class DBFunctions {
 	 * @param primaryKeys the set of primary keys from the values map
 	 * @return the UPDATE statement
 	 */
+	@SuppressWarnings("nls")
 	public static String composeUpdate(final String tableName, final Map<String, ?> values, final Collection<String> primaryKeys){
 		if (tableName==null || values==null)
 			return null;

@@ -213,6 +213,20 @@ public final class Log {
 			return sdf.format(new Date());
 		}
 	}
+
+	
+	/**
+	 * Log a message of a given severity for a given component
+	 * 
+	 * @param level severity of the message. Check the constants in this class for possible values.
+	 * @param sMessage message to log
+	 */
+	public static void log(final int level, final String sMessage) {
+		final Throwable t = new Throwable();
+        final StackTraceElement methodCaller = t.getStackTrace()[1];
+        
+		log(level, methodCaller.getClassName()+"#"+methodCaller.getMethodName()+":"+methodCaller.getLineNumber(), sMessage); //$NON-NLS-1$ //$NON-NLS-2$
+	}
 	
 	/**
 	 * Log a message of a given severity for a given component

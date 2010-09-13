@@ -1,4 +1,8 @@
 1.0.7:
+	2010-09-13
+	lazyj.Log
+		- add log(level, message) that will fill the component with the class name of the caller
+		
 	2010-09-10
 	lazyj.DBFunctions
 		- added composeInsert and composeUpdate

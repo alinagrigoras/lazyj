@@ -2098,7 +2098,7 @@ public class DBFunctions {
 			sbValues.append(getFormattedValue(me.getValue()));
 		}
 		
-		sb.append(sbValues).append(");");
+		sb.append(sbValues);
 		
 		return sb.toString();
 	}
@@ -2149,8 +2149,6 @@ public class DBFunctions {
 		
 		if (sbWhere.length()>0)
 			sb.append(sbWhere);
-		
-		sb.append(";");
 		
 		return sb.toString();
 	}

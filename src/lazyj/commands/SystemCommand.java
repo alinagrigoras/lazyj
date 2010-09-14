@@ -115,14 +115,17 @@ public final class SystemCommand extends Thread{
             // ignore
         }
 
+        int exitCode;
+        
         try{
-            p.waitFor();
+            exitCode = p.waitFor();
         }
         catch (Throwable e){
             // ignore
+        	exitCode = -1;
         }
 
-        return new CommandOutput(sb.toString(), sbErr.toString());
+        return new CommandOutput(sb.toString(), sbErr.toString(), exitCode);
     }
     
     /**

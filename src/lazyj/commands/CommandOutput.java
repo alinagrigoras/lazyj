@@ -17,16 +17,33 @@ public class CommandOutput {
     public final String stderr;
 
     /**
+     * Exit code, default value is -1 meaning "not set".
+     */
+    public final int exitCode;
+    
+    /**
      * Package protected constructor, only AliEnPool should execute commands
      *
      * @param _stdout stdout
      * @param _stderr stderr
      */
     public CommandOutput(final String _stdout, final String _stderr){
-        this.stdout = _stdout;
-        this.stderr = _stderr;
+        this(_stdout, _stderr, -1);
     }
 
+    /**
+     * Package protected constructor, only AliEnPool should execute commands
+     *
+     * @param _stdout stdout
+     * @param _stderr stderr
+     * @param code exit code
+     */
+    public CommandOutput(final String _stdout, final String _stderr, final int code){
+        this.stdout = _stdout;
+        this.stderr = _stderr;
+        this.exitCode = code;
+    }
+    
     /**
      * Read the stdout content
      *

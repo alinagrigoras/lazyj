@@ -1652,7 +1652,47 @@ public class DBFunctions {
 		return Utils.stringToBool(gets(iColumn), bDefault);	}
 	
 	/**
-	 * Extract a PostgreSQL array into a Collection of String objects
+	 * Get the raw bytes of this column
+	 * 
+	 * @param iColumn
+	 * @return the bytes of this column
+	 */
+	public final byte[] getBytes(final int iColumn){
+		if ((this.dbc == null) || this.rsRezultat == null)
+			return null;
+		
+		try{
+			return this.rsRezultat.getBytes(iColumn);
+		}
+		catch (Throwable e){
+			// ignore
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get the raw bytes of this column
+	 * 
+	 * @param columnName
+	 * @return the bytes of this column
+	 */
+	public final byte[] getBytes(final String columnName){
+		if ((this.dbc == null) || this.rsRezultat == null)
+			return null;
+		
+		try{
+			return this.rsRezultat.getBytes(columnName);
+		}
+		catch (Throwable e){
+			// ignore
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Extract a PostgreSQL array into a Collection of StriG96Lng objects
 	 * 
 	 * @param sColumn column name
 	 * @return the values in the array, as Strings

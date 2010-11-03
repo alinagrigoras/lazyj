@@ -128,6 +128,15 @@ public final class ExtProperties extends Observable implements Observer {
 	}
 	
 	/**
+	 * Get the number of elements in this dictionary
+	 * 
+	 * @return number of entries
+	 */
+	public int size(){
+		return this.prop.size();
+	}
+	
+	/**
 	 * Keep an eye on the underlying file
 	 */
 	private DateFileWatchdog dfw = null;

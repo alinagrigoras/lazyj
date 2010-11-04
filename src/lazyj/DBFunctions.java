@@ -1264,7 +1264,7 @@ public class DBFunctions {
 			return dDefault;
 
 		try {
-			final Date d = this.rsRezultat.getDate(sColumnName);
+			final Date d = this.rsRezultat.getTimestamp(sColumnName);
 
 			if (d != null)
 				return d;
@@ -1320,7 +1320,7 @@ public class DBFunctions {
 			return dDefault;
 
 		try {
-			final Date d = this.rsRezultat.getDate(iColumn);
+			final Date d = this.rsRezultat.getTimestamp(iColumn);
 
 			if (d != null)
 				return d;

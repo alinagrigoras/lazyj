@@ -29,6 +29,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.prefs.AbstractPreferences;
+import java.util.prefs.BackingStoreException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -49,8 +51,6 @@ import javax.imageio.stream.ImageOutputStream;
 
 import lazyj.cache.ExpirationCache;
 import lazyj.page.BasePage;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * Various utility functions, that are commonly used by everybody. Currently there are:<br>
@@ -1126,7 +1126,7 @@ public final class Utils {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String orig = "something longer to make more sense";
+		String orig = "something longer to make more sense and make sure the line doesn't end at the base64 boundaries";
 		
 		String key = "blabla";
 		
@@ -1139,6 +1139,110 @@ public final class Utils {
 		System.err.println("Original: "+input.length+", enc: "+enc.length);
 		
 		System.err.println(blowfishDecrypt(blowfishCrypt(orig, key), key));
+		
+		String base64 = base64Encode(enc);
+		System.err.println("Encoded : "+base64);
+	}
+	
+	/**
+	 * @author costing / from http://forums.sun.com/thread.jspa?threadID=477461&start=15&tstart=0
+	 * @since Nov 6, 2010
+	 */
+	public static class Base64Coder extends AbstractPreferences {
+		/**
+		 * the value
+		 */
+		private String store;
+
+		/**
+		 * Singleton
+		 */
+		private static Base64Coder instance = new Base64Coder();
+
+		/**
+		 * Hide the constructor; this is a singleton.
+		 */
+		private Base64Coder() {
+			super(null, "");
+		}
+
+		/**
+		 * Given a byte array, return its Base64 representation as a String.
+		 * 
+		 * @param b
+		 * @return encoded bytes
+		 */
+		public static synchronized String encode(final byte[] b) {
+			instance.putByteArray(null, b);
+			return instance.get(null, null);
+		}
+
+		/**
+		 * Given a String containing a Base64 representation, return the corresponding byte array.
+		 * 
+		 * @param base64String
+		 * @return decoded bytes
+		 */
+		public static synchronized byte[] decode(final String base64String) {
+			instance.put(null, base64String);
+			return instance.getByteArray(null, null);
+		}
+
+		@Override
+		public String get(final String key, final String def) {
+			return this.store;
+		}
+
+		@Override
+		public void put(String key, String value) {
+			this.store = value;
+		}
+
+		// Other methods required to implement the abstract class; these methods are not used.
+		@Override
+		protected AbstractPreferences childSpi(String name) {
+			return null;
+		}
+
+		@Override
+		protected void putSpi(String key, String value) {
+			// ignore
+		}
+
+		@Override
+		protected String getSpi(String key) {
+			return null;
+		}
+
+		@Override
+		protected void removeSpi(String key) {
+			// ignore
+		}
+
+		@Override
+		protected String[] keysSpi() throws BackingStoreException {
+			return null;
+		}
+
+		@Override
+		protected String[] childrenNamesSpi() throws BackingStoreException {
+			return null;
+		}
+
+		@Override
+		protected void syncSpi() throws BackingStoreException {
+			// ignore
+		}
+
+		@Override
+		protected void removeNodeSpi() throws BackingStoreException {
+			// ignore
+		}
+
+		@Override
+		protected void flushSpi() throws BackingStoreException {
+			// ignore
+		}
 	}
 
 	/**
@@ -1147,21 +1251,16 @@ public final class Utils {
 	 * 
 	 * @param b bytes to encode
 	 * @return BASE64-encoding
-	 * @see BASE64Encoder
 	 */
 	public static String base64Encode(final byte[] b){
-		final BASE64Encoder base64Enc = new BASE64Encoder();
-		
-		final String encoded = base64Enc.encode(b);
+		final String encoded = Base64Coder.encode(b);
 		
 		if (encoded.indexOf('\n')>=0 || encoded.indexOf('\r')>=0){
 			final char[] chars = encoded.toCharArray();
 			
 			final StringBuilder sb = new StringBuilder(chars.length);
 			
-			for (int i=0; i<chars.length; i++){
-				char c = chars[i];
-				
+			for (final char c: chars){
 				if (c!='\r' && c!='\n')
 					sb.append(c);
 			}
@@ -1177,17 +1276,9 @@ public final class Utils {
 	 * 
 	 * @param data
 	 * @return contents, or <code>null</code> if there was a problem decoding it
-	 * @see BASE64Decoder
 	 */
 	public static byte[] base64Decode(final String data){
-	    final BASE64Decoder decoder = new BASE64Decoder();
-	
-	    try{
-	        return decoder.decodeBuffer(data);
-	    }
-	    catch (IOException ioe){
-	        return null;
-	    }
+	    return Base64Coder.decode(data);
 	}
 	
 	/**

@@ -22,8 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.Provider;
-import java.security.Security;
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1035,8 +1033,8 @@ public final class Utils {
 	 * @throws Exception
 	 */
 	private static byte[] blowfishCrypt(final byte[] input, final byte[] key, final int mode) throws Exception {
-		final Provider sunJce = new com.sun.crypto.provider.SunJCE();
-		Security.addProvider(sunJce);
+		//final Provider sunJce = new com.sun.crypto.provider.SunJCE();
+		//Security.addProvider(sunJce);
 
 		final SecretKeySpec skeySpec = new SecretKeySpec(key, "Blowfish");
        

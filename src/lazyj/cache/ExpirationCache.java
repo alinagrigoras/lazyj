@@ -45,7 +45,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	 * @param <K>
 	 * @param <V>
 	 */
-	private static final class QueueEntry<K, V> implements Delayed, Comparable<Delayed>{
+	private static final class QueueEntry<K, V> implements Delayed{
 		
 		/**
 		 * Key that is set to expire at some point

@@ -31,8 +31,7 @@ public abstract class Module {
 	 * @param m arguments to call the module with
 	 * @return the resulting page
 	 */
-	@SuppressWarnings("unchecked")
-	public abstract Page getContent(Map m);
+	public abstract Page getContent(Map<String, String> m);
 
 	/**
 	 * The module must also implement this method, to return a nice name to debug.

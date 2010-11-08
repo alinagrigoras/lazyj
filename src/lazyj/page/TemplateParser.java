@@ -141,7 +141,6 @@ final class TemplateParser implements Observer {
 	 * @param sText
 	 * @return true if parsing was ok
 	 */
-	@SuppressWarnings("unchecked")
 	private boolean parse(final String sText){
 		if (sText == null)
 			return false;
@@ -149,7 +148,7 @@ final class TemplateParser implements Observer {
 		final int defaultDBTags = this.hsDBTags!=null ? this.hsDBTags.size()+1 : 8;
 		final int defaultNonDBTags = this.hsNonDBTags!=null ? this.hsNonDBTags.size()+1 : 8;
 		
-		final LinkedList llParseElements = new LinkedList();
+		final LinkedList<Object> llParseElements = new LinkedList<Object>();
 		final HashSet<String> hsParseDBTags = new HashSet<String>(defaultDBTags);
 		final HashSet<String> hsParseNonDBTags = new HashSet<String>(defaultNonDBTags);
 		
@@ -167,7 +166,7 @@ final class TemplateParser implements Observer {
 
 			j = sText.indexOf(":>>", i); //$NON-NLS-1$
 
-			final LinkedList llTag = new LinkedList();
+			final LinkedList<Object> llTag = new LinkedList<Object>();
 			
 			if (j > i) {
 				sTag = sText.substring(i + 3, j);
@@ -242,10 +241,10 @@ final class TemplateParser implements Observer {
 		hsParseAllTags.addAll(hsParseDBTags);
 		
 		// first make all collections read-only
-		final List llElementsTemp = Collections.unmodifiableList(llParseElements);
-		final Set hsDBTagsTemp = Collections.unmodifiableSet(hsParseDBTags);
-		final Set hsNonDBTagsTemp = Collections.unmodifiableSet(hsParseNonDBTags);
-		final Set hsAllTagsTemp = Collections.unmodifiableSet(hsParseAllTags); 
+		final List<Object> llElementsTemp = Collections.unmodifiableList(llParseElements);
+		final Set<String> hsDBTagsTemp = Collections.unmodifiableSet(hsParseDBTags);
+		final Set<String> hsNonDBTagsTemp = Collections.unmodifiableSet(hsParseNonDBTags);
+		final Set<String> hsAllTagsTemp = Collections.unmodifiableSet(hsParseAllTags); 
 		
 		// and then set the object fields to the read-only instances
 		this.llElements = llElementsTemp;
@@ -320,7 +319,7 @@ final class TemplateParser implements Observer {
 		if (this.llElements==null || this.llElements.size()==0)
 			return sb;
 		
-		final Iterator itElements = this.llElements.iterator();
+		final Iterator<Object> itElements = this.llElements.iterator();
 		
 		final boolean bComments = sComments!=null && sComments.size()>0;
 		
@@ -345,7 +344,7 @@ final class TemplateParser implements Observer {
 					while (itElements.hasNext()){
 						o = itElements.next();
 						
-						if (o instanceof List && ((List)o).get(0).equals(sSearch)){
+						if (o instanceof List && ((List<?>)o).get(0).equals(sSearch)){
 							break;
 						}
 					}

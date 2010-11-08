@@ -815,7 +815,6 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * <li>close the streams
 	 * <li>delete any temporary uploaded files
 	 */
-	@SuppressWarnings("unchecked")
 	private void executeRequest() {
 		try {
 			this.mpRequest = null;
@@ -856,7 +855,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		// after executing the request clean up the temporary files
 		if (this.mpRequest != null)
 			try {
-				final Enumeration e = this.mpRequest.getFileNames();
+				final Enumeration<?> e = this.mpRequest.getFileNames();
 
 				while (e.hasMoreElements()) {
 					final String sFieldName = (String) e.nextElement();
@@ -929,9 +928,8 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
      * @return the URL of the current page
      * @see DBSession#setLastPage(String)
      */
-    @SuppressWarnings("unchecked")
-	public final String getCurrentPage() {
-		final Enumeration e = this.request.getParameterNames();
+    public final String getCurrentPage() {
+		final Enumeration<?> e = this.request.getParameterNames();
 
 		final StringBuffer sb = HttpUtils.getRequestURL(this.request);
 

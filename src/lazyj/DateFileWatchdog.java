@@ -372,7 +372,7 @@ public final class DateFileWatchdog extends Observable {
 	}
 	
 	@Override
-	public void setChanged(){
+	public synchronized void setChanged(){
 		super.setChanged();
 	}
 	

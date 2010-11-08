@@ -187,7 +187,7 @@ public class BasePage implements TemplatePage {
 	}
 	
 	/**
-	 * This method should be overriden by an object internal to each zone, that knows where
+	 * This method should be overridden by an object internal to each zone, that knows where
 	 * all the HTML templates for that zone reside. The base implementation returns the empty
 	 * string, making it usable if you want to give the full path to a template file.
 	 * 
@@ -288,6 +288,11 @@ public class BasePage implements TemplatePage {
 	 */
 	public BasePage(final OutputStream osOut, final String sTemplateFile, final boolean bCached) {
 		this.sFile = getResDir();
+		
+		if (this.sFile==null){
+			Log.log(Log.ERROR, "ResDir is null!"); //$NON-NLS-1$
+			return;
+		}
 		
 		if (!this.sFile.endsWith(File.separator) && !sTemplateFile.startsWith(File.separator))
 			this.sFile += File.separator;

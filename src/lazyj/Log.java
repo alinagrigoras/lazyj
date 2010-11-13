@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Logging facility. Provides package- and class-based logging level and destination folder.
@@ -88,6 +90,11 @@ public final class Log {
 		mDirs.clear();
 	}
 	
+	/**
+	 * Use Java logger instead of custom files. This will assume that the Java logger is configured externally.
+	 */
+	private static boolean useJavaLogger = false;
+	
 	static {
 		String sFolder = Utils.getLazyjConfigFolder();
 
@@ -96,16 +103,23 @@ public final class Log {
 		try {
 			if (sFolder==null){
 				System.err.println("lazyj.Log : system property 'lazyj.config.folder' is not defined."); //$NON-NLS-1$
+				useJavaLogger = true;
 				pTemp = new ExtProperties();
 			}
 			else{
 				pTemp = new ExtProperties(sFolder, "logging"); //$NON-NLS-1$
-				pTemp.setAutoReload(30*1000);
-				pTemp.addObserver(new Observer(){
-					public void update(final Observable o, final Object arg) {
-						reload();
-					}			
-				});
+				
+				if (pTemp.getb("use_java_logger", false)){
+					useJavaLogger = true;
+				}
+				else{
+					pTemp.setAutoReload(30*1000);
+					pTemp.addObserver(new Observer(){
+						public void update(final Observable o, final Object arg) {
+							reload();
+						}			
+					});
+				}
 			}
 		}
 		catch (Throwable t) {
@@ -128,6 +142,29 @@ public final class Log {
 	 * @return the logging level
 	 */
 	public static Integer getLevel(final String sComponent){
+		if (useJavaLogger){
+			final Logger logger = Logger.getLogger(sComponent);
+			
+			final Level level = logger.getLevel();
+			
+			final int l = level.intValue();
+			
+			if (l<=Level.FINEST.intValue())
+				return Integer.valueOf(FINEST); 
+			if (l<=Level.FINER.intValue())
+				return Integer.valueOf(FINER);
+			if (l<=Level.FINE.intValue())
+				return Integer.valueOf(FINE); 
+			if (l<=Level.INFO.intValue())
+				return Integer.valueOf(INFO); 
+			if (l<=Level.WARNING.intValue())
+				return Integer.valueOf(WARNING); 
+			if (l<=Level.SEVERE.intValue())
+				return Integer.valueOf(ERROR); 
+
+			return Integer.valueOf(FATAL);
+		}
+		
 		Integer i = mLevel.get(sComponent);
 
 		if (i == null) {
@@ -197,6 +234,11 @@ public final class Log {
 	 * @return true if the message will be logged, false otherwise
 	 */
 	public static boolean isLoggable(final int level, final String sComponent) {
+		if (useJavaLogger){
+			final Logger logger = Logger.getLogger(sComponent);
+			return logger.isLoggable(getJavaLoggerLevel(level));
+		}
+		
 		return level <= getLevel(sComponent).intValue();
 	}
 
@@ -239,6 +281,14 @@ public final class Log {
 		if (level < 0 || level > FINEST) {
 			throw new IllegalArgumentException("level must be between 0 (FATAL) and 6 (FINEST)"); //$NON-NLS-1$
 		}
+		
+		if (useJavaLogger){
+			final Logger logger = Logger.getLogger(sComponent);
+			
+			logger.log(getJavaLoggerLevel(level), sMessage);
+			
+			return;
+		}
 
 		if (!isLoggable(level, sComponent))
 			return;
@@ -263,6 +313,25 @@ public final class Log {
 		pw.println(getTime() + " : " + sComponent + " : "+sMessage); //$NON-NLS-1$ //$NON-NLS-2$
 		pw.flush();
 	}
+	
+	/**
+	 * If Java logging is used, convert the levels to the other system
+	 * 
+	 * @param level
+	 * @return corresponding Java logging level
+	 */
+	private static final Level getJavaLoggerLevel(final int level){
+		switch (level){
+			case FATAL: return Level.ALL;
+			case ERROR: return Level.SEVERE;
+			case WARNING : return Level.WARNING;
+			case INFO: return Level.INFO;
+			case FINE: return Level.FINE;
+			case FINER: return Level.FINER;
+			case FINEST: return Level.FINEST;
+			default: return Level.OFF;
+		}
+	}
 
 	/**
 	 * Log a message of a given severity for a given component, with an attached object.
@@ -272,7 +341,7 @@ public final class Log {
 	 * @param sMessage message to log
 	 * @param o object to attach, it is intended for use with a Throwable here, but works for any other objects too by invoking the .toString() method on them
 	 */
-	public static void log(final int level, final String sComponent, final String sMessage, final Object o) {
+	public static void log(final int level, final String sComponent, final String sMessage, final Object o) {		
 		final StringBuilder sExtra = new StringBuilder(1000);
 
 		sExtra.append(sMessage);

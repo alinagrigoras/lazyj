@@ -102,7 +102,7 @@ public final class Log {
 
 		try {
 			if (sFolder==null){
-				System.err.println("lazyj.Log : system property 'lazyj.config.folder' is not defined."); //$NON-NLS-1$
+				System.err.println("lazyj.Log : system property 'lazyj.config.folder' is not defined, will use Java logger instead"); //$NON-NLS-1$
 				useJavaLogger = true;
 				pTemp = new ExtProperties();
 			}
@@ -302,7 +302,7 @@ public final class Log {
 				pw = new PrintWriter(new FileWriter(sFile, true), true);
 			}
 			catch (IOException ioe) {
-				System.err.println("LazyJ will log to stderr instead of '"+sFile+"' from now on because "+ioe); //$NON-NLS-1$ //$NON-NLS-2$
+				System.err.println("LazyJ will log to stderr instead of '"+sFile+"' because it cannot write there : "+ioe); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				pw = new PrintWriter(System.err);
 			}

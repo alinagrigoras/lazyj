@@ -932,6 +932,8 @@ public class DBFunctions {
 			chmQueryTime.put(sConnection, al);
 		}
 
+		final String sStripPassword = sConnection.substring(0, sConnection.lastIndexOf('/'));
+		
 		if (this.rsRezultat != null) {
 			try {
 				this.rsRezultat.close();
@@ -962,7 +964,7 @@ public class DBFunctions {
 			try {
 				throw new SQLException("connection failed"); //$NON-NLS-1$
 			} catch (Exception e) {
-				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> cannot connect for query because "+getConnectFailReason()+" : \n" + sQuery, e);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+				Log.log(Log.ERROR, "lazyj.DBFunctions", sStripPassword + " --> cannot connect for query because "+getConnectFailReason()+" : \n" + sQuery, e);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 
 			al.addAndGet(System.currentTimeMillis() - lStartTime);
@@ -1005,7 +1007,7 @@ public class DBFunctions {
 			final String s = e.getMessage();
 
 			if (!bIgnoreErrors && s.indexOf("duplicate key") < 0 && s.indexOf("drop table") < 0) {  //$NON-NLS-1$//$NON-NLS-2$
-				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> Error executing '" + sQuery + "'", e);  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+				Log.log(Log.ERROR, "lazyj.DBFunctions", sStripPassword + " --> Error executing '" + sQuery + "'", e);  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 				// in case of an error, close the connection
 				this.dbc.close();
 			} else {

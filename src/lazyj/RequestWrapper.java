@@ -5,6 +5,10 @@ package lazyj;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -287,7 +291,27 @@ public final class RequestWrapper {
 		}
 		else{
 			// enable caching for the given time interval
+			response.setHeader("Expires", getHTTPDate(new Date(System.currentTimeMillis() + 1000*seconds))); //$NON-NLS-1$
 			response.setHeader("Cache-Control", "max-age="+seconds); //$NON-NLS-1$ //$NON-NLS-2$			
 		}
+	}
+	
+	/**
+	 * http-style date formatter
+	 */
+	private static final SimpleDateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US); //$NON-NLS-1$
+
+	static{
+		httpDateFormat.setTimeZone(TimeZone.getTimeZone("GMT")); //$NON-NLS-1$
+	}
+	
+	/**
+	 * get the http-style formatted date
+	 * 
+	 * @param d
+	 * @return http-style formatted date
+	 */
+	public static synchronized String getHTTPDate(final Date d){
+		return httpDateFormat.format(d);
 	}
 }

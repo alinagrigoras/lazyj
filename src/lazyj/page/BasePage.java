@@ -36,6 +36,7 @@ import lazyj.page.tags.Esc;
 import lazyj.page.tags.Interval;
 import lazyj.page.tags.JS;
 import lazyj.page.tags.NiceDate;
+import lazyj.page.tags.NtoBR;
 import lazyj.page.tags.Size;
 import lazyj.page.tags.Strip;
 import lazyj.page.tags.Time;
@@ -71,6 +72,7 @@ import lazyj.page.tags.Under;
  * <li>dot : {@link Dot} : display a long value as groups of 3 digits separated by dot</li>
  * <li>size : {@link Size} : consider that the value is a file size, in bytes, display it in a human readable format</li>
  * <li>uenc : {@link UEnc} : URL-decoded version of the string</li>
+ * <li>ntobr : {@link NtoBR}) : convert text new lines to html new lines</li>
  * <li>res : (internal class) : the HTML template (.res file) indicated by the tag is loaded</li>
  * </ul>
  * <br>
@@ -690,6 +692,7 @@ public class BasePage implements TemplatePage {
 		registerExactTag("under", new Under()); //$NON-NLS-1$
 		registerExactTag("res", new Res()); //$NON-NLS-1$
 		registerExactTag("interval", interval); //$NON-NLS-1$
+		registerExactTag("ntobr", new NtoBR()); //$NON-NLS-1$
 		
 		registerRegexpTag("date.+", date); //$NON-NLS-1$
 		registerRegexpTag("cut[0-9]+", new Cut()); //$NON-NLS-1$

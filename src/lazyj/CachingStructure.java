@@ -7,6 +7,8 @@ import java.lang.ref.WeakReference;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Holding class for page cache entries
  * 
@@ -118,6 +120,19 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 		}
 		
 		return this.content;
+	}
+	
+	/**
+	 * Set the proper HTTP headers for this cached content
+	 * 
+	 * @param response object to set the headers on
+	 */
+	public void setHeaders(final HttpServletResponse response){
+		response.setContentType(this.sContentType);
+		response.setHeader("Content-Language", "en"); //$NON-NLS-1$ //$NON-NLS-2$
+		response.setContentLength(length());
+		
+		RequestWrapper.setCacheTimeout(response, (int) ((this.lGenerated+this.lifetime-System.currentTimeMillis())/1000));
 	}
 	
 	/**

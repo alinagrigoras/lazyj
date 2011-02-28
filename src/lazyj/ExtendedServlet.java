@@ -237,12 +237,8 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 				
 				log(Log.FINEST, "serving request from cache : "+cs.length()); //$NON-NLS-1$
 
-				this.response.setContentType(cs.sContentType);
-				this.response.setHeader("Content-Language", "en"); //$NON-NLS-1$ //$NON-NLS-2$
-				this.response.setContentLength(cs.length());
+				cs.setHeaders(this.response);
 				
-				RequestWrapper.setCacheTimeout(this.response, (int) ((cs.lGenerated+cs.lifetime-System.currentTimeMillis())/1000));
-
 				try {
 					this.osOut.write(cs.getContent());
 				} catch (IOException e) {

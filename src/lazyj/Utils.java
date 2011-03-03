@@ -998,8 +998,21 @@ public final class Utils {
 		
 		is.close();
 		
-		if (os instanceof ByteArrayOutputStream)
-			return new String(((ByteArrayOutputStream) os).toByteArray(), conn.getContentEncoding());
+		if (os instanceof ByteArrayOutputStream){
+			String encoding = conn.getContentEncoding();
+			
+			if (encoding==null)
+				encoding = "UTF-8";
+			
+			final byte[] content = ((ByteArrayOutputStream) os).toByteArray();
+			
+			try{
+				return new String(content, conn.getContentEncoding());
+			}
+			catch (final UnsupportedEncodingException uee){
+				return new String(content);
+			}
+		}
 		
 		return null;
 	}

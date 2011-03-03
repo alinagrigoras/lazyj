@@ -1,4 +1,10 @@
 1.0.7:
+	2011-03-03
+	lazyj.Utils
+		- more robust handling of http content encoding
+	lazyj.ExtendedServlet, RequestWrapper and CachingStructure
+		- proper caching headers that reflect the in-memory caching times
+
     2010-09-14
     lazyj.commands.CommandOutput
         - add exit code field

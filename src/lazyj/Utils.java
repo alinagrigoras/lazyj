@@ -969,7 +969,7 @@ public final class Utils {
 				
 		final InputStream is = conn.getInputStream();
 		
-		final byte[] buff = new byte[1024];
+		final byte[] buff = new byte[10240];
 		int read;
 		
 		final OutputStream os;

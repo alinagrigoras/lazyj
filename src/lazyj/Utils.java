@@ -974,6 +974,8 @@ public final class Utils {
 		
 		final OutputStream os;
 		
+		String actualFileName = sFilename;
+		
 		if (sFilename!=null){
 			File f = new File(sFilename);
 			
@@ -991,6 +993,8 @@ public final class Utils {
 					sLastPart = sLastPart.substring(idx+1);
 								
 				f = new File(f, sLastPart);
+				
+				actualFileName = f.getCanonicalPath();
 			}
 			
 			os = new FileOutputStream(f);
@@ -1026,7 +1030,7 @@ public final class Utils {
 			}
 		}
 		
-		return null;
+		return actualFileName;
 	}
 	
 	/**

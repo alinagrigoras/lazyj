@@ -958,7 +958,7 @@ public final class Utils {
 	 * @param sURL Content to download
 	 * @param sFilename Local file or directory. If it's a directory then the last part of the URL (after the last "/") will be used as a file name.
 	 * 					Can be <code>null</code> if you want to get back the contents directly.
-	 * @return the contents of the file if the filename is <code>null</code>, or <code>null</code> if a filename was specified.
+	 * @return the contents of the file if the filename is <code>null</code>, or the file name if the second parameter is not null 
 	 * @throws IOException in case of problems
 	 * @since 1.0.5 (23.03.2008)
 	 */
@@ -978,7 +978,19 @@ public final class Utils {
 			File f = new File(sFilename);
 			
 			if (f.exists() && f.isDirectory()){
-				f = new File(f, sURL.substring(sURL.lastIndexOf("/")+1));
+				String sLastPart = sURL;
+				
+				int idx = sLastPart.indexOf('?'); 
+				
+				if (idx>=0)
+					sLastPart = sLastPart.substring(0, idx);
+				
+				idx = sLastPart.lastIndexOf('/');
+				
+				if (idx>=0)
+					sLastPart = sLastPart.substring(idx+1);
+								
+				f = new File(f, sLastPart);
 			}
 			
 			os = new FileOutputStream(f);

@@ -1007,7 +1007,7 @@ public final class Utils {
 			final byte[] content = ((ByteArrayOutputStream) os).toByteArray();
 			
 			try{
-				return new String(content, conn.getContentEncoding());
+				return new String(content, encoding);
 			}
 			catch (final UnsupportedEncodingException uee){
 				return new String(content);

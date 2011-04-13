@@ -606,7 +606,27 @@ public class DBFunctions {
 		 * @return true if free, false if busy or other error
 		 */
 		public final boolean canUse() {
-			return this.iBusy == 1;
+			if (this.iBusy == 1){
+				if (System.currentTimeMillis() - this.lLastAccess > 1000*60){
+					boolean isValid = false;
+					
+					try{
+						isValid = this.conn.isValid(10);
+					}
+					catch (SQLException sqle){
+						// ignore
+					}
+					
+					if (!isValid)
+						close();
+					
+					return isValid;
+				}
+				
+				return true;
+			}
+
+			return false;
 		}
 
 		/**

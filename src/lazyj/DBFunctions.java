@@ -2196,7 +2196,14 @@ public class DBFunctions {
 				else
 					sbWhere.append(" AND ");
 				
-				sbWhere.append(Format.escSQL(sKey)).append('=').append(getFormattedValue(me.getValue()));
+				sbWhere.append(Format.escSQL(sKey));
+				
+				final Object value = me.getValue();
+				
+				if (value==null)
+					sbWhere.append(" IS NULL");
+				else
+					sbWhere.append('=').append(getFormattedValue(value));
 				
 				continue;
 			}

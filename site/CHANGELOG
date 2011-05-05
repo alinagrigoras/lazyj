@@ -1,4 +1,11 @@
 1.0.7:
+	2011-05-05
+	lazyj.cache.ExpirationCache
+		- when over size limits and removing an entry, remove it from the delayed queue as well
+	lazyj.RequestWrapper
+		- tune gets to get the max out of -XX:+UseCompressedStrings
+		- make the rest of get* methods faster by not converting the strings at all
+
 	2011-03-03
 	lazyj.Utils
 		- more robust handling of http content encoding

@@ -5,6 +5,7 @@ package lazyj.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.DelayQueue;
@@ -195,12 +196,44 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	}
 	
 	/**
+	 * An LRU map that intercepts the over-bounds condition and acts on it
+	 * 
+	 * @author costing
+	 */
+	private final class NotifyLRUMap extends LRUMap<K, V> {
+		/**
+		 * stop complaining :)
+		 */
+		private static final long serialVersionUID = -8536957422977636915L;
+
+		/**
+		 * @param iCacheSize
+		 */
+		public NotifyLRUMap(final int iCacheSize) {
+			super(iCacheSize);
+		}
+
+		@Override
+		protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
+			final boolean willRemove = super.removeEldestEntry(eldest);
+			
+			if (willRemove){
+				// if the entry is removed because the LRU map has ran out of space, remove it from 
+				// the delayed queue as well
+				queue.remove(new QueueEntry<K,V>(eldest.getKey(), null, 0, ExpirationCache.this));
+			}
+			
+			return willRemove;
+		}
+	}
+	
+	/**
 	 * Build an expiration cache with a fixed size.
 	 * 
 	 * @param size max number of entries in the cache.
 	 */
 	public ExpirationCache(final int size){
-		this.mCache = new LRUMap<K, V>(size); 
+		this.mCache = new NotifyLRUMap(size); 
 	}
 	
 	/* (non-Javadoc)
@@ -324,7 +357,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	 * @param key key that is removed
 	 * @param value value for the key that is removed
 	 */
-	protected void callbackOnExpiry(K key, V value){
+	protected void callbackOnExpiry(final K key, final V value){
 		// do nothing by default
 	}
 }

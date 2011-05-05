@@ -83,13 +83,7 @@ public final class RequestWrapper {
 	 * @return the string value of this parameter, never null ("" is returned in the worst case)
 	 */
 	public String gets(final String sParam) {
-		final String sValue = this.mpRequest != null ? this.mpRequest.getParameter(sParam) : this.request.getParameter(sParam);
-
-		try {
-			return sValue != null ? new String(sValue.getBytes("ISO-8859-1"), "UTF-8") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		} catch (UnsupportedEncodingException e) {
-			return ""; //$NON-NLS-1$
-		}
+		return gets(sParam, ""); //$NON-NLS-1$
 	}
 	
 	/**
@@ -100,12 +94,33 @@ public final class RequestWrapper {
 	 * @return value
 	 */
 	public String gets(final String sParam, final String sDefault){
-		final String sValue = gets(sParam);
-		
-		if (sValue.length()==0)
+		final String sValue = this.mpRequest != null ? this.mpRequest.getParameter(sParam) : this.request.getParameter(sParam);
+
+		if (sValue==null)
 			return sDefault;
 		
-		return sValue;
+		if (sValue.length()==0)
+			return sValue;
+		
+		try {
+			final byte[] bytes = sValue.getBytes("ISO-8859-1"); //$NON-NLS-1$
+			
+			boolean extended = false;
+			
+			for (int i = bytes.length-1; i>=0; i++)
+				if (bytes[i]<0){
+					extended = true;
+					break;
+				}
+			
+			if (extended)
+				return new String(bytes, "UTF-8"); //$NON-NLS-1$
+			
+			return sValue;
+		}
+		catch (UnsupportedEncodingException e) {
+			return sDefault;
+		}
 	}
 	
 	/**

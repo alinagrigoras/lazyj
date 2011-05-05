@@ -60,7 +60,7 @@ public final class RequestWrapper {
 				
 		return this.mpRequest;
 	}
-	
+		
 	/**
 	 * Get all the values of a parameter.
 	 * 
@@ -74,6 +74,14 @@ public final class RequestWrapper {
 			return vs;
 		
 		return new String[0];
+	}
+	
+	/**
+	 * @param sParam
+	 * @return the parameter value, from the normal or the multi-part request
+	 */
+	private String getParameter(final String sParam){
+		return this.mpRequest!=null ? this.mpRequest.getParameter(sParam) : this.request.getParameter(sParam);
 	}
 	
 	/**
@@ -94,7 +102,7 @@ public final class RequestWrapper {
 	 * @return value
 	 */
 	public String gets(final String sParam, final String sDefault){
-		final String sValue = this.mpRequest != null ? this.mpRequest.getParameter(sParam) : this.request.getParameter(sParam);
+		final String sValue = getParameter(sParam);
 
 		if (sValue==null)
 			return sDefault;
@@ -131,13 +139,14 @@ public final class RequestWrapper {
 	 * @return parsed value of the parameter, or the defaultValue if parameter is missing or is not an integer value representation
 	 */
 	public int geti(final String sParam, final int defaultVal) {
-		try {
-			final String s = gets(sParam);
-			if (s.length() > 0) {
-				return Integer.parseInt(s);
-			}
+		final String s = getParameter(sParam);
+		if (s==null || s.length()==0)
 			return defaultVal;
-		} catch (NumberFormatException e) {
+
+		try {
+			return Integer.parseInt(s);
+		}
+		catch (NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -160,13 +169,14 @@ public final class RequestWrapper {
 	 * @return parsed value of the parameter, or the defaultValue if parameter is missing or is not a long value representation
 	 */
 	public long getl(final String sParam, final long defaultVal) {
-		try {
-			final String s = gets(sParam);
-			if (s.length() > 0) {
-				return Long.parseLong(s);
-			}
+		final String s = getParameter(sParam);
+		if (s==null || s.length()==0)
 			return defaultVal;
-		} catch (NumberFormatException e) {
+
+		try {
+			return Long.parseLong(s);
+		}
+		catch (NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -189,13 +199,14 @@ public final class RequestWrapper {
 	 * @return parsed value of the parameter, or the defaultValue if parameter is missing or is not a float value representation
 	 */
 	public float getf(final String sParam, final float defaultVal) {
-		try {
-			final String s = gets(sParam);
-			if (s.length() > 0) {
-				return Float.parseFloat(s);
-			}
+		final String s = getParameter(sParam);
+		if (s==null || s.length()==0)
 			return defaultVal;
-		} catch (Exception e) {
+
+		try {
+			return Float.parseFloat(s);
+		}
+		catch (NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -218,13 +229,14 @@ public final class RequestWrapper {
 	 * @return parsed value of the parameter, or the defaultValue if parameter is missing or is not a double value representation
 	 */
 	public double getd(final String sParam, final double defaultVal) {
-		try {
-			final String s = gets(sParam);
-			if (s.length() > 0) {
-				return Double.parseDouble(s);
-			}
+		final String s = getParameter(sParam);
+		if (s==null || s.length()==0)
 			return defaultVal;
-		} catch (NumberFormatException e) {
+
+		try {
+			return Double.parseDouble(s);
+		}
+		catch (NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -247,7 +259,7 @@ public final class RequestWrapper {
 	 */
 	public String getCookie(final String sName) {
 		try {
-			for (Cookie c: this.request.getCookies()) {
+			for (final Cookie c: this.request.getCookies()) {
 				if (c.getName().equals(sName))
 					return Format.decode(c.getValue());
 			}
@@ -267,9 +279,7 @@ public final class RequestWrapper {
 	 * @return true/false, obviously :)
 	 */
 	public boolean getb(final String sName, final boolean bDefault){
-		final String s = gets(sName);
-		
-		return Utils.stringToBool(s, bDefault);
+		return Utils.stringToBool(getParameter(sName), bDefault);
 	}
 	
 	/**

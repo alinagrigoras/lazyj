@@ -115,7 +115,7 @@ public final class RequestWrapper {
 			
 			boolean extended = false;
 			
-			for (int i = bytes.length-1; i>=0; i++)
+			for (int i = bytes.length-1; i>=0; i--)
 				if (bytes[i]<0){
 					extended = true;
 					break;

@@ -104,16 +104,13 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 			if (this == obj)
 				return true;
 			
-		    if (obj == null) 
+		    if (obj == null || ! (obj instanceof QueueEntry)) 
 		    	return false;
 		    
-		    if (this.getClass() != obj.getClass())
-		    	return false;
+		    final QueueEntry<?,?> other = (QueueEntry<?,?>) obj; 
 		    
-		    if (this.cacheInstance != ((QueueEntry<?,?>) obj).cacheInstance)
+		    if (this.cacheInstance != other.cacheInstance)
 		    	return false;
-		    
-		    QueueEntry<?,?> other = (QueueEntry<?,?>) obj; 
 		    
 			return this.key.equals(other.key);
 		}

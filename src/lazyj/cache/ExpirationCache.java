@@ -101,9 +101,6 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 		
 		@Override
 		public boolean equals(final Object obj) {
-			if (this == obj)
-				return true;
-			
 		    if (obj == null || ! (obj instanceof QueueEntry)) 
 		    	return false;
 		    

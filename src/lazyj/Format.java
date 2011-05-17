@@ -543,27 +543,47 @@ public final class Format {
 		// try all the date formats
 		for (int i = 0; i < sdfFormats.length; i++) {
 			try {
-				Date d = sdfFormats[i].parse(s);
+				synchronized (sdfFormats[i]){
+					final Date d = sdfFormats[i].parse(s);
 				
-				//System.err.println("Parser ok : "+i);
+					//System.err.println("Parser ok : "+i);
 				
-				return d;
+					return d;
+				}
 			}
-			catch (ParseException e) {
+			catch (final ParseException e) {
 				// ignore this
+			}
+			catch (final NumberFormatException nfe){
+				// ignore this too
+			}
+			catch (final ArrayIndexOutOfBoundsException aioobe){
+				 // ignore this too
 			}
 		}
 
 		// if nothing worked so far, maybe this is a time only, so try to add the current date to it and parse it again 
-		final String sNew = sdfFormats[2].format(new Date()) + ' ' + s;
+		final String sNew;
+		
+		synchronized (sdfFormats[2]){
+			sNew = sdfFormats[2].format(new Date()) + ' ' + s;
+		}
 			
 		for (int i = 0; i < 2; i++){
 			try {
-				return sdfFormats[i].parse(sNew);
+				synchronized (sdfFormats[i]){
+					return sdfFormats[i].parse(sNew);
+				}
 			}
 			catch (ParseException e) {
+				// ignore this
+			}
+			catch (NumberFormatException nfe){
 				// ignore this too
-			}			
+			}
+			catch (final ArrayIndexOutOfBoundsException aioobe){
+				 // ignore this too
+			}
 		}
 		
 		return null;
@@ -619,7 +639,9 @@ public final class Format {
 	 * @return the dotted date
 	 */
 	public static final String showDottedDate(final Date d) {
-		return sdfFormats[5].format(d);
+		synchronized (sdfFormats[5]){
+			return sdfFormats[5].format(d);
+		}
 	}
 
 	/**

@@ -384,7 +384,7 @@ public class Sendmail {
 				this.sError = "could not connect to the mail server!";
 				return false;
 			} catch (IOException e) {
-				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : IOException (unable to establish datalink, check your server)");
+				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : IOException (unable to establish datalink to "+this.sServer+":"+this.iPort+", check your server)", e);
 				this.iSentOk = SENT_ERROR;
 				this.sError = "could not connect to the mail server!";
 				return false;

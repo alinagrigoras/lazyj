@@ -562,19 +562,24 @@ public class BasePage implements TemplatePage {
 	static {
 		final String s = Utils.getLazyjConfigFolder();
 
-		String sDir = "/"; //$NON-NLS-1$
-		
-		try {
-			final ExtProperties pTemp = new ExtProperties(s, "basepage"); //$NON-NLS-1$
-			sDir = pTemp.gets("includes.default.dir"); //$NON-NLS-1$
-		} catch (Throwable e) {
-			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not read properties file", e);  //$NON-NLS-1$//$NON-NLS-2$
+		if (s==null){
+			BASE_PAGE_DIR = ".";
 		}
-		
-		if (!sDir.endsWith("/")) //$NON-NLS-1$
-			sDir+="/"; //$NON-NLS-1$
-		
-		BASE_PAGE_DIR = sDir;
+		else{
+			String sDir = "/"; //$NON-NLS-1$
+			
+			try {
+				final ExtProperties pTemp = new ExtProperties(s, "basepage"); //$NON-NLS-1$
+				sDir = pTemp.gets("includes.default.dir"); //$NON-NLS-1$
+			} catch (Throwable e) {
+				Log.log(Log.WARNING, "lazyj.page.BasePage", "could not read properties file", e);  //$NON-NLS-1$//$NON-NLS-2$
+			}
+			
+			if (!sDir.endsWith("/")) //$NON-NLS-1$
+				sDir+="/"; //$NON-NLS-1$
+			
+			BASE_PAGE_DIR = sDir;
+		}
 	}
 	
 	/**

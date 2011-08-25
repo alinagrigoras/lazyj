@@ -825,8 +825,16 @@ public final class Format {
 			l /= 60;
 			long h = l % 24;
 			l /= 24;
-			long d = l;
+			long d = l % 365;
+			l /= 365;
+			long y = l / 365;
 
+			if (y > 0){
+				sRez = y+"y"; //$NON-NLS-1$
+				
+				if (d>0)
+					sRez += " "+d+"d";  //$NON-NLS-1$//$NON-NLS-2$
+			}
 			if (d > 0)
 				sRez = d + "d " + h + ':' + show0((int)m); //$NON-NLS-1$
 			else if (h > 0)

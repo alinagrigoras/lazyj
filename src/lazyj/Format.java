@@ -827,7 +827,7 @@ public final class Format {
 			l /= 24;
 			long d = l % 365;
 			l /= 365;
-			long y = l / 365;
+			long y = l;
 
 			if (y > 0){
 				sRez = y+"y"; //$NON-NLS-1$

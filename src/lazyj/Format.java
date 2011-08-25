@@ -835,6 +835,7 @@ public final class Format {
 				if (d>0)
 					sRez += " "+d+"d";  //$NON-NLS-1$//$NON-NLS-2$
 			}
+			else
 			if (d > 0)
 				sRez = d + "d " + h + ':' + show0((int)m); //$NON-NLS-1$
 			else if (h > 0)

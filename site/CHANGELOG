@@ -1,4 +1,8 @@
 1.0.7:
+	2011-08-25
+	lazyj.Format
+		- toInterval shows large intervals as years if appropriate
+
 	2011-05-05
 	lazyj.cache.ExpirationCache
 		- when over size limits and removing an entry, remove it from the delayed queue as well

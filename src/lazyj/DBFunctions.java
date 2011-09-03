@@ -40,12 +40,7 @@ public class DBFunctions {
 	 * List of connections for each known target
 	 */
 	static final HashMap<String, LinkedList<DBConnection>>			hmConn				= new HashMap<String, LinkedList<DBConnection>>();
-
-	/**
-	 * Synchronization object for sensitive parts
-	 */
-	static final Object												oConnLock			= new Object();
-
+	
 	/**
 	 * Was this the first row ?
 	 */
@@ -247,19 +242,25 @@ public class DBFunctions {
 	 * @return a free connection, or null
 	 */
 	private final DBConnection getFreeConnection(final String sConn) {
-		synchronized (oConnLock) {
-			LinkedList<DBConnection> ll = hmConn.get(sConn);
+		LinkedList<DBConnection> ll;
+		
+		synchronized (hmConn) {
+			ll = hmConn.get(sConn);
 
-			if (ll != null) {
-				for (DBConnection dbt : ll) {
-					if (dbt.canUse()) {
-						dbt.use();
-						return dbt;
-					}
-				}
-			} else {
+			if (ll==null){
 				ll = new LinkedList<DBConnection>();
 				hmConn.put(sConn, ll);
+				
+				return null;
+			}
+		}
+		
+		synchronized (ll) {
+			for (final DBConnection dbt : ll) {
+				if (dbt.canUse()) {
+					dbt.use();
+					return dbt;
+				}
 			}
 		}
 
@@ -330,10 +331,14 @@ public class DBFunctions {
 				
 				return true;
 			}
+			
+			final LinkedList<DBConnection> ll;
+			
+			synchronized (hmConn) {
+				ll = hmConn.get(this.uniqueKey);
+			}
 
-			synchronized (oConnLock) {
-				final LinkedList<DBConnection> ll = hmConn.get(this.uniqueKey);
-
+			synchronized (ll){
 				if (ll.size() < 50) {
 					this.dbc = new DBConnection(this.driver, this.jdbcConnectionString, this.prop, this.uniqueKey);
 					if (this.dbc.canUse()) {
@@ -356,7 +361,7 @@ public class DBFunctions {
 
 			try {
 				Thread.sleep(50);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				// ignore improbable interruption
 			}
 		}
@@ -756,8 +761,8 @@ public class DBFunctions {
 
 				iTotalCount = 0;
 
-				synchronized (oConnLock) {
-					for (Entry<String, LinkedList<DBConnection>> me : hmConn.entrySet()) {
+				synchronized (hmConn) {
+					for (final Entry<String, LinkedList<DBConnection>> me : hmConn.entrySet()) {
 						ll = me.getValue();
 
 						iIdleCount = 0;
@@ -1824,7 +1829,7 @@ public class DBFunctions {
 	public static String encodeArray(final Collection<?> array){
 		final StringBuilder sb = new StringBuilder();
 		
-		for (Object o: array){
+		for (final Object o: array){
 			String s = o.toString();
 			s = Format.replace(s, "\"", "\\\"");  //$NON-NLS-1$//$NON-NLS-2$
 			s = Format.escJS(s);
@@ -1927,8 +1932,8 @@ public class DBFunctions {
 	public static final long getActiveConnectionsCount() {
 		long lCount = 0;
 
-		synchronized (oConnLock) {
-			for (LinkedList<DBConnection> ll : hmConn.values())
+		synchronized (hmConn) {
+			for (final LinkedList<DBConnection> ll : hmConn.values())
 				lCount += ll.size();
 		}
 
@@ -1943,8 +1948,8 @@ public class DBFunctions {
 	public static final HashMap<String, Integer> getActiveConnections() {
 		final HashMap<String, Integer> hm = new HashMap<String, Integer>();
 
-		synchronized (oConnLock) {
-			for (Entry<String, LinkedList<DBConnection>> me : hmConn.entrySet())
+		synchronized (hmConn) {
+			for (final Entry<String, LinkedList<DBConnection>> me : hmConn.entrySet())
 				hm.put(me.getKey(), Integer.valueOf(me.getValue().size()));
 		}
 

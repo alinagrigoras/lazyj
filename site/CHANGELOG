@@ -1,4 +1,13 @@
 1.0.7:
+	2011-09-22
+	lazyj.DBFunctions
+		- introduce getting of last generated sequence/auto-increment ID
+
+	2011-09-03
+	lazyj.DBFunctions
+		- remove global synchronization point, now it is serializing requests only for the same 
+		  database endpoint. This prevents one hanging database to bring down everything.
+
 	2011-08-25
 	lazyj.Format
 		- toInterval shows large intervals as years if appropriate

@@ -563,7 +563,7 @@ public class BasePage implements TemplatePage {
 		final String s = Utils.getLazyjConfigFolder();
 
 		if (s==null){
-			BASE_PAGE_DIR = ".";
+			BASE_PAGE_DIR = "."; //$NON-NLS-1$
 		}
 		else{
 			String sDir = "/"; //$NON-NLS-1$

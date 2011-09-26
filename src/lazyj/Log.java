@@ -109,7 +109,7 @@ public final class Log {
 			else{
 				pTemp = new ExtProperties(sFolder, "logging"); //$NON-NLS-1$
 				
-				if (pTemp.getb("use_java_logger", false)){
+				if (pTemp.getb("use_java_logger", false)){ //$NON-NLS-1$
 					useJavaLogger = true;
 				}
 				else{

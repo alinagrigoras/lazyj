@@ -2053,6 +2053,35 @@ public class DBFunctions {
 	}
 	
 	/**
+	 * Convert the result set in a column name -> value mapping
+	 * 
+	 * @return the column name -> value mapping
+	 */
+	public final Map<String, Object> getValuesMap(){
+		final ResultSetMetaData meta = getMetaData();
+		
+		if (meta==null)
+			return null;
+		
+		try{
+			final int count = meta.getColumnCount();
+			
+			final Map<String, Object> ret = new HashMap<String, Object>(count);
+			
+			for (int i = 1; i <= count; i++){
+				final String columnName = meta.getColumnName(i);
+				
+				ret.put(columnName, this.rsRezultat.getObject(i));
+			}
+			
+			return ret;
+		}
+		catch (SQLException e){
+			return null;
+		}
+	}
+	
+	/**
 	 * Get the SQL INSERT statement that would generate the current row, for the given list of columns
 	 * 
 	 * @param sTable table name

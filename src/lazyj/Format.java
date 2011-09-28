@@ -755,9 +755,25 @@ public final class Format {
 				append = " billions"; //$NON-NLS-1$
 			}
 		}
-
+		
+		long base = 1;
+		long f = 0;	
+		
 		long l = (long) d;
-		double f = Math.abs(d) - Math.abs(l);
+		
+		if (dotplaces>0){
+			for (int i = 0; i < dotplaces; i++)
+				base *= 10;
+
+			d *= base; 
+			
+			d = Math.round(d);
+			
+			l = (long) d;
+			f = l%base;
+			
+			l /= base;
+		}
 
 		String sRez = ""; //$NON-NLS-1$
 
@@ -784,20 +800,13 @@ public final class Format {
 			l = l / 1000;
 		}
 
-		if (dotplaces > 0) {
-			for (int i = 0; i < dotplaces; i++)
-				f *= 10;
-
-			f = Math.round(f);
-
-			String sTemp = "" + (long) f; //$NON-NLS-1$
+		if (dotplaces > 0 && f>0) {
+			String sTemp = "" + f; //$NON-NLS-1$
 
 			while (sTemp.length() < dotplaces)
 				sTemp = '0' + sTemp;
 
-			if ((long) f > 0) {
-				sRez += '.' + sTemp;
-			}
+			sRez += '.' + sTemp;
 		}
 
 		return (d < 0) ? '-' + sRez + append : sRez + append;

@@ -316,7 +316,7 @@ public final class RequestWrapper {
 		}
 		else{
 			// enable caching for the given time interval
-			response.setHeader("Expires", getHTTPDate(new Date(System.currentTimeMillis() + 1000*seconds))); //$NON-NLS-1$
+			response.setHeader("Expires", getHTTPDate(new Date(System.currentTimeMillis() + 1000L*seconds))); //$NON-NLS-1$
 			response.setHeader("Cache-Control", "max-age="+seconds); //$NON-NLS-1$ //$NON-NLS-2$			
 		}
 	}

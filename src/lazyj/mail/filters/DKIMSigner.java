@@ -240,16 +240,16 @@ public class DKIMSigner implements MailFilter {
 			}
 		}
 		
-		String hField = "";
+		final StringBuilder hField = new StringBuilder();
 		
-		for (String header: foundHeaders){
+		for (final String header: foundHeaders){
 			if (hField.length()>0)
-				hField+=":";
+				hField.append(':');
 			
-			hField += header;
+			hField.append(header);
 		}
 		
-		fields.put("h", hField);
+		fields.put("h", hField.toString());
 		
 		final String sCanonBody = simpleBody(sBody);
 		

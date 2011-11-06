@@ -193,7 +193,7 @@ public final class DateFileWatchdog extends Observable {
 		 * 
 		 * @param dfe
 		 */
-		private void checkEntry(final DFWEntry dfe) {
+		private static void checkEntry(final DFWEntry dfe) {
 			try {
 				final DateFileWatchdog dfw = dfe.dfw;
 				

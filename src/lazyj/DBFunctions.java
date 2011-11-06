@@ -241,7 +241,7 @@ public class DBFunctions {
 	 * @param sConn
 	 * @return a free connection, or null
 	 */
-	private final DBConnection getFreeConnection(final String sConn) {
+	private final static DBConnection getFreeConnection(final String sConn) {
 		LinkedList<DBConnection> ll;
 		
 		synchronized (hmConn) {

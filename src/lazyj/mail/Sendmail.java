@@ -209,7 +209,7 @@ public class Sendmail {
 	 * @param adr a list of addresses, separated by ',' or ';'
 	 * @return a list of addresses
 	 */
-	private List<String> adrFromString(final String adr) {
+	private static List<String> adrFromString(final String adr) {
 		if ((adr == null) || (adr.length() <= 0))
 			return null;
 		
@@ -231,7 +231,7 @@ public class Sendmail {
 	 * @param mail a mail from which to extract all destination mails
 	 * @return an Iterator over the addresses
 	 */
-	private Iterator<String> addresses(final Mail mail) {
+	private static Iterator<String> addresses(final Mail mail) {
 		final List<String> adr = new LinkedList<String>();
 		
 		List<String> lTemp = adrFromString(mail.sTo);

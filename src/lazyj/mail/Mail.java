@@ -336,11 +336,7 @@ public class Mail extends MailHeader {
 			return false;
 		}
 
-		long lLineNo = 0;
-
 		while (sLine != null) {
-			lLineNo++;
-
 			if (bInHeader) {
 				sb.append(sLine).append('\n');
 

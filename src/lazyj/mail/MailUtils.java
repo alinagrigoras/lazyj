@@ -58,6 +58,7 @@ public class MailUtils {
 				this.server = this.server.substring(0, this.server.length()-1);
 		}
 		
+		@Override
 		public int compareTo(final MXRecord other){
 			if (this.prio!=other.prio)
 				return this.prio-other.prio;

@@ -58,14 +58,17 @@ public class BasicDBTreeProvider extends DBTreeProvider<Integer, String> {
 		this.sValueColumn = sValueColumn;
 	}
 
+	@Override
 	public Integer getKey() {
 		return Integer.valueOf(this.sIDColumn==null ? this.db.geti(1) : this.db.geti(this.sIDColumn));
 	}
 
+	@Override
 	public Integer getParent() {
 		return Integer.valueOf(this.sParentColumn==null ? this.db.geti(2) : this.db.geti(this.sParentColumn));
 	}
 
+	@Override
 	public String getValue() {
 		return this.sValueColumn==null ? this.db.gets(3) : this.db.gets(this.sValueColumn);
 	}

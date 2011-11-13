@@ -24,6 +24,7 @@ public final class UEnc implements StringFormat {
 	 * @return normal string
 	 * @see Format#decode(String)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		return Format.decode(s);
 	}

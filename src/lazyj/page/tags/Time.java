@@ -27,6 +27,7 @@ public final class Time implements StringFormat {
      * @see Format#parseDate(String)
      * @see Format#showTime(java.util.Date)
      */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		if (s==null || s.length()==0){
 			// empty string

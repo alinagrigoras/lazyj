@@ -33,6 +33,7 @@ public final class Date implements StringFormat {
 	 * @return the formatted string
 	 * @see Format#showNamedDate(java.util.Date)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		if (s==null || s.length()==0){
 			// empty string

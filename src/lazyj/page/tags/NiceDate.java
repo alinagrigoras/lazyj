@@ -26,6 +26,7 @@ public final class NiceDate implements StringFormat {
 	 * @see Format#showNiceDate(java.util.Date)
 	 * @see Format#parseDate(String)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {		
 		if (s==null || s.length()==0){
 			// empty string

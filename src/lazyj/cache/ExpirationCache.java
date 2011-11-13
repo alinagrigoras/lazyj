@@ -83,10 +83,12 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 			this.cacheInstance = cacheInstance;
 		}
 		
+		@Override
 		public long getDelay(final TimeUnit unit) {
 			return unit.convert(this.expires - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 		}
 		
+		@Override
 		public int compareTo(final Delayed o) {
 			final long lDiff = getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS);
 			
@@ -233,6 +235,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	/* (non-Javadoc)
 	 * @see lazyj.cache.CacheElement#get(java.lang.Object)
 	 */
+	@Override
 	public V get(final K key) {
 		synchronized (this.mCache){
 			return this.mCache.get(key);
@@ -295,6 +298,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	/* (non-Javadoc)
 	 * @see lazyj.cache.CacheElement#getRefreshTime()
 	 */
+	@Override
 	public int getRefreshTime() {
 		return 0;
 	}
@@ -302,6 +306,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	/* (non-Javadoc)
 	 * @see lazyj.cache.CacheElement#refresh()
 	 */
+	@Override
 	public void refresh() {
 		synchronized (this.mCache){
 			for (K key: this.mCache.keySet()){

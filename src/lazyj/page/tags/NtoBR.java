@@ -22,6 +22,7 @@ public final class NtoBR implements StringFormat {
 	 * @param s value to encode
 	 * @return html lines
 	 */
+	@Override
 	public String format(final String sTag, final String sOption,final String s) {
 		if (s==null || s.length()==0)
 			return s;

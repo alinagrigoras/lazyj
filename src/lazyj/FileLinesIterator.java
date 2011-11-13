@@ -44,10 +44,12 @@ public class FileLinesIterator implements Iterator<String>{
 		}
 	}
 
+	@Override
 	public boolean hasNext() {
 		return this.sNextLine!=null;
 	}
 
+	@Override
 	public String next() {
 		final String sRet = this.sNextLine;
 		
@@ -56,6 +58,7 @@ public class FileLinesIterator implements Iterator<String>{
 		return sRet;
 	}
 
+	@Override
 	public void remove() {
 		// not implemented
 	}

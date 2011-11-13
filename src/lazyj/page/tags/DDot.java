@@ -26,6 +26,7 @@ public final class DDot implements StringFormat {
 	 * @return the formatted value
 	 * @see Format#showDottedDouble(double, int)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		try {
 			int iDDot = sOption!=null && sOption.length()>4 ? Integer.parseInt(sOption.substring(4)) : 2;

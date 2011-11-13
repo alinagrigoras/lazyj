@@ -26,6 +26,7 @@ public final class JS implements StringFormat {
 	 * @return js-safe representation
 	 * @see Format#escJS(String)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		return Format.escJS(s);
 	}

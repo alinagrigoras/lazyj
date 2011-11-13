@@ -115,6 +115,7 @@ public final class Log {
 				else{
 					pTemp.setAutoReload(30*1000);
 					pTemp.addObserver(new Observer(){
+						@Override
 						public void update(final Observable o, final Object arg) {
 							reload();
 						}			

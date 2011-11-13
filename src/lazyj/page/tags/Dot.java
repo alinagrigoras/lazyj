@@ -24,6 +24,7 @@ public class Dot implements StringFormat {
 	 * @param sTag ignored
 	 * @return formatted string
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		try {
 			return Format.showDottedLong((long) Double.parseDouble(s));

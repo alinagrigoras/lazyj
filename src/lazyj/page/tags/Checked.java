@@ -23,6 +23,7 @@ public final class Checked implements StringFormat {
 	 * @param s string to format
 	 * @return "checked" or "", depending on the integer value of the string.
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		int iValue = 0;
 		try{

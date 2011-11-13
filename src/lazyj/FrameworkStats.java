@@ -79,8 +79,9 @@ public final class FrameworkStats {
 		/**
 		 * Implementation of the Comparable interface
 		 * @param sc object to compare to 
-		 * @return result of the comparition, by the number of appearances
+		 * @return result of the comparison, by the number of appearances
 		 */
+		@Override
 		public int compareTo(final StringCounter sc) {
 			return this.i - sc.i;
 		}

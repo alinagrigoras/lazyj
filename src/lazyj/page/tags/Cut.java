@@ -26,6 +26,7 @@ public class Cut implements StringFormat {
 	 * @param sValue original string
 	 * @return the first N visible characters from the string
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String sValue) {
 		try{
 			return cut(sValue, Integer.parseInt(sOption.substring(3)));

@@ -131,6 +131,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	 * 
 	 * @return tree as options
 	 */
+	@Override
 	public Collection<Option<K,V>> getOptions(){
 		final Collection<Option<K, V>> ret = getOptions(0);
 		
@@ -179,14 +180,17 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 			this.iLevel = iLevel;
 		}
 		
+		@Override
 		public K getKey() {
 			return Tree.this.key;
 		}
 
+		@Override
 		public int getLevel() {
 			return this.iLevel;
 		}
 
+		@Override
 		public V getValue() {
 			return Tree.this.value;
 		}
@@ -243,14 +247,17 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 			this.iLevel = iLevel;
 		}
 		
+		@Override
 		public int getLevel(){
 			return this.iLevel;
 		}
 		
+		@Override
 		public K getKey(){
 			return this.keyInternal;
 		}
 		
+		@Override
 		public String getValue(){
 			return this.valueInternal;
 		}

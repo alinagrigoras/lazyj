@@ -142,6 +142,7 @@ public final class Notifier implements Observer {
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
+	@Override
 	public void update(final Observable o, final Object arg) {
 		reload();
 	}

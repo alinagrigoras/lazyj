@@ -26,6 +26,7 @@ public final class Esc implements StringFormat {
 	 * @return html-safe representation of the original string
 	 * @see Format#escHtml(String)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption,final String s) {
 		return Format.escHtml(s);
 	}

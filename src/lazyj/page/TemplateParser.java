@@ -262,6 +262,7 @@ final class TemplateParser implements Observer {
 	 * @param o ignored
 	 * @param arg ignored
 	 */
+	@Override
 	public void update(final Observable o, final Object arg) {
 		if (!parse(Utils.readFile(this.sFileName)) && this.dfw!=null){
 			this.dfw.stopIt();

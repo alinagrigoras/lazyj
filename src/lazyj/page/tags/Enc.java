@@ -26,6 +26,7 @@ public final class Enc implements StringFormat {
 	 * @return the URL encoding for this string
 	 * @see Format#encode(String)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		return Format.encode(s);
 	}

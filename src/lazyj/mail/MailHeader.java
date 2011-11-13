@@ -290,8 +290,8 @@ public class MailHeader extends Header implements Comparable<MailHeader> {
 	 * Default sorting methods for the mails: by the date
 	 * 
 	 * @param o object to compare to
-	 * @return result of the date comparition
 	 */
+	@Override
 	public int compareTo(final MailHeader o) {
 		return this.mdDate.compareTo(o.mdDate);
 	}

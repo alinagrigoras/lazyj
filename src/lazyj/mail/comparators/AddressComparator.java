@@ -25,6 +25,7 @@ public class AddressComparator implements Comparator<MailHeader>, Serializable {
 	 * @param o2 second mail
 	 * @return source emails compared result (as strings in lower case)
 	 */
+	@Override
 	public int compare(final MailHeader o1, final MailHeader o2) {
 		final String s1 = o1.sFrom.trim();
 		final String s2 = o2.sFrom.trim();

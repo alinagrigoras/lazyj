@@ -423,8 +423,8 @@ public final class MailDate implements Comparable<MailDate>{
 	/**
 	 * Method to compare two dates. Trivial, but necessary :)
 	 * @param mdParam another MailDate to compare to
-	 * @return the result of the comparition ...
 	 */
+	@Override
 	public int compareTo(MailDate mdParam) {
 		if (this.year > mdParam.year)
 			return 1;

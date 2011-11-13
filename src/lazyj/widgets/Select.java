@@ -128,6 +128,7 @@ public class Select<K,V> implements Page {
 	/* (non-Javadoc)
 	 * @see lazyj.page.Page#getContents()
 	 */
+	@Override
 	public StringBuilder getContents(){
 		final StringBuilder sb = new StringBuilder();
 		

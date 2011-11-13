@@ -34,6 +34,7 @@ public abstract class DBTreeProvider<K,V> implements TreeProvider<K,V> {
 	/* (non-Javadoc)
 	 * @see lazyj.widgets.TreeProvider#moveNext()
 	 */
+	@Override
 	public boolean moveNext() {
 		return this.db.moveNext();
 	}

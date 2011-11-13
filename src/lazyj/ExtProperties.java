@@ -522,6 +522,7 @@ public final class ExtProperties extends Observable implements Observer {
 	 * @param o ignored
 	 * @param arg ignored
 	 */
+	@Override
 	public void update(final Observable o, final Object arg) {
 		reload();
 		

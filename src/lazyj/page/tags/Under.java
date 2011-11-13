@@ -24,6 +24,7 @@ public final class Under implements StringFormat {
 	 * @return original string with underscore instead of any non-alpha-numeric characters 
 	 * @see #format(String)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String sValue) {
 		return format(sValue);
 	}

@@ -101,6 +101,7 @@ public final class DBSession implements Serializable, Delayed {
 		else{
 			dbProp = new ExtProperties(s, "dbsessions"); //$NON-NLS-1$
 			dbProp.addObserver(new Observer(){
+				@Override
 				public void update(Observable o, Object arg) {
 					reload();
 				}
@@ -838,6 +839,7 @@ public final class DBSession implements Serializable, Delayed {
 	 * @param unit time unit in which to return the value
 	 * @return how much time is left until this entry will expire
 	 */
+	@Override
 	public long getDelay(final TimeUnit unit) {
 		return unit.convert(this.flushTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 	}
@@ -847,6 +849,7 @@ public final class DBSession implements Serializable, Delayed {
 	 * @param o object to compare to
 	 * @return sorting for these objects, to put in front the ones that expire sooner
 	 */
+	@Override
 	public int compareTo(final Delayed o) {
 		final long lDiff = getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS);
 		

@@ -25,6 +25,7 @@ public final class Size implements StringFormat {
 	 * @return human-friendly size
 	 * @see Format#size(long)
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String s) {
 		try {
 			if (sOption!=null && sOption.length()>4)

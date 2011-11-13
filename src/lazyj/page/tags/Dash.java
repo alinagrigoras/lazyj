@@ -22,6 +22,7 @@ public final class Dash implements StringFormat {
 	 * @param sValue original string
 	 * @return dashified version of the original string
 	 */
+	@Override
 	public String format(final String sTag, final String sOption, final String sValue) {
 		return format(sValue);
 	}

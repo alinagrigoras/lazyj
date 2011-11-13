@@ -51,16 +51,19 @@ public abstract class GenericQueryCacher<K, V> implements CacheElement<K, V>, Re
 	 */
 	protected Map<V, List<K>> mReverse = null;
 	
+	@Override
 	public final V get(final K key) {
 		return this.mValues.get(key);
 	}
 	
+	@Override
 	public final K getKeyForValue(final V value){
 		final List<K> c = this.mReverse.get(value);
 		
 		return c!=null && c.size()>0 ? c.get(0) : null;
 	}
 
+	@Override
 	public final List<K> getKeysForValue(final V value){
 		return this.mReverse.get(value);
 	}
@@ -92,6 +95,7 @@ public abstract class GenericQueryCacher<K, V> implements CacheElement<K, V>, Re
 		return this.mValues.size();
 	}
 	
+	@Override
 	public final void refresh() {
 		final Map<K, V> mTemp = new TreeMap<K, V>();
 		

@@ -65,6 +65,7 @@ final class BoundedThreadContainer implements Delayed {
 	 * @param unit the reference time unit
 	 * @return the remaining execution time
 	 */
+	@Override
 	public long getDelay(final TimeUnit unit) {
 		return unit.convert(this.lExpires - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 	}
@@ -75,6 +76,7 @@ final class BoundedThreadContainer implements Delayed {
 	 * @param o object to compare to
 	 * @return which one expires first
 	 */
+	@Override
 	public int compareTo(final Delayed o) {
 		final long lDiff = getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS);
 		

@@ -24,7 +24,8 @@ public class SizeComparator implements Comparator<MailHeader>, Serializable {
 	 * @param o1 first mail
 	 * @param o2 second mail
 	 * @return difference between the mail sizes
-	 */	public int compare(final MailHeader o1, final MailHeader o2) {
+	 */	@Override
+	public int compare(final MailHeader o1, final MailHeader o2) {
 		return o1.iMailSize - o2.iMailSize;
 	}
 }

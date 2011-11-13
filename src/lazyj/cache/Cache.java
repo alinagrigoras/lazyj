@@ -53,6 +53,7 @@ public class Cache extends Thread {
 		 * @param unit time unit to return the value into
 		 * @return how much time has remained until this entry will expire 
 		 */
+		@Override
 		public long getDelay(final TimeUnit unit) {
 			return unit.convert(this.lExpires - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 		}
@@ -64,6 +65,7 @@ public class Cache extends Thread {
 		 * @param o object to compare to
 		 * @return a method to sort the queue entries by the expiration time
 		 */
+		@Override
 		public int compareTo(final Delayed o) {
 			final long lDiff = getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS);
 			

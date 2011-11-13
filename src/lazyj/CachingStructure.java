@@ -156,6 +156,7 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 	 * @param cs object to compare to
 	 * @return sort order
 	 */
+	@Override
 	public int compareTo(final CachingStructure cs) {
 		int diff = this.iAccesses - cs.iAccesses;
 

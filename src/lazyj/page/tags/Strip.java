@@ -36,6 +36,7 @@ public final class Strip implements StringFormat {
 	 * @param sOption either "date" or "dateOPT,OPT2,..."
 	 * @return the formatted string
 	 */
+	@Override
 	@SuppressWarnings("nls")
 	public String format(final String sTag, final String sOption, final String s) {
 		boolean bBR = false;

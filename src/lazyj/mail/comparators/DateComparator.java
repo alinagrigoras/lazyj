@@ -27,6 +27,7 @@ public class DateComparator implements Comparator<MailHeader>, Serializable{
 	 * @param o2 second mail
 	 * @return sending dates compared result (see {@link MailDate#compareTo(MailDate)})
 	 */
+	@Override
 	public int compare(MailHeader o1, MailHeader o2) {
 		return o1.mdDate.compareTo(o2.mdDate);
 	}

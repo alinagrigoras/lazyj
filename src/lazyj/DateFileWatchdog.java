@@ -96,6 +96,7 @@ public final class DateFileWatchdog extends Observable {
 		 * @param o object to compare to, by time
 		 * @return time sorting of the objects to expire
 		 */
+		@Override
 		public int compareTo(final Delayed o) {
 			if (o.equals(this))
 				return 0;
@@ -123,6 +124,7 @@ public final class DateFileWatchdog extends Observable {
 		 * @param unit unit to return the results into
 		 * @return how much time is left until the next check of this file
 		 */
+		@Override
 		public long getDelay(final TimeUnit unit) {
 			return unit.convert(this.nextCheck - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 		}

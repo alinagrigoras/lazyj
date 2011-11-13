@@ -52,6 +52,7 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 	 */
 	private Map<K, K> nullCache = null;
 	
+	@Override
 	public V get(final K key) {
 		V oVal = this.cache.get(key);
 		
@@ -108,6 +109,7 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 		return get(key);
 	}
 	
+	@Override
 	public void refresh() {
 		this.cache.clear();
 		
@@ -115,6 +117,7 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 			this.nullCache.clear();
 	}
 	
+	@Override
 	public int getRefreshTime(){
 		return -1;
 	}

@@ -386,6 +386,7 @@ public class BasePage implements TemplatePage {
 	 * @param oValue value to append
 	 * @param bBeginning true to add at the start, false to add at the end
 	 */
+	@Override
 	public void append(final String sTagName, final Object oValue, final boolean bBeginning) {
 		if (sTagName==null)
 			throw new InvalidParameterException("Tag cannot be null"); //$NON-NLS-1$
@@ -441,6 +442,7 @@ public class BasePage implements TemplatePage {
 	 * 
 	 * @return a StringBuilder with the final contents
 	 */
+	@Override
 	public StringBuilder getContents(){
 		if (this.tp==null)
 			return new StringBuilder();
@@ -625,6 +627,7 @@ public class BasePage implements TemplatePage {
 		 * @param s value for the tag, ignored
 		 * @return the contents of the file specified by the tag name
 		 */
+		@Override
 		public String format(final String sTag, final String sOption, final String s) {
 			return new InternalPage(sTag).toString();
 		}

@@ -168,7 +168,7 @@ public final class Log {
 		
 		Integer i = mLevel.get(sComponent);
 
-		if (i == null) {
+		if (i == null && logProp!=null) {
 			final int idx = sComponent.lastIndexOf('.');
 			
 			final Integer iParent;
@@ -197,7 +197,7 @@ public final class Log {
 	public static String getLogDir(final String sComponent){
 		String sDir = mDirs.get(sComponent);
 		
-		if (sDir == null){
+		if (sDir == null && logProp!=null){
 			final int idx = sComponent.lastIndexOf('.');
 			
 			final String sParent;
@@ -240,7 +240,12 @@ public final class Log {
 			return logger.isLoggable(getJavaLoggerLevel(level));
 		}
 		
-		return level <= getLevel(sComponent).intValue();
+		final Integer refLevel = getLevel(sComponent);
+		
+		if (refLevel==null)
+			return false;
+		
+		return level <= refLevel.intValue();
 	}
 
 	/**

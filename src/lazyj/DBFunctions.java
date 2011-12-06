@@ -744,7 +744,6 @@ public class DBFunctions {
 		 */
 		@Override
 		public void run() {
-			int iRunCount = 0;
 			long now;
 			LinkedList<DBConnection> ll;
 			int iIdleCount;
@@ -752,14 +751,10 @@ public class DBFunctions {
 			DBConnection dbc;
 			boolean bIdle;
 			boolean bClose;
-			int iTotalCount;
-			int iUnclosed = 0;
 			int iClosedToGC = 0;
 
 			while (!this.bShouldStop) {
 				now = System.currentTimeMillis();
-
-				iTotalCount = 0;
 
 				synchronized (hmConn) {
 					for (final Entry<String, LinkedList<DBConnection>> me : hmConn.entrySet()) {
@@ -791,7 +786,6 @@ public class DBFunctions {
 									dbc.close();
 								} else {
 									System.err.println("DBFunctions: Not closing busy connection (description: "+dbc.getDescription()+')'); //$NON-NLS-1$
-									iUnclosed++;
 								}
 
 								it.remove();
@@ -799,11 +793,7 @@ public class DBFunctions {
 									iIdleCount--;
 							}
 						}
-
-						iTotalCount += ll.size();
 					}
-
-					iRunCount++;
 				}
 
 				// when we remove connection make sure the resources are really freed by JVM 

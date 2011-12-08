@@ -31,6 +31,7 @@ import lazyj.Log;
  * @author costing
  * @since 2006-10-06
  * @see lazyj.mail.Sendmail
+ * @see lazyj.Utils#htmlToText(String)
  */
 public class Mail extends MailHeader {
 	/**

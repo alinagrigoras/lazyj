@@ -494,6 +494,15 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	public final String[] getValues(final String sParam){
 		return this.rw.getValues(sParam);
 	}
+	
+	/**
+	 * @param sParam
+	 * @param defaultValue
+	 * @return the boolean value of this parameter
+	 */
+	public final boolean getb(final String sParam, final boolean defaultValue){
+		return this.rw.getb(sParam, defaultValue);
+	}
 
 	/**
 	 * Wrapper method for the actual redirect, that keeps track if there was such an opperation.

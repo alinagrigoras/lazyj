@@ -144,7 +144,7 @@ public final class RequestWrapper {
 			return defaultVal;
 
 		try {
-			return Integer.parseInt(s);
+			return Integer.parseInt(s.trim());
 		}
 		catch (NumberFormatException e) {
 			return defaultVal;
@@ -174,7 +174,7 @@ public final class RequestWrapper {
 			return defaultVal;
 
 		try {
-			return Long.parseLong(s);
+			return Long.parseLong(s.trim());
 		}
 		catch (NumberFormatException e) {
 			return defaultVal;
@@ -204,7 +204,7 @@ public final class RequestWrapper {
 			return defaultVal;
 
 		try {
-			return Float.parseFloat(s);
+			return Float.parseFloat(s.trim());
 		}
 		catch (NumberFormatException e) {
 			return defaultVal;
@@ -234,7 +234,7 @@ public final class RequestWrapper {
 			return defaultVal;
 
 		try {
-			return Double.parseDouble(s);
+			return Double.parseDouble(s.trim());
 		}
 		catch (NumberFormatException e) {
 			return defaultVal;

@@ -592,6 +592,8 @@ public class DBFunctions {
 			}
 			catch (SQLException e){
 				// cannot establish a connection
+				Log.log(Log.ERROR, "lazyj.DBFunctions", "Cannot connect to the target database", e);  //$NON-NLS-1$//$NON-NLS-2$
+				
 				this.iBusy = 3;
 			}
 		}

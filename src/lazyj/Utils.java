@@ -587,6 +587,23 @@ public final class Utils {
 				}
 			}
 			
+			if (c=='&' && i<iSize-2 && chars[i+1]=='#' && (chars[i+2]>='0' && chars[i+2]<='9')){
+				final int idx = sText.indexOf(';', i+1);
+				
+				if (idx>0 && idx-i<9){
+					final String s = sText.substring(i+2, idx);
+					
+					try{
+						final char ch = (char) Integer.parseInt(s);
+						
+						sb.append(ch);
+					}
+					catch (NumberFormatException nfe){
+						sb.append("&#").append(s).append(';');
+					}
+				}
+			}
+			
 			// some weird quotes that are not properly converted by the normalizer
 			switch (c){
 				case 0xA9:
@@ -918,24 +935,53 @@ public final class Utils {
 		m = PATTERN_HTML_TAG.matcher(s);
 		s = m.replaceAll("");
 
-		s = s.replace("&nbsp;", " ");
-		s = s.replace("&lt;", "<");
-		s = s.replace("&gt;", ">");
-		s = s.replace("&raquo;", ">>");
-		s = s.replace("&laquo;", "<<");
-		s = s.replace("&copy;", "(c)");
-		s = s.replace("&amp;", "&");
-		s = s.replace("&ndash;", "-");
-		s = s.replace("&mdash;", "-");
-		s = s.replace("&quot;", "\"");
-		s = s.replace("&hellip;", "...");
-		s = s.replace("&rsquo;", "'");
-		s = s.replace("&lsquo;", "`");
-		s = s.replace("&rdquo;", "\"");
-		s = s.replace("&ldquo;", "\"");
+		if (s.indexOf("&")>=0){
+			s = s.replace("&nbsp;", " ");
+			s = s.replace("&lt;", "<");
+			s = s.replace("&gt;", ">");
+			s = s.replace("&raquo;", ">>");
+			s = s.replace("&laquo;", "<<");
+			s = s.replace("&copy;", "(c)");
+			s = s.replace("&amp;", "&");
+			s = s.replace("&ndash;", "-");
+			s = s.replace("&mdash;", "-");
+			s = s.replace("&quot;", "\"");
+			s = s.replace("&hellip;", "...");
+			s = s.replace("&rsquo;", "'");
+			s = s.replace("&lsquo;", "`");
+			s = s.replace("&rdquo;", "\"");
+			s = s.replace("&ldquo;", "\"");
+
+			if (s.indexOf("&")>=0){
+				for (Map.Entry<String, String> me: HTML_CHAR_MAP.entrySet()){
+					s = s.replace('&'+me.getKey()+';', me.getValue());
+				}
+			}
+		}
+
+		int idxStart = s.indexOf("&#");
 		
-		for (Map.Entry<String, String> me: HTML_CHAR_MAP.entrySet()){
-			s = s.replace('&'+me.getKey()+';', me.getValue());
+		while (idxStart>0){
+			final int idx = s.indexOf(';', idxStart+2);
+			
+			if (idx>0 && idx-idxStart<9){
+				final String v = s.substring(idxStart+2, idx);
+				
+				try{
+					final char c = (char) Integer.parseInt(v);
+					
+					s = Format.replace(s, "&#"+v+";", String.valueOf(c));
+					
+					idxStart = s.indexOf("&#");
+					
+					continue;
+				}
+				catch (NumberFormatException nfe){
+					// ignore
+				}
+			}
+
+			idxStart = s.indexOf("&#", idxStart+2);
 		}
 		
 		m = PATTERN_HTML_SPECIAL.matcher(s);

@@ -318,7 +318,7 @@ public class DBFunctions {
 		
 	/**
 	 * Initialize a database connection. First it will try to take a free one from the pool. If there is no free connection it will
-	 * try to establish a new one, only if there are less than 50 connections to this particular database in total. 
+	 * try to establish a new one, only if there are less than 100 connections to this particular database in total. 
 	 * 
 	 * @return <code>true</code> if the connection was established and <code>this.dbc</code> can be used, <code>false</code> if not.
 	 */
@@ -339,7 +339,7 @@ public class DBFunctions {
 			}
 
 			synchronized (ll){
-				if (ll.size() < 50) {
+				if (ll.size() < 100) {
 					this.dbc = new DBConnection(this.driver, this.jdbcConnectionString, this.prop, this.uniqueKey);
 					if (this.dbc.canUse()) {
 						this.sConnectFailReason = null;
@@ -355,7 +355,7 @@ public class DBFunctions {
 					this.dbc = null;
 				}
 				else{
-					this.sConnectFailReason = "There are already 50 established connections to the DB, refusing to establish another one"; //$NON-NLS-1$
+					this.sConnectFailReason = "There are already 100 established connections to the DB, refusing to establish another one"; //$NON-NLS-1$
 				}
 			}
 
@@ -747,7 +747,6 @@ public class DBFunctions {
 		@Override
 		public void run() {
 			long now;
-			LinkedList<DBConnection> ll;
 			int iIdleCount;
 			Iterator<DBConnection> it;
 			DBConnection dbc;
@@ -760,39 +759,41 @@ public class DBFunctions {
 
 				synchronized (hmConn) {
 					for (final Entry<String, LinkedList<DBConnection>> me : hmConn.entrySet()) {
-						ll = me.getValue();
+						final LinkedList<DBConnection> ll = me.getValue();
 
-						iIdleCount = 0;
-						it = ll.iterator();
-
-						while (it.hasNext()) {
-							dbc = it.next();
-
-							bIdle = (dbc.iBusy == 1);
-
-							if (bIdle)
-								iIdleCount++;
-
-							// - in use for more than 2 min, such a query takes too long and we should remove the connection from the pool
-							// - limit the number of idle connections
-							// - any connection left in an error state by a query
-							bClose = (dbc.iBusy == 2 && (now - dbc.lLastAccess > 1000 * 60 * 2)) || 
-									 (bIdle && (iIdleCount > 5 || now - dbc.lLastAccess > 1000 * 60 * 5)) ||
-									 (dbc.iBusy != 2 && dbc.iBusy != 1); // error case
-
-							if (bClose) {
-								iClosedToGC++;
-
-								if (dbc.iBusy != 2) { // force connection close only if the object
-									// is not in use
-									dbc.close();
-								} else {
-									System.err.println("DBFunctions: Not closing busy connection (description: "+dbc.getDescription()+')'); //$NON-NLS-1$
+						synchronized (ll){
+							iIdleCount = 0;
+							it = ll.iterator();
+	
+							while (it.hasNext()) {
+								dbc = it.next();
+	
+								bIdle = (dbc.iBusy == 1);
+	
+								if (bIdle)
+									iIdleCount++;
+	
+								// - in use for more than 2 min, such a query takes too long and we should remove the connection from the pool
+								// - limit the number of idle connections
+								// - any connection left in an error state by a query
+								bClose = (dbc.iBusy == 2 && (now - dbc.lLastAccess > 1000 * 60 * 2)) || 
+										 (bIdle && (iIdleCount > 5 || now - dbc.lLastAccess > 1000 * 60 * 5)) ||
+										 (dbc.iBusy != 2 && dbc.iBusy != 1); // error case
+	
+								if (bClose) {
+									iClosedToGC++;
+	
+									if (dbc.iBusy != 2) { // force connection close only if the object
+										// is not in use
+										dbc.close();
+									} else {
+										System.err.println("DBFunctions: Not closing busy connection (description: "+dbc.getDescription()+')'); //$NON-NLS-1$
+									}
+	
+									it.remove();
+									if (bIdle) // if it was idle but i decided to remove it
+										iIdleCount--;
 								}
-
-								it.remove();
-								if (bIdle) // if it was idle but i decided to remove it
-									iIdleCount--;
 							}
 						}
 					}

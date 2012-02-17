@@ -535,7 +535,7 @@ public final class FileTypes {
 	 * @return the content type to be used with this file
 	 */
 	public static String getMIMETypeOf(final String sFileName) {
-		final int idx = sFileName.lastIndexOf(".");
+		final int idx = sFileName.lastIndexOf('.');
 		
 		if (idx>=0){
 			final String s = sFileName.substring(idx + 1);

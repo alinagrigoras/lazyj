@@ -936,7 +936,6 @@ public final class Utils {
 		s = m.replaceAll("");
 
 		if (s.indexOf("&")>=0){
-			s = s.replace("&nbsp;", " ");
 			s = s.replace("&lt;", "<");
 			s = s.replace("&gt;", ">");
 			s = s.replace("&raquo;", ">>");
@@ -984,9 +983,6 @@ public final class Utils {
 			idxStart = s.indexOf("&#", idxStart+2);
 		}
 		
-		m = PATTERN_HTML_SPECIAL.matcher(s);
-		s = m.replaceAll("");
-
 		if ( (options & HTML_OPTION_KEEP_NEWLINES) == 0){
 			m = PATTERN_HTML_LINES.matcher(s);
 			s = m.replaceAll("\n");
@@ -994,6 +990,11 @@ public final class Utils {
 
 		m = PATTERN_HTML_TRIM.matcher(s);
 		s = m.replaceAll("");		
+		
+		s = s.replace("&nbsp;", " ");
+
+		m = PATTERN_HTML_SPECIAL.matcher(s);
+		s = m.replaceAll("");
 
 		return s;
 	}

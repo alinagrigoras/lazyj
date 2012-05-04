@@ -524,6 +524,7 @@ public final class FileTypes {
 		// and some extras for ALICE
 		d.put("root", "application/root");
 		d.put("jdl", "text/x-jdl");
+		d.put("rc", "application/x-sh");
 	}
 
 	/**

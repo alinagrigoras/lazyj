@@ -395,7 +395,7 @@ public final class FileTypes {
 		d.put("ser", "application/java-serialized-object");                                                                                                         
 		d.put("sgf", "application/x-go-sgf");                                                                                                                       
 		d.put("sgl", "application/vnd.stardivision.writer-global");                                                                                                 
-		d.put("sh", "application/x-sh");                                                                                                                            
+//		d.put("sh", "application/x-sh");                                                                                                                            
 		d.put("shar", "application/x-shar");                                                                                                                        
 		d.put("shp", "application/x-qgis");                                                                                                                         
 		d.put("sh", "text/x-sh");                                                                                                                                   
@@ -523,9 +523,9 @@ public final class FileTypes {
 		
 		// and some extras for ALICE
 		d.put("root", "application/root");
-		d.put("jdl", "text/x-jdl");
-		d.put("rc", "application/x-sh");
-		d.put("res", "text/html");
+		d.put("jdl" , "text/x-jdl");
+		d.put("rc"  , "text/x-sh");
+		d.put("res" , "text/html");
 	}
 
 	/**

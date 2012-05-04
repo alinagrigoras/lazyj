@@ -525,6 +525,7 @@ public final class FileTypes {
 		d.put("root", "application/root");
 		d.put("jdl", "text/x-jdl");
 		d.put("rc", "application/x-sh");
+		d.put("res", "text/html");
 	}
 
 	/**

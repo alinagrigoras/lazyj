@@ -1,5 +1,7 @@
 package lazyj;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -889,6 +891,19 @@ public final class Format {
 	 */
 	public static final String byteToHex(byte val) {
 		return "" + hexChar((val >>> 4) & 0x0F) + hexChar(val & 0x0F); //$NON-NLS-1$
+	}
+
+	/**
+	 * Get the stack trace as String
+	 * 
+	 * @param t the exception to get the trace for 
+	 * @return the stack trace as String
+	 */
+	public static final String stackTraceToString(final Throwable t){
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		return sw.toString();
 	}
 	
 }

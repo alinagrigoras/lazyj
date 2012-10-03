@@ -735,18 +735,40 @@ public final class DBSession implements Serializable, Delayed {
 	 * @return the session from DB
 	 */
 	private static DBSession decode(final String s, final ClassLoader loader) {
+		ByteArrayInputStream bais = null;
+		ObjectInputStream ois = null;
+		
 		try {
-			final ByteArrayInputStream bais = new ByteArrayInputStream(decodeString(s));
-			final ObjectInputStream ois = new MyObjectInputStream(bais, loader);
+			bais = new ByteArrayInputStream(decodeString(s));
+			ois = new MyObjectInputStream(bais, loader);
 			
 			final DBSession readObject = (DBSession) ois.readObject();
 
 			return readObject;
 		}
-		catch (Throwable e) {
+		catch (final Throwable e) {
 			Log.log(Log.WARNING, "lazyj.DBSession", "exception decoding previously saved value", e); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			return null;
+		}
+		finally{
+			if (ois!=null){
+				try{
+					ois.close();
+				}
+				catch (final IOException ioe){
+					// ignore
+				}
+			}
+			
+			if (bais!=null){
+				try{
+					bais.close();
+				}
+				catch (final IOException ioe){
+					// ignore
+				}
+			}
 		}
 	}
 

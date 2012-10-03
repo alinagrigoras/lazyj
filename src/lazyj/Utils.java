@@ -1249,8 +1249,14 @@ public final class Utils {
 		 * @return encoded bytes
 		 */
 		public static synchronized String encode(final byte[] b) {
-			instance.putByteArray(null, b);
-			return instance.get(null, null);
+			final String key = String.valueOf(Thread.currentThread().getId()); 
+			
+			instance.putByteArray(key, b);
+			final String value = instance.get(key, null);
+			
+			instance.remove(key);
+			
+			return value;
 		}
 
 		/**
@@ -1260,8 +1266,14 @@ public final class Utils {
 		 * @return decoded bytes
 		 */
 		public static synchronized byte[] decode(final String base64String) {
-			instance.put(null, base64String);
-			return instance.getByteArray(null, null);
+			final String key = String.valueOf(Thread.currentThread().getId()); 
+			
+			instance.put(key, base64String);
+			final byte[] value = instance.getByteArray(key, null);
+			
+			instance.remove(key);
+			
+			return value;
 		}
 
 		@Override

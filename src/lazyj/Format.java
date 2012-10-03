@@ -246,7 +246,7 @@ public final class Format {
 					sb.append("&quot;"); //$NON-NLS-1$
 					break;
 				case 0xB0:
-					sb.append("&deg;");
+					sb.append("&deg;"); //$NON-NLS-1$
 					break;
 				default:
 					sb.append(c);

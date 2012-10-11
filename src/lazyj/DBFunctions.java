@@ -2,6 +2,7 @@ package lazyj;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -910,7 +911,7 @@ public class DBFunctions {
 	 * 
 	 * @param sQuery SQL query to execute
 	 * @return <code>true</code> if the query succeeded, <code>false</code> if there was an error (connection or syntax).
-	 * @see DBFunctions#query(String, boolean)
+	 * @see DBFunctions#query(String, boolean,Object...)
 	 */
 	public boolean query(final String sQuery) {
 		return query(sQuery, false);
@@ -976,18 +977,19 @@ public class DBFunctions {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * Execute an error and as an option you can force to ignore any errors, no to log them if you
 	 * expect a query to fail.
 	 * 
 	 * @param sQuery
-	 *            query to execute
+	 *            query to execute, can be a full query or a prepared statement in which case the values to the columns should be passed as well
 	 * @param bIgnoreErrors
-	 *            true if you want to hide any errors
+	 *            <code>true</code> if you want to hide any errors
+	 * @param values values to set to the prepared statement
 	 * @return true if the query succeeded, false if there was an error
 	 */
-	public final boolean query(final String sQuery, final boolean bIgnoreErrors) {
+	public final boolean query(final String sQuery, final boolean bIgnoreErrors, final Object... values) {
 		lQueryCount++;
 
 		final String sConnection = getKey();
@@ -1053,9 +1055,25 @@ public class DBFunctions {
 		}
 		
 		try {
-			this.stat = this.dbc.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			final boolean execResult;
+			
+			if (values!=null && values.length>0){
+				final PreparedStatement prepStat = this.dbc.getConnection().prepareStatement(sQuery, this.generatedKeyRequest);
+			
+				for (int i=0; i<values.length; i++)
+					prepStat.setObject(i+1, values[i]);
+				
+				this.stat = prepStat;
+				
+				execResult = prepStat.execute();
+			}
+			else{
+				this.stat = this.dbc.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				
+				execResult = this.stat.execute(sQuery, this.generatedKeyRequest);
+			}	
 
-			if (this.stat.execute(sQuery, this.generatedKeyRequest)) {
+			if (execResult) {
 				this.rsRezultat = this.stat.getResultSet();
 			}
 			else {

@@ -228,6 +228,11 @@ public class BasePage implements TemplatePage {
 	public final Map<String, StringBuilder>	mValues				= new HashMap<String, StringBuilder>();
 	
 	/**
+	 * Common values across iterations
+	 */
+	public Map<String, Object> commonValues = null;
+	
+	/**
 	 * What are the sections that are commented out?
 	 * @see #comment(String, boolean)
 	 */
@@ -334,6 +339,39 @@ public class BasePage implements TemplatePage {
 	}
 	
 	/**
+	 * Set a value that is not cleaned between write() or append() of this object (so it can be used across all lines in a table for example). Values explicitly set in the loop
+	 * with functions like {@link #append(String, Object)} or {@link #modify(String, Object)} will have precedence over the common values. 
+	 * 
+	 * @param sTag tag that is modified
+	 * @param oValue set value
+	 * @return the previous value
+	 */
+	public Object set(final String sTag, final Object oValue){
+		if (this.commonValues==null){
+			this.commonValues = new HashMap<String, Object>();
+		}
+		
+		return this.commonValues.put(sTag, oValue);
+	}
+	
+	/**
+	 * @param sTag
+	 * @return the previously set value, if any
+	 */
+	public Object unset(final String sTag){
+		if (this.commonValues!=null){
+			final Object oldValue = this.commonValues.remove(sTag);
+			
+			if (this.commonValues.size()==0)
+				this.commonValues = null;
+			
+			return oldValue;
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Assign a value to a tag, only if this tag wasn't assigned at a previous time. In other words only the first assignment to a tag is considered.
 	 * 
 	 * @param sTag tag to assign a value to
@@ -355,7 +393,7 @@ public class BasePage implements TemplatePage {
 		if (m == null || m.size()==0)
 			return;
 		
-		for (Map.Entry<?,?> me: m.entrySet()){
+		for (final Map.Entry<?,?> me: m.entrySet()){
 			modify(me.getKey().toString(), me.getValue());
 		}
 	}
@@ -446,6 +484,12 @@ public class BasePage implements TemplatePage {
 	public StringBuilder getContents(){
 		if (this.tp==null)
 			return new StringBuilder();
+		
+		if (this.commonValues!=null){
+			for (final Map.Entry<String, Object> entry: this.commonValues.entrySet()){
+				modify(entry.getKey(), entry.getValue());
+			}
+		}
 		
 		final StringBuilder sb = this.tp.process(this.mValues, this.sComments, this.callingServlet);
 		

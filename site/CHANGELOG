@@ -1,4 +1,8 @@
 1.0.7:
+	2013-01-16
+	lazyj.page.BasePage
+		- added set() and unset() for having common values across iterations
+
 	2011-09-22
 	lazyj.DBFunctions
 		- introduce getting of last generated sequence/auto-increment ID

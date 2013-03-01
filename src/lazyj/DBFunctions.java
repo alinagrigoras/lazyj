@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1808,7 +1809,7 @@ public class DBFunctions {
 	 * @return the values in the array, as Strings
 	 * @since 1.0.3
 	 */
-	public final Collection<String> getStringArray(final String sColumn){
+	public final List<String> getStringArray(final String sColumn){
 		return decode(gets(sColumn));
 	}
 	
@@ -1819,7 +1820,7 @@ public class DBFunctions {
 	 * @return the values in the array, as Strings
 	 * @since 1.0.3
 	 */
-	public final Collection<String> getStringArray(final int iColumn){
+	public final List<String> getStringArray(final int iColumn){
 		return decode(gets(iColumn));
 	}
 	
@@ -1830,7 +1831,7 @@ public class DBFunctions {
 	 * @return the values in the array, as Integers
 	 * @since 1.0.3
 	 */
-	public final Collection<Integer> getIntArray(final String sColumn){
+	public final List<Integer> getIntArray(final String sColumn){
 		return decodeToInt(gets(sColumn));
 	}
 	
@@ -1841,7 +1842,7 @@ public class DBFunctions {
 	 * @return the values in the array, as Integers
 	 * @since 1.0.3
 	 */
-	public final Collection<Integer> getIntArray(final int iColumn){
+	public final List<Integer> getIntArray(final int iColumn){
 		return decodeToInt(gets(iColumn));
 	}	
 	
@@ -1852,8 +1853,8 @@ public class DBFunctions {
 	 * @return collection of integers
 	 * @since 1.0.3
 	 */
-	private static Collection<Integer> decodeToInt(final String sValue){
-		final Collection<String> lValues = decode(sValue);
+	private static List<Integer> decodeToInt(final String sValue){
+		final List<String> lValues = decode(sValue);
 		
 		final ArrayList<Integer> l = new ArrayList<Integer>(lValues.size());
 		
@@ -1876,9 +1877,9 @@ public class DBFunctions {
 	 * @return collection of strings
 	 * @since 1.0.3
 	 */
-	private static Collection<String> decode(final String sValue){
+	private static List<String> decode(final String sValue){
 		if (sValue==null || sValue.length()<2 || sValue.charAt(0)!='{' || sValue.charAt(sValue.length()-1)!='}')
-			return new ArrayList<String>(0);
+			return Collections.emptyList();
 		
 		final StringTokenizer st = new StringTokenizer(sValue.substring(1, sValue.length()-1), ","); //$NON-NLS-1$
 		

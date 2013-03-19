@@ -1850,15 +1850,15 @@ public class DBFunctions {
 	 * Convert each entry from an array to Integer.
 	 * 
 	 * @param sValue
-	 * @return collection of integers
+	 * @return the members of the database array, as list of Integer objects
 	 * @since 1.0.3
 	 */
-	private static List<Integer> decodeToInt(final String sValue){
+	public static List<Integer> decodeToInt(final String sValue){
 		final List<String> lValues = decode(sValue);
 		
 		final ArrayList<Integer> l = new ArrayList<Integer>(lValues.size());
 		
-		for (String s: lValues){
+		for (final String s: lValues){
 			try{
 				l.add(Integer.valueOf(s));
 			}
@@ -1874,10 +1874,10 @@ public class DBFunctions {
 	 * Given an array in PostgreSQL format, convert it to a Java array of Strings.
 	 * 
 	 * @param sValue
-	 * @return collection of strings
+	 * @return the members of the database array, as list of String objects
 	 * @since 1.0.3
 	 */
-	private static List<String> decode(final String sValue){
+	public static List<String> decode(final String sValue){
 		if (sValue==null || sValue.length()<2 || sValue.charAt(0)!='{' || sValue.charAt(sValue.length()-1)!='}')
 			return Collections.emptyList();
 		

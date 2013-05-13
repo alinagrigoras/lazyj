@@ -7,6 +7,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -906,4 +907,25 @@ public final class Format {
 		return sw.toString();
 	}
 	
+    /**
+     * Convert a collection of numbers in a comma-separated list. 
+     * 
+     * @param values values to export
+     * @return comma-separated list
+     */
+	public static String toCommaList(final Collection<Integer> values) {
+		if (values == null || values.size() == 0)
+			return ""; //$NON-NLS-1$
+
+		final StringBuilder sb = new StringBuilder();
+
+		for (final Integer i : values) {
+			if (sb.length() > 0)
+				sb.append(", "); //$NON-NLS-1$
+
+			sb.append(i);
+		}
+
+		return sb.toString();
+	}
 }

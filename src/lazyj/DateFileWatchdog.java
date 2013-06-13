@@ -251,7 +251,7 @@ public final class DateFileWatchdog extends Observable {
 		 */
 		@Override
 		public void run() {
-			Log.log(Log.FINE, "lazyj.DateFileWatchdog", "started");  //$NON-NLS-1$//$NON-NLS-2$
+			//Log.log(Log.FINE, "lazyj.DateFileWatchdog", "started");  //$NON-NLS-1$//$NON-NLS-2$
 			
 			while (true) {
 				try {

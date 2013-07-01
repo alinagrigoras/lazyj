@@ -134,6 +134,8 @@ public final class DBSession implements Serializable, Delayed {
 				db.query("CREATE UNIQUE INDEX sessions_pkey ON sessions(id, app, ip);");
 				db.query("CREATE INDEX sessions_lastaccess_idx ON sessions(lastaccess);");
 			}
+			
+			db.close();
 		}
 		
 		iMemoryFlushMinutes = dbProp.geti("flush.memory", iMemoryFlushMinutes);
@@ -378,10 +380,15 @@ public final class DBSession implements Serializable, Delayed {
 		if (dbs==null && bDBEnabled){
 			final DBFunctions db = getDB();
 		
-			db.query("SELECT values FROM sessions WHERE id='"+Format.escSQL(sID)+"' AND app="+iApp+(bIPProtection ? " AND ip='"+Format.escSQL(sIP)+"'" : "")+";");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		
-			if (db.moveNext()){
-				dbs = decode(db.gets("values"), tp.getClass().getClassLoader()); //$NON-NLS-1$
+			try{
+				db.query("SELECT values FROM sessions WHERE id='"+Format.escSQL(sID)+"' AND app="+iApp+(bIPProtection ? " AND ip='"+Format.escSQL(sIP)+"'" : "")+";");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			
+				if (db.moveNext()){
+					dbs = decode(db.gets("values"), tp.getClass().getClassLoader()); //$NON-NLS-1$
+				}
+			}
+			finally{
+				db.close();
 			}
 		
 			if (dbs!=null){
@@ -568,6 +575,8 @@ public final class DBSession implements Serializable, Delayed {
 						"'" + sValue + "');"
 				);
 			}
+			
+			db.close();
 		}
 		catch (Throwable e) {
 			Log.log(Log.WARNING, "lazyj.DBSession", "exception saving a session into the db", e);
@@ -593,6 +602,8 @@ public final class DBSession implements Serializable, Delayed {
 			final DBFunctions db = getDB();
 		
 			db.query("DELETE FROM sessions WHERE id='" + Format.escSQL(this.sID) + "' AND app="+this.iApp+(this.bIPProtected ? " AND ip='"+Format.escSQL(this.sIP)+'\'' : "")+';');  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+			
+			db.close();
 		}
 		
 		mSessions.remove(this.sID + '/' + this.iApp + (this.bIPProtected ? '/' + this.sIP : "")); //$NON-NLS-1$

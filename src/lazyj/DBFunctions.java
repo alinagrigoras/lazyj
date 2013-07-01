@@ -591,6 +591,8 @@ public class DBFunctions {
 			try{
 				this.conn = prop!=null ? DriverManager.getConnection(jdbcURL, prop) : DriverManager.getConnection(jdbcURL);
 				this.iBusy = 1;
+				
+				setDescription(this.conn.toString());
 			}
 			catch (SQLException e){
 				// cannot establish a connection
@@ -881,17 +883,17 @@ public class DBFunctions {
 	private Statement	stat	= null;
 
 	/**
-	 * Override the default destructor to properly close any resources in use.
+	 * Explicitly close the allocated resources 
 	 */
-
-	@Override
-	protected void finalize() {
+	public void close(){
 		if (this.rsRezultat != null) {
 			try {
 				this.rsRezultat.close();
 			} catch (Throwable t) {
 				// ignore this
 			}
+			
+			this.rsRezultat = null;
 		}
 
 		if (this.stat != null) {
@@ -900,9 +902,18 @@ public class DBFunctions {
 			} catch (Throwable t) {
 				// ignore this
 			}
-		}
+			
+			this.stat = null;
+		}		
 	}
-
+	
+	/**
+	 * Override the default destructor to properly close any resources in use.
+	 */
+	@Override
+	protected void finalize() {
+		close();
+	}
 	
 	/**
 	 * Execute a query.

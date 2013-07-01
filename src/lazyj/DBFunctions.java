@@ -805,9 +805,6 @@ public class DBFunctions {
 				if (iClosedToGC > 20) {
 					iClosedToGC = 0;
 					System.gc();
-					Thread.yield();
-					System.gc();
-					Thread.yield();
 				}
 
 				try {

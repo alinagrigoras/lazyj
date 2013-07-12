@@ -340,25 +340,36 @@ public class DBFunctions {
 				ll = hmConn.get(this.uniqueKey);
 			}
 
+			boolean addNew = false;
+			
 			synchronized (ll){
 				if (ll.size() < 100) {
-					this.dbc = new DBConnection(this.driver, this.jdbcConnectionString, this.prop, this.uniqueKey);
-					if (this.dbc.canUse()) {
-						this.sConnectFailReason = null;
-						
-						this.dbc.use();
+					addNew = true;
+				}
+			}
+			
+			if (addNew){
+				this.dbc = new DBConnection(this.driver, this.jdbcConnectionString, this.prop, this.uniqueKey);
+				
+				if (this.dbc.canUse()) {
+					this.sConnectFailReason = null;
+					
+					this.dbc.use();
+					
+					synchronized (ll){
 						ll.add(this.dbc);
-						return true;
 					}
 					
-					this.sConnectFailReason = "Cannot establish new DB connection"; //$NON-NLS-1$
-					
-					this.dbc.close();
-					this.dbc = null;
+					return true;
 				}
-				else{
-					this.sConnectFailReason = "There are already 100 established connections to the DB, refusing to establish another one"; //$NON-NLS-1$
-				}
+				
+				this.sConnectFailReason = "Cannot establish new DB connection"; //$NON-NLS-1$
+				
+				this.dbc.close();
+				this.dbc = null;
+			}
+			else{
+				this.sConnectFailReason = "There are already 100 established connections to the DB, refusing to establish another one"; //$NON-NLS-1$
 			}
 
 			try {

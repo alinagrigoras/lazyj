@@ -27,7 +27,7 @@ public class ModulePage extends BasePage {
 	static final ExtProperties	moduleProp;
 
 	static {
-		String s = Utils.getLazyjConfigFolder();
+		final String s = Utils.getLazyjConfigFolder();
 
 		ExtProperties pTemp;
 		
@@ -47,7 +47,7 @@ public class ModulePage extends BasePage {
 	 * 
 	 * @param sPage page to read from the disk
 	 */
-	public ModulePage(String sPage) {
+	public ModulePage(final String sPage) {
 		super(sPage);
 	}
 

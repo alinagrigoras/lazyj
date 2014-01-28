@@ -67,7 +67,7 @@ public class Sendmail {
 	/**
 	 * Complete email address of the sender
 	 */
-	private String					sFullUserEmail;
+	private final String					sFullUserEmail;
 
 	/**
 	 * Boundary to use
@@ -102,17 +102,17 @@ public class Sendmail {
 	/**
 	 * Recipient addresses that were rejected by the mail server
 	 */
-	public List<String>			lInvalidAddresses	= new LinkedList<String>();
+	public List<String>			lInvalidAddresses	= new LinkedList<>();
 
 	/**
 	 * Server that is used to deliver the mails through
 	 */
-	private String					sServer;
+	private final String					sServer;
 
 	/**
 	 * Server port
 	 */
-	private int					iPort;
+	private final int					iPort;
 
 	/**
 	 * What is an CRLF ?
@@ -170,7 +170,7 @@ public class Sendmail {
 			return false;
 		
 		if (this.filters==null)
-			this.filters = new LinkedList<MailFilter>();
+			this.filters = new LinkedList<>();
 		else
 			if (this.filters.contains(filter))
 				return false;
@@ -214,7 +214,7 @@ public class Sendmail {
 			return null;
 		
 		final StringTokenizer st = new StringTokenizer(adr, ",;"); //$NON-NLS-1$
-		final List<String> l = new LinkedList<String>();
+		final List<String> l = new LinkedList<>();
 		
 		while (st.hasMoreTokens()) {
 			final String sAdresa = Format.extractAddress(st.nextToken().trim());
@@ -232,7 +232,7 @@ public class Sendmail {
 	 * @return an Iterator over the addresses
 	 */
 	private static Iterator<String> addresses(final Mail mail) {
-		final List<String> adr = new LinkedList<String>();
+		final List<String> adr = new LinkedList<>();
 		
 		List<String> lTemp = adrFromString(mail.sTo);
 		if ((lTemp != null) && (!lTemp.isEmpty()))
@@ -378,12 +378,12 @@ public class Sendmail {
                 this.sock.setSoTimeout(20000);
 				this.sock_out = new PrintWriter(new OutputStreamWriter(this.sock.getOutputStream(), mail.charSet), true);
 				this.sock_in = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
-			} catch (UnknownHostException e) {
+			} catch (final UnknownHostException e) {
 				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : unknown host " + this.sServer);
 				this.iSentOk = SENT_ERROR;
 				this.sError = "could not connect to the mail server!";
 				return false;
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				Log.log(Log.ERROR, "lazyj.mail.Sendmail", "init : IOException (unable to establish datalink to "+this.sServer+":"+this.iPort+", check your server)", e);
 				this.iSentOk = SENT_ERROR;
 				this.sError = "could not connect to the mail server!";
@@ -444,10 +444,10 @@ public class Sendmail {
 				return false;
 			}
 
-			Iterator<String> itAdrese = addresses(mail);
+			final Iterator<String> itAdrese = addresses(mail);
 			int iCount = 0;
 			while (itAdrese.hasNext()) {
-				String sCurrentAddr = itAdrese.next();
+				final String sCurrentAddr = itAdrese.next();
 				println("RCPT TO: " + sCurrentAddr, true);
 				line1 = readLine();
 
@@ -465,7 +465,7 @@ public class Sendmail {
 			if (iCount==0)
 				return false;
 			
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			this.iSentOk = SENT_ERROR;
 			this.sError = "IOException : " + e.getMessage();
 			return false;
@@ -487,7 +487,7 @@ public class Sendmail {
 	 */
 	@SuppressWarnings("nls")
 	private void headers(final Mail mail, final StringBuilder output, final String sBody) {
-		final Map<String, String> mailHeaders = new LinkedHashMap<String, String>();
+		final Map<String, String> mailHeaders = new LinkedHashMap<>();
 		
 		mailHeaders.put("Date", new MailDate(new Date()).toMailString());
 		
@@ -532,7 +532,7 @@ public class Sendmail {
 		mailHeaders.putAll(mail.hmHeaders);
 					
 		if (this.filters!=null){
-			for (MailFilter filter: this.filters)
+			for (final MailFilter filter: this.filters)
 				filter.filter(mailHeaders, sBody, mail);
 		}
 		
@@ -619,7 +619,7 @@ public class Sendmail {
 		try {
 			sText = bodyProcess(bHtmlPart ? mail.sHTMLBody : mail.sBody, true);
 		}
-		catch (Exception e) {
+		catch (final Exception e) {
 			this.sError = "writeBody : bodyProcess error : sBody ("+(bHtmlPart ? "html" : "text")+" : '"+ mail.sBody+"'";
 			Log.log(Log.ERROR, "lazyj.mail.Sendmail", this.sError, e);
 			
@@ -686,12 +686,12 @@ public class Sendmail {
 
 			this.sock_in.close();
 			this.sock_out.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.log(Log.FATAL, "lazyj.mail.Sendmail", "writeEndOfMail" + e);
 			this.iSentOk = SENT_ERROR;
 			this.sError = "IOException : " + e.getMessage();
 			return false;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.log(Log.FATAL, "lazyj.mail.Sendmail", "writeEndOfMail" + e);
 			this.iSentOk = SENT_ERROR;
 			this.sError = "Exception : " + e.getMessage();
@@ -710,7 +710,7 @@ public class Sendmail {
 	 */
 	@SuppressWarnings("nls")
 	private boolean writeFileAttachment(final String sFileName, final StringBuilder out) {
-		String sRealFile = sFileName;
+		final String sRealFile = sFileName;
 
 		final File f = new File(sRealFile);
 		if (!f.exists() || !f.isFile() || !f.canRead()) {
@@ -723,7 +723,7 @@ public class Sendmail {
 		BufferedInputStream in = null;
 		try {
 			in = new BufferedInputStream(new FileInputStream(sRealFile));
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.log(Log.ERROR, "lazyj.mail.Sendmail", "writeFileAttachment" + e);
 			this.iSentOk = SENT_ERROR;
 			this.sError = "exception while attaching `" + sFileName + "` : " + e.getMessage();
@@ -734,7 +734,7 @@ public class Sendmail {
 
 		try {
 			in.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// ignore close exception
 		}
 
@@ -786,7 +786,7 @@ public class Sendmail {
 			
 			out.append(baos.toString("US-ASCII"));
 		}
-		catch (Throwable e) {
+		catch (final Throwable e) {
 			Log.log(Log.FATAL, "lazyj.mail.Sendmail", "writeAttachment" + e);
 			this.iSentOk = SENT_ERROR;
 			this.sError = "exception while writing an attachment : " + e.getMessage();
@@ -797,7 +797,7 @@ public class Sendmail {
 				try{
 					in.close();
 				}
-				catch (IOException e){
+				catch (final IOException e){
 					// ignore
 				}
 			
@@ -805,7 +805,7 @@ public class Sendmail {
 				try{
 					encoder.close();
 				}
-				catch (IOException e){
+				catch (final IOException e){
 					// ignore
 				}
 			}

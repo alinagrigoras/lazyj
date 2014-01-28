@@ -75,7 +75,7 @@ public class DKIMSigner implements MailFilter {
 	/**
 	 * Default mail headers to look for
 	 */
-	private static final List<String> DEFAULT_HEADERS = new ArrayList<String>(29);
+	private static final List<String> DEFAULT_HEADERS = new ArrayList<>(29);
 	
 	static {
 		DEFAULT_HEADERS.add("Content-Description");
@@ -117,7 +117,7 @@ public class DKIMSigner implements MailFilter {
 	/**
 	 * What is the set of mail headers to look for
 	 */
-	private LinkedHashSet<String> headers = new LinkedHashSet<String>(DEFAULT_HEADERS);
+	private LinkedHashSet<String> headers = new LinkedHashSet<>(DEFAULT_HEADERS);
 	
 	/**
 	 * Message digester
@@ -218,7 +218,7 @@ public class DKIMSigner implements MailFilter {
 	 */
 	@Override
 	public void filter(final Map<String, String> mailHeaders, final String sBody, final Mail mail) {
-		final Map<String, String> fields = new LinkedHashMap<String, String>();
+		final Map<String, String> fields = new LinkedHashMap<>();
 		
 		fields.put("v", "1");
 		fields.put("a", "rsa-sha256");
@@ -229,7 +229,7 @@ public class DKIMSigner implements MailFilter {
 		fields.put("q", "dns/txt");
 		fields.put("t", String.valueOf(System.currentTimeMillis()/1000));
 		
-		final List<String> foundHeaders = new LinkedList<String>();
+		final List<String> foundHeaders = new LinkedList<>();
 		
 		final StringBuilder sbHeader = new StringBuilder(1024);
 		

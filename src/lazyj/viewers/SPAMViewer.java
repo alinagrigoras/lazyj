@@ -14,7 +14,7 @@ public class SPAMViewer extends Viewer {
 	 * @param o input to check
 	 * @see Viewer#Viewer(Object)
 	 */
-	public SPAMViewer(Object o) {
+	public SPAMViewer(final Object o) {
 		super(o);
 	}
 

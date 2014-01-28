@@ -141,7 +141,7 @@ public class MailHeader extends Header implements Comparable<MailHeader> {
 	/**
 	 * Supplemental headers to be added when sending the mail
 	 */
-	public HashMap<String, String>	hmHeaders	= new HashMap<String, String>();
+	public HashMap<String, String>	hmHeaders	= new HashMap<>();
 
 	/**
 	 * Add an extra header to be put in the mail that is sent.  
@@ -206,26 +206,26 @@ public class MailHeader extends Header implements Comparable<MailHeader> {
 			this.sNotification = getValue("Return-Receipt-To");
 
 		this.sEncoding = getValue("Content-Transfer-Encoding");
-		String sPriority = getValue("X-Priority");
+		final String sPriority = getValue("X-Priority");
 		this.iPriority = 3;
 		if ((sPriority != null) && (sPriority.length() > 0))
 			try {
 				this.iPriority = Integer.parseInt(sPriority);
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				// keep the default value "3" if there is a problem parsing the given string
 			}
 
 		this.sContentType = getValue("Content-Type");
 		if (this.sContentType.length() == 0)
 			this.sContentType = "text/plain";
-		String sDate = getValue("Date");
+		final String sDate = getValue("Date");
 
 		if (sDate.length() > 0)
 			this.mdDate = new MailDate(sDate);
 		else
 			this.mdDate = new MailDate(new Date());
 
-		String sStatus = getValue("Status");
+		final String sStatus = getValue("Status");
 
 		this.iStatus = (sStatus.indexOf("R") >= 0) ? 1 : 0;
 		this.bOld = sStatus.indexOf("O") >= 0;

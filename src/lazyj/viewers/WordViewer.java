@@ -14,7 +14,7 @@ public class WordViewer extends Viewer {
 	 * @param o input to convert
 	 * @see Viewer#Viewer(Object)
 	 */
-	public WordViewer(Object o) {
+	public WordViewer(final Object o) {
 		super(o);
 	}
 

@@ -152,7 +152,7 @@ public final class ExtProperties extends Observable implements Observer {
 				this.dfw = new DateFileWatchdog(this.sConfigFile, lReload);
 				this.dfw.addObserver(this);
 			}
-			catch (Throwable t){
+			catch (final Throwable t){
 				this.dfw = null;
 			}
 		}
@@ -213,7 +213,7 @@ public final class ExtProperties extends Observable implements Observer {
 			
 			propLoader.load(fis);
 		}
-		catch (IOException ioe){
+		catch (final IOException ioe){
 			Log.log(Log.WARNING, "lazyj.ExtProperties", "cannot load '"+this.sConfigFile+'\'', ioe);  //$NON-NLS-1$//$NON-NLS-2$
 			
 			this.sConfigFile = null;
@@ -225,7 +225,7 @@ public final class ExtProperties extends Observable implements Observer {
 				try{
 					fis.close();
 				}
-				catch (IOException ioe2){
+				catch (final IOException ioe2){
 					// ignore
 				}
 			}
@@ -266,7 +266,7 @@ public final class ExtProperties extends Observable implements Observer {
 	public String parseOption(final String sKey, final String sValue, final String sDefault, final boolean bProcessQueries) {
 		int i = 0;
 
-		StringBuilder sbVal = new StringBuilder();
+		final StringBuilder sbVal = new StringBuilder();
 		
 		String sVal = sValue;
 		
@@ -359,7 +359,7 @@ public final class ExtProperties extends Observable implements Observer {
 
 		if (sReturn!=null){
 			if (this.hmCached==null)
-				this.hmCached = new HashMap<String, String>();
+				this.hmCached = new HashMap<>();
 		
 			this.hmCached.put(sKey, sReturn);
 		}
@@ -391,7 +391,7 @@ public final class ExtProperties extends Observable implements Observer {
 	public int geti(final String sKey, final int iDefault) {
 		try {
 			return Integer.parseInt(gets(sKey, ""+iDefault)); //$NON-NLS-1$
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return iDefault;
 		}
 	}
@@ -407,7 +407,7 @@ public final class ExtProperties extends Observable implements Observer {
 	public long getl(final String sKey, final long lDefault) {
 		try {
 			return Long.parseLong(gets(sKey, ""+lDefault)); //$NON-NLS-1$
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return lDefault;
 		}
 	}
@@ -423,7 +423,7 @@ public final class ExtProperties extends Observable implements Observer {
 	public double getd(final String sKey, final double dDefault) {
 		try {
 			return Double.parseDouble(gets(sKey, ""+dDefault)); //$NON-NLS-1$
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return dDefault;
 		}
 	}
@@ -439,7 +439,7 @@ public final class ExtProperties extends Observable implements Observer {
 		
 		final StringTokenizer st = new StringTokenizer(sVal, ","); //$NON-NLS-1$
 		
-		final Vector<String> vReturn = new Vector<String>(st.countTokens());
+		final Vector<String> vReturn = new Vector<>(st.countTokens());
 		
 		while (st.hasMoreTokens()){
 			vReturn.add(st.nextToken());
@@ -481,7 +481,7 @@ public final class ExtProperties extends Observable implements Observer {
 		// save the set value in a map, to override future changes in the underlying file
 		if (this.sConfigFile!=null){
 			if (this.hmExtraSet==null)
-				this.hmExtraSet = new HashMap<String, String>();
+				this.hmExtraSet = new HashMap<>();
 		
 			this.hmExtraSet.put(sKey, sValue);
 		}
@@ -505,7 +505,7 @@ public final class ExtProperties extends Observable implements Observer {
 	public Properties getProperties(){
 		final Properties pRet = new Properties();
 		
-		for (Object o: this.prop.keySet()){
+		for (final Object o: this.prop.keySet()){
 			if (o instanceof String){
 				final String s = (String) o;
 				

@@ -1,8 +1,8 @@
 package lazyj.commands;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public final class SystemCommand extends Thread{
                 bNext = true;
             }
         }
-        catch(IOException ioe){
+        catch(final IOException ioe){
             // ignore
         }
     }
@@ -87,7 +87,7 @@ public final class SystemCommand extends Thread{
         try{
             p = pb.start();
         }
-        catch (IOException ioe){
+        catch (final IOException ioe){
             return null;
         }
 
@@ -111,7 +111,7 @@ public final class SystemCommand extends Thread{
         	if (t!=null)
         		t.join();
         }
-        catch (InterruptedException ie){
+        catch (final InterruptedException ie){
             // ignore
         }
 
@@ -120,7 +120,7 @@ public final class SystemCommand extends Thread{
         try{
             exitCode = p.waitFor();
         }
-        catch (Throwable e){
+        catch (final Throwable e){
             // ignore
         	exitCode = -1;
         }

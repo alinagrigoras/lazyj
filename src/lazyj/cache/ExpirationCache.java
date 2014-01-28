@@ -36,7 +36,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	/**
 	 * Expiration queue
 	 */
-	static final DelayQueue<QueueEntry<?, ?>> queue = new DelayQueue<QueueEntry<?, ?>>();  
+	static final DelayQueue<QueueEntry<?, ?>> queue = new DelayQueue<>();  
 	
 	/**
 	 * An entry in the cache, a key-value pair with an expiration time
@@ -159,7 +159,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 							try{
 								qe.callback();
 							}
-							catch (Throwable t){
+							catch (final Throwable t){
 								Log.log(Log.ERROR, "lazyj.cache.ExpirationCache", "I have encountered a problem on callback", t); //$NON-NLS-1$ //$NON-NLS-2$
 							}
 						}
@@ -168,7 +168,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 						}
 					}
 				}
-				catch (InterruptedException ie){
+				catch (final InterruptedException ie){
 					// ignore
 				}
 			}
@@ -216,7 +216,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 			if (willRemove){
 				// if the entry is removed because the LRU map has ran out of space, remove it from 
 				// the delayed queue as well
-				queue.remove(new QueueEntry<K,V>(eldest.getKey(), null, 0, ExpirationCache.this));
+				queue.remove(new QueueEntry<>(eldest.getKey(), null, 0, ExpirationCache.this));
 			}
 			
 			return willRemove;
@@ -253,7 +253,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 			final V value = this.mCache.remove(key);
 			
 			if (value!=null){
-				queue.remove(new QueueEntry<K,V>(key, null, 0, this));
+				queue.remove(new QueueEntry<>(key, null, 0, this));
 			}
 			
 			return value;
@@ -274,7 +274,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 			synchronized (this.mCache){
 				if (!this.mCache.containsKey(key)){
 					this.mCache.put(key, value);
-					queue.offer(new QueueEntry<K,V>(key, value, System.currentTimeMillis()+lLifetime, this));
+					queue.offer(new QueueEntry<>(key, value, System.currentTimeMillis()+lLifetime, this));
 				}
 			}
 		}
@@ -309,8 +309,8 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	@Override
 	public void refresh() {
 		synchronized (this.mCache){
-			for (K key: this.mCache.keySet()){
-				queue.remove(new QueueEntry<K, V>(key, null, 0, this));
+			for (final K key: this.mCache.keySet()){
+				queue.remove(new QueueEntry<>(key, null, 0, this));
 			}
 			this.mCache.clear();
 		}
@@ -334,7 +334,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	 */
 	public Set<K> getKeys(){
 		synchronized (this.mCache){
-			return new TreeSet<K>(this.mCache.keySet());
+			return new TreeSet<>(this.mCache.keySet());
 		}
 	}
 	
@@ -345,7 +345,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	 */
 	public List<V> getValues(){
 		synchronized (this.mCache){
-			return new ArrayList<V>(this.mCache.values());
+			return new ArrayList<>(this.mCache.values());
 		}
 	}
 	

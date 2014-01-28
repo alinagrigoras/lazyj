@@ -130,13 +130,13 @@ public final class Utils {
 	 * @return one of the standard paths, or <code>null</code> if none matches
 	 */
 	public static String getConfigFolder(final String sAppName, final String[] filesToSearch){
-		final List<String> folders = new LinkedList<String>();
+		final List<String> folders = new LinkedList<>();
 		
 		try{
 			File fDir = new File(".");  //$NON-NLS-1$
 			
 			if (fDir.isDirectory() && fDir.canRead()){
-				String sPath = fDir.getCanonicalPath();
+				final String sPath = fDir.getCanonicalPath();
 				
 				folders.add(sPath+File.separator+"config"+File.separator+sAppName); //$NON-NLS-1$
 				folders.add(sPath+File.separator+"config"); //$NON-NLS-1$
@@ -146,27 +146,27 @@ public final class Utils {
 			fDir = new File("..");  //$NON-NLS-1$
 			
 			if (fDir.isDirectory() && fDir.canRead()){
-				String sPath = fDir.getCanonicalPath();
+				final String sPath = fDir.getCanonicalPath();
 				
 				folders.add(sPath+File.separator+"config"+File.separator+sAppName); //$NON-NLS-1$
 				folders.add(sPath+File.separator+"config"); //$NON-NLS-1$
 				folders.add(sPath);
 			}
 		}
-		catch (IOException _){
+		catch (final IOException _){
 			// ignore
 		}
 		
 		folders.add(System.getProperty("user.home")+File.separator+'.'+sAppName); //$NON-NLS-1$
 		folders.add("/etc/"+sAppName); //$NON-NLS-1$
 				
-		for (String sPath: folders){
+		for (final String sPath: folders){
 			File f = new File(sPath);
 			
 			if (!f.isDirectory() || !f.canRead())
 				continue;
 			
-			for (String sFile: filesToSearch){
+			for (final String sFile: filesToSearch){
 				f = new File(sPath, sFile);
 				
 				if (f.isFile() && f.canRead())
@@ -207,7 +207,7 @@ public final class Utils {
 
 		try {
 			orig = javax.imageio.ImageIO.read(new FileInputStream(sSource));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.log(Log.ERROR, "lazyj.Utils", "image resize: exception decoding a compressed format from file '" + sSource + "'", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return false;
 		}
@@ -236,23 +236,23 @@ public final class Utils {
 
 			// Log.log("ServletExtension: scalling to "+destWidth+"x"+destHeight);
 
-			Component comp = new Component() {
+			final Component comp = new Component() {
 				private static final long	serialVersionUID	= 1L;
 			};
 
-			Image i2 = orig.getScaledInstance(destWidth, destHeight, Image.SCALE_SMOOTH);
-			MediaTracker tracker = new MediaTracker(comp);
+			final Image i2 = orig.getScaledInstance(destWidth, destHeight, Image.SCALE_SMOOTH);
+			final MediaTracker tracker = new MediaTracker(comp);
 			tracker.addImage(i2, 0);
 			try {
 				tracker.waitForID(0);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				e.printStackTrace();
 			}
 
 			// Log.log("ServletExtension: i2 size : "+i2.getWidth(comp)+"x"+i2.getHeight(comp));
 
 			dest = new BufferedImage(destWidth, destHeight, BufferedImage.TYPE_INT_RGB);
-			Graphics2D big = dest.createGraphics();
+			final Graphics2D big = dest.createGraphics();
 			big.drawImage(i2, 0, 0, comp);
 
 			// Log.log("ServletExtension: dest size : "+dest.getWidth()+"x"+dest.getHeight());
@@ -281,7 +281,7 @@ public final class Utils {
 				return false;
 			}
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			Log.log(Log.ERROR, "lazyj.Utils", "resize: cannot write to destination file: " + sDest, t); //$NON-NLS-1$ //$NON-NLS-2$
 			return false;			
 		}
@@ -290,7 +290,7 @@ public final class Utils {
 			try {
 				if (!(new File(sSource)).delete())
 					Log.log(Log.WARNING, "lazyj.Utils", "resize: could not delete original file (" + sSource + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			} catch (SecurityException se) {
+			} catch (final SecurityException se) {
 				Log.log(Log.ERROR, "lazyj.Utils", "resize: security constraints prevents file deletion"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
@@ -332,14 +332,14 @@ public final class Utils {
 
 			os.flush();
 			os.close();
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			Log.log(Log.WARNING, "lazyj.Utils", "compress : cannot compress '" + sSource + "' to '" + sDest + "'", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return false;
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
-				} catch (IOException ioe) {
+				} catch (final IOException ioe) {
 					// ignore
 				}
 			}
@@ -347,7 +347,7 @@ public final class Utils {
 			if (os != null) {
 				try {
 					os.close();
-				} catch (IOException ioe) {
+				} catch (final IOException ioe) {
 					// ignore
 				}
 			}
@@ -357,7 +357,7 @@ public final class Utils {
 			try {
 				if (!(new File(sSource)).delete())
 					Log.log(Log.WARNING, "lazyj.Utils", "compress: could not delete original file (" + sSource + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			} catch (SecurityException se) {
+			} catch (final SecurityException se) {
 				Log.log(Log.ERROR, "lazyj.Utils", "compress: security constraints prevents file deletion"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
@@ -401,14 +401,14 @@ public final class Utils {
 			os.flush();
 			os.closeEntry();
 			os.close();
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			Log.log(Log.WARNING, "lazyj.Utils", "compressToZip : cannot compress '" + sSource + "' to '" + sDest + "' because", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return false;
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
-				} catch (IOException ioe) {
+				} catch (final IOException ioe) {
 					// ignore
 				}
 			}
@@ -416,7 +416,7 @@ public final class Utils {
 			if (os != null) {
 				try {
 					os.close();
-				} catch (IOException ioe) {
+				} catch (final IOException ioe) {
 					// ignore
 				}
 			}
@@ -425,8 +425,8 @@ public final class Utils {
 		if (bDeleteSourceOnSuccess)
 			try {
 				if (!(new File(sSource)).delete())
-					Log.log(Log.WARNING, "lazyj.Utils", "compressToZip: could not delete original file (" + sSource + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			} catch (SecurityException se) {
+					Log.log(Log.WARNING, "lazyj.Utils", "compressToZip: could not delete original file (" + sSource + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+			} catch (final SecurityException se) {
 				Log.log(Log.ERROR, "lazyj.Utils", "compressToZip: security constraints prevents file deletion"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
@@ -465,20 +465,20 @@ public final class Utils {
 			final long len = f.length();
 			final byte b[] = new byte[(int) len];
 			fis = new FileInputStream(f);
-			int readLen = fis.read(b);
+			final int readLen = fis.read(b);
 
 			if (len != readLen)
 				return null;
 
 			return new String(b, charSet);
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			Log.log(Log.WARNING, "lazyj.Utils", "exception reading from '" + sFileName + "'", ioe); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return null;
 		} finally {
 			if (fis != null)
 				try {
 					fis.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// ignore
 				}
 		}
@@ -487,7 +487,7 @@ public final class Utils {
 	/**
 	 * HTML special characters to base characters mapping
 	 */
-	private static final HashMap<String, String> HTML_CHAR_MAP = new HashMap<String, String>(64, 0.95f);
+	private static final HashMap<String, String> HTML_CHAR_MAP = new HashMap<>(64, 0.95f);
 	
 	static{
 		// upper case HTML special characters
@@ -598,7 +598,7 @@ public final class Utils {
 						
 						sb.append(ch);
 					}
-					catch (NumberFormatException nfe){
+					catch (final NumberFormatException nfe){
 						sb.append("&#").append(s).append(';');
 					}
 				}
@@ -629,10 +629,10 @@ public final class Utils {
 			sLetter = Normalizer.normalize(sLetter, Normalizer.Form.NFD);
 
 			try {
-				byte[] bLetter = sLetter.getBytes("UTF-8");
+				final byte[] bLetter = sLetter.getBytes("UTF-8");
 				
 				sb.append((char) bLetter[0]);
-			} catch (UnsupportedEncodingException e) {
+			} catch (final UnsupportedEncodingException e) {
 				// the encoding is surely valid
 			}
 		}
@@ -671,7 +671,7 @@ public final class Utils {
 			
 			return true;
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			return false;
 		}
 		finally{
@@ -679,7 +679,7 @@ public final class Utils {
 				try{
 					is.close();
 				}
-				catch (Exception e){
+				catch (final Exception e){
 					// improbable, ignore
 				}
 			}
@@ -688,7 +688,7 @@ public final class Utils {
 				try{
 					os.close();
 				}
-				catch (Exception e){
+				catch (final Exception e){
 					// improbable, ignore
 				}
 			}
@@ -715,7 +715,7 @@ public final class Utils {
 		
 			return baos.toByteArray();
 		}
-		catch (IOException ioe){
+		catch (final IOException ioe){
 			// ignore, cannot happen
 			return null;
 		}
@@ -745,7 +745,7 @@ public final class Utils {
 			
 			return baos.toByteArray();
 		}
-		catch (IOException ioe){
+		catch (final IOException ioe){
 			return null;
 		}
 	}
@@ -753,7 +753,7 @@ public final class Utils {
 	/**
 	 * Host name resolving cache
 	 */
-	private static final ExpirationCache<String, String> ipCache = new ExpirationCache<String, String>(1024);	
+	private static final ExpirationCache<String, String> ipCache = new ExpirationCache<>(1024);	
 	
 	/**
 	 * Calls the clear methods on all the cached structures (page cache, template cache, framework counters etc).
@@ -787,7 +787,7 @@ public final class Utils {
 		try{
 			addr = InetAddress.getByName(sIP); 
 		}
-		catch (Exception e){
+		catch (final Exception e){
 			ipCache.put(sIP, sIP, 1000*60*10);
 			return sIP;
 		}
@@ -800,7 +800,7 @@ public final class Utils {
 				return sTemp;
 			}
 		}
-		catch (Throwable t) {
+		catch (final Throwable t) {
 			// ignore
 		}
 		
@@ -812,7 +812,7 @@ public final class Utils {
 				return sTemp;
 			}			
 		}
-		catch (Throwable e){
+		catch (final Throwable e){
 			// ignore
 		}
 
@@ -952,7 +952,7 @@ public final class Utils {
 			s = s.replace("&ldquo;", "\"");
 
 			if (s.indexOf("&")>=0){
-				for (Map.Entry<String, String> me: HTML_CHAR_MAP.entrySet()){
+				for (final Map.Entry<String, String> me: HTML_CHAR_MAP.entrySet()){
 					s = s.replace('&'+me.getKey()+';', me.getValue());
 				}
 			}
@@ -975,7 +975,7 @@ public final class Utils {
 					
 					continue;
 				}
-				catch (NumberFormatException nfe){
+				catch (final NumberFormatException nfe){
 					// ignore
 				}
 			}
@@ -1145,7 +1145,7 @@ public final class Utils {
 		try{
 			return blowfishCrypt(input, key, Cipher.ENCRYPT_MODE);
 		}
-		catch (Exception e){
+		catch (final Exception e){
 			return null;
 		}
 	}
@@ -1161,7 +1161,7 @@ public final class Utils {
 		try{
 			return base64Encode(blowfishCrypt(input.getBytes(), key.getBytes()));
 		}
-		catch (Exception e){
+		catch (final Exception e){
 			return null;
 		}
 	}
@@ -1177,7 +1177,7 @@ public final class Utils {
 		try{
 			return blowfishCrypt(input, key, Cipher.DECRYPT_MODE);
 		}
-		catch (Exception e){
+		catch (final Exception e){
 			return null;
 		}
 	}
@@ -1193,7 +1193,7 @@ public final class Utils {
 		try{
 			return new String(blowfishDecrypt(base64Decode(input), key.getBytes()));
 		}
-		catch (Exception e){
+		catch (final Exception e){
 			return null;
 		}
 	}
@@ -1201,22 +1201,22 @@ public final class Utils {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		String orig = "something longer to make more sense and make sure the line doesn't end at the base64 boundaries";
+	public static void main(final String[] args) {
+		final String orig = "something longer to make more sense and make sure the line doesn't end at the base64 boundaries";
 		
-		String key = "blabla";
+		final String key = "blabla";
 		
-		byte[] input = orig.getBytes();
+		final byte[] input = orig.getBytes();
 		
-		byte[] k = key.getBytes();
+		final byte[] k = key.getBytes();
 		
-		byte[] enc = blowfishCrypt(input, k);
+		final byte[] enc = blowfishCrypt(input, k);
 		
 		System.err.println("Original: "+input.length+", enc: "+enc.length);
 		
 		System.err.println(blowfishDecrypt(blowfishCrypt(orig, key), key));
 		
-		String base64 = base64Encode(enc);
+		final String base64 = base64Encode(enc);
 		System.err.println("Encoded : "+base64);
 	}
 	
@@ -1282,28 +1282,28 @@ public final class Utils {
 		}
 
 		@Override
-		public void put(String key, String value) {
+		public void put(final String key, final String value) {
 			this.store = value;
 		}
 
 		// Other methods required to implement the abstract class; these methods are not used.
 		@Override
-		protected AbstractPreferences childSpi(String name) {
+		protected AbstractPreferences childSpi(final String name) {
 			return null;
 		}
 
 		@Override
-		protected void putSpi(String key, String value) {
+		protected void putSpi(final String key, final String value) {
 			// ignore
 		}
 
 		@Override
-		protected String getSpi(String key) {
+		protected String getSpi(final String key) {
 			return null;
 		}
 
 		@Override
-		protected void removeSpi(String key) {
+		protected void removeSpi(final String key) {
 			// ignore
 		}
 

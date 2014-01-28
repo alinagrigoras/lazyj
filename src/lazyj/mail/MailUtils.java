@@ -36,7 +36,7 @@ public class MailUtils {
 		/**
 		 * Server priority
 		 */
-		private int prio;
+		private final int prio;
 		
 		/**
 		 * Server address
@@ -110,7 +110,7 @@ public class MailUtils {
 	 * @return list of mail servers, ordered by the DNS priority
 	 */
 	public static List<MXRecord> getMXServers(final String domain){
-		 final Hashtable<String, String> env = new Hashtable<String, String>();
+		 final Hashtable<String, String> env = new Hashtable<>();
 		 env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory"); //$NON-NLS-1$ //$NON-NLS-2$
 		 
 		 try{
@@ -123,7 +123,7 @@ public class MailUtils {
 				 return null;
 			 }
 		 
-			 final List<MXRecord> ret = new ArrayList<MXRecord>(attr.size());
+			 final List<MXRecord> ret = new ArrayList<>(attr.size());
 			 
 			 for (int i=0; i<attr.size(); i++){
 				 try{
@@ -131,7 +131,7 @@ public class MailUtils {
 				 
 					 ret.add(record);
 				 }
-				 catch (Throwable t){
+				 catch (final Throwable t){
 					 // ignore
 				 }
 			 }
@@ -140,7 +140,7 @@ public class MailUtils {
 			 
 			 return ret;
 		 }
-		 catch (Throwable e){
+		 catch (final Throwable e){
 			// nothing 
 		 }
 		 
@@ -158,7 +158,7 @@ public class MailUtils {
 		if (original==null)
 			return null;
 		
-		final List<MXRecord> ret = new LinkedList<MXRecord>(original);
+		final List<MXRecord> ret = new LinkedList<>(original);
 		
 		if (ret.size()<=1)
 			return ret;

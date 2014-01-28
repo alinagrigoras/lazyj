@@ -72,7 +72,7 @@ public class Mail extends MailHeader {
 	/**
 	 * Mail encapsulation (attachment) level
 	 */
-	private int				iLevel;
+	private final int				iLevel;
 	
 	/**
 	 * Character set used to send the body, HTML body and everything else
@@ -188,7 +188,7 @@ public class Mail extends MailHeader {
 					c2 -= 'A' - 10;
 			} else
 				break; // ceva e bushit!
-			char cod = (char) (c1 * 16 + c2);
+			final char cod = (char) (c1 * 16 + c2);
 			sbResult.append(sLine.substring(0, pos)).append(cod);
 			sLine = sLine.substring(pos + 3);
 		}
@@ -198,7 +198,7 @@ public class Mail extends MailHeader {
 		String sResult = sbResult.toString();
 
 		if (bEndsWithEqual) {
-			int last = sResult.lastIndexOf("=");
+			final int last = sResult.lastIndexOf("=");
 			if (last < 0)
 				Log.log(Log.FINER, "lazyj.mail.Mail", "stripCodes : sResult ends with '=' : "+sResult);
 			else {
@@ -229,9 +229,9 @@ public class Mail extends MailHeader {
 		sBody = Format.replace(sBody, "\n\n", "\n \n");
 		sBody = Format.replace(sBody, "\r\n\r\n", "\r\n \r\n");
 
-		StringTokenizer st = new StringTokenizer(sBody, "\r\n", false);
+		final StringTokenizer st = new StringTokenizer(sBody, "\r\n", false);
 
-		StringBuilder sbResult = new StringBuilder(sBody.length());
+		final StringBuilder sbResult = new StringBuilder(sBody.length());
 
 		while (st.hasMoreTokens()) {
 			sbResult.append(stripCodes(st.nextToken()));
@@ -294,7 +294,7 @@ public class Mail extends MailHeader {
 																							// previne
 																							// buclele
 																							// inutile
-				Mail mail = new Mail(this.sCompleteHeader, sMessageBody, this.iLevel + 1);
+				final Mail mail = new Mail(this.sCompleteHeader, sMessageBody, this.iLevel + 1);
 				this.sBody = this.sBody + mail.sBody;
 				this.sHTMLBody = this.sHTMLBody + mail.sHTMLBody;
 				this.sWMLBody = this.sWMLBody + mail.sWMLBody;
@@ -305,8 +305,8 @@ public class Mail extends MailHeader {
 
 			// a mai ramas numa atasament chior
 
-			this.lAttachments = new LinkedList<Attachment>();
-			Attachment a = new Attachment(this.sCompleteHeader, sMessageBody);
+			this.lAttachments = new LinkedList<>();
+			final Attachment a = new Attachment(this.sCompleteHeader, sMessageBody);
 			a.iMailID = this.iMailID;
 			a.iAttachID = 0;
 			a.iFileSize = (sMessageBody.length() * 3) / 4;
@@ -314,7 +314,7 @@ public class Mail extends MailHeader {
 			return true;
 		}
 
-		BufferedReader brBody = new BufferedReader(new StringReader(this.sCompleteHeader + "\n\n" + sMessageBody));
+		final BufferedReader brBody = new BufferedReader(new StringReader(this.sCompleteHeader + "\n\n" + sMessageBody));
 		String sLine = "", sFoundBoundary = "";
 		boolean bInHeader = true;
 
@@ -323,8 +323,8 @@ public class Mail extends MailHeader {
 
 		Attachment aCurrentAttach = null;
 
-		List<String> lBounds = new LinkedList<String>();
-		this.lAttachments = new LinkedList<Attachment>();
+		final List<String> lBounds = new LinkedList<>();
+		this.lAttachments = new LinkedList<>();
 
 		int iAttachID = 0;
 		boolean bFirstTextPart = true;
@@ -333,7 +333,7 @@ public class Mail extends MailHeader {
 
 		try {
 			sLine = brBody.readLine();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return false;
 		}
 
@@ -361,7 +361,7 @@ public class Mail extends MailHeader {
 					if (aCurrentAttach.sContentType.toLowerCase(Locale.getDefault()).startsWith("message/rfc822") && this.iLevel < 10) {
 						try {
 							sLine = brBody.readLine();
-						} catch (Exception e) {
+						} catch (final Exception e) {
 							return false;
 						}
 
@@ -371,7 +371,7 @@ public class Mail extends MailHeader {
 								aCurrentAttach.iFileSize += sLine.length();
 							try {
 								sLine = brBody.readLine();
-							} catch (Exception e) {
+							} catch (final Exception e) {
 								return false;
 							}
 						} while ((sLine != null) && (!sLine.startsWith(sFoundBoundary)) && (!sLine.equals(".")));
@@ -386,10 +386,10 @@ public class Mail extends MailHeader {
 
 						String sNewBody = sb.toString();
 
-						String sNewHeader = sNewBody.substring(0, sNewBody.indexOf("\n\n") + 1);
+						final String sNewHeader = sNewBody.substring(0, sNewBody.indexOf("\n\n") + 1);
 						sNewBody = sNewBody.substring(sNewBody.indexOf("\n\n") + 2);
 
-						Mail mAtasat = new Mail(sNewHeader, this.iLevel + 1);
+						final Mail mAtasat = new Mail(sNewHeader, this.iLevel + 1);
 						mAtasat.iMailID = this.iMailID;
 						mAtasat.processBody(sNewBody);
 
@@ -398,7 +398,7 @@ public class Mail extends MailHeader {
 						this.sWMLBody += mAtasat.sWMLBody;
 						this.bOnlyHTML = mAtasat.bOnlyHTML || this.bOnlyHTML;
 						this.bOnlyPlain = mAtasat.bOnlyPlain || this.bOnlyPlain;
-						for (Attachment at : mAtasat.lAttachments) {
+						for (final Attachment at : mAtasat.lAttachments) {
 							at.iAttachID = iAttachID++;
 							this.lAttachments.add(at);
 						}
@@ -460,7 +460,7 @@ public class Mail extends MailHeader {
 							}
 						} else {
 							aCurrentAttach.sAttachmentBody = sb.toString();
-							String sNewBody = aCurrentAttach.getText();
+							final String sNewBody = aCurrentAttach.getText();
 
 							if ((sAttachCTLower.startsWith("text/plain") || sAttachCTLower.startsWith("text/enriched") || sAttachCTLower.startsWith("message/disposition-notification")) && bFirstTextPart) {
 								bFirstTextPart = false;
@@ -496,7 +496,7 @@ public class Mail extends MailHeader {
 
 			try {
 				sLine = brBody.readLine();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return false;
 			}
 		}

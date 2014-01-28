@@ -44,7 +44,7 @@ public class Header {
 	public Header(final String sHeader) {
 		this.sCompleteHeader = sHeader.replace('\t', ' ');
 
-		final List<String> lLines = new LinkedList<String>();
+		final List<String> lLines = new LinkedList<>();
 
 		final BufferedReader br = new BufferedReader(new StringReader(this.sCompleteHeader));
 
@@ -68,16 +68,16 @@ public class Header {
 					sbPrev = new StringBuilder(s);
 				}
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// ignore
 		}
 
 		if (sbPrev != null)
 			lLines.add(sbPrev.toString());
 
-		this.mHeaders = new HashMap<String, String>();
+		this.mHeaders = new HashMap<>();
 
-		for (String sLine : lLines)
+		for (final String sLine : lLines)
 			processLine(sLine);
 
 		this.sBoundary = getBoundary();
@@ -89,20 +89,20 @@ public class Header {
 	 * @param s
 	 * @return <code>true</code> if ok
 	 */
-	private boolean processLine(String s) {
+	private boolean processLine(final String s) {
 		if (s == null || s.length() <= 0)
 			return false;
 
 		try {
-			int l = s.length();
+			final int l = s.length();
 			int i = 0;
 			char c = s.charAt(0);
 			
 
-			StringBuilder sTag = new StringBuilder();
-			StringBuilder sValue = new StringBuilder(s.length());
+			final StringBuilder sTag = new StringBuilder();
+			final StringBuilder sValue = new StringBuilder(s.length());
 
-			byte cb[] = s.getBytes();
+			final byte cb[] = s.getBytes();
 
 			while ((i < l) && (c = (char) cb[i]) == ' ')
 				i++;
@@ -170,7 +170,7 @@ public class Header {
 			}
 
 			return true;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.log(Log.WARNING, "lazyj.mail.Header", "processLine", e);  //$NON-NLS-1$//$NON-NLS-2$
 
 			return false;
@@ -224,8 +224,8 @@ public class Header {
 	 * 
 	 * @param args ignored
 	 */
-	public static void main(String args[]){
-		Header h = new Header("Content-Type: text/plain;\n" +  //$NON-NLS-1$
+	public static void main(final String args[]){
+		final Header h = new Header("Content-Type: text/plain;\n" +  //$NON-NLS-1$
 				"	charset=\"us-ascii\"\n" +  //$NON-NLS-1$
 				"Content-Transfer-Encoding: quoted-printable\n"); //$NON-NLS-1$
 		

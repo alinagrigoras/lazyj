@@ -97,9 +97,9 @@ public abstract class GenericQueryCacher<K, V> implements CacheElement<K, V>, Re
 	
 	@Override
 	public final void refresh() {
-		final Map<K, V> mTemp = new TreeMap<K, V>();
+		final Map<K, V> mTemp = new TreeMap<>();
 		
-		final Map<V, List<K>> mRevTemp = new TreeMap<V, List<K>>();
+		final Map<V, List<K>> mRevTemp = new TreeMap<>();
 		
 		final DBFunctions db = getDB();
 		
@@ -112,7 +112,7 @@ public abstract class GenericQueryCacher<K, V> implements CacheElement<K, V>, Re
 			List<K> c = mRevTemp.get(val);
 			
 			if (c==null){
-				c = new LinkedList<K>();
+				c = new LinkedList<>();
 				mRevTemp.put(val, c);
 			}
 			

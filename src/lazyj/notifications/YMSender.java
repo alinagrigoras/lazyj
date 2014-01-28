@@ -54,7 +54,7 @@ public class YMSender extends Sender {
 	/**
 	 * YM connections cache.
 	 */
-	private static final LRUMap<String, ymsg.network.Session> connPool = new LRUMap<String, ymsg.network.Session>(20);
+	private static final LRUMap<String, ymsg.network.Session> connPool = new LRUMap<>(20);
 	
 	static{
 		System.setProperty("ymsg.debug", "false");
@@ -107,7 +107,7 @@ public class YMSender extends Sender {
 			connPool.put(sKey, sess);
 			return sess;
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			return null;
 		}
 	}
@@ -139,7 +139,7 @@ public class YMSender extends Sender {
 		if (sess==null)
 			return false;
 		
-		final Set<String> accounts = new TreeSet<String>(this.sDefaultTo);
+		final Set<String> accounts = new TreeSet<>(this.sDefaultTo);
 		accounts.addAll(m.sTo);
 		
 		if (!reallySend(sess, accounts, sMessage)){
@@ -164,18 +164,18 @@ public class YMSender extends Sender {
 	 */
 	private boolean reallySend(final ymsg.network.Session sess, final Set<String> accounts, final String message){
 		try{
-			for (String sDest: accounts)
+			for (final String sDest: accounts)
 				sess.sendMessage(sDest, message);
 			
 			return true;
 		}
-		catch (Throwable t1){
+		catch (final Throwable t1){
 			connPool.remove(getKey());
 			
 			try{
 				sess.logout();
 			}
-			catch (Throwable t2){
+			catch (final Throwable t2){
 				// ignore
 			}
 			

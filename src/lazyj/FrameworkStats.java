@@ -121,7 +121,7 @@ public final class FrameworkStats {
 	/**
 	 * Accessed pages
 	 */
-	private static final LinkedList<AccessedPage>	lAccessedPages	= new LinkedList<AccessedPage>();
+	private static final LinkedList<AccessedPage>	lAccessedPages	= new LinkedList<>();
 	
 	/**
 	 * Package protected method called from {@link ExtendedServlet}.
@@ -144,15 +144,15 @@ public final class FrameworkStats {
 	 * @return all the pages
 	 */
 	private static final Vector<String> getStatistics(final int count, final int type){
-		final Vector<AccessedPage> vTemp = new Vector<AccessedPage>();
+		final Vector<AccessedPage> vTemp = new Vector<>();
 
 		synchronized (lAccessedPages) {
 			vTemp.addAll(lAccessedPages);
 		}
 
-		final Vector<String> v = new Vector<String>();
+		final Vector<String> v = new Vector<>();
 
-		final HashMap<String, StringCounter> ht = new HashMap<String, StringCounter>();
+		final HashMap<String, StringCounter> ht = new HashMap<>();
 
 		for (int i = 0; i < vTemp.size(); i++) {
 			final String sKey = type==0 ? vTemp.get(i).sZone : vTemp.get(i).toString(); 
@@ -167,7 +167,7 @@ public final class FrameworkStats {
 			sc.i++;
 		}
 
-		final Vector<StringCounter> v2 = new Vector<StringCounter>();
+		final Vector<StringCounter> v2 = new Vector<>();
 		v2.addAll(ht.values());
 
 		Collections.sort(v2);

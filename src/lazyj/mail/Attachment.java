@@ -58,9 +58,9 @@ public class Attachment extends AttachHeader {
 		InputStream isResult = null;
 
 		try {
-			javax.mail.internet.MimeBodyPart mbp = new javax.mail.internet.MimeBodyPart(getInputStream());
+			final javax.mail.internet.MimeBodyPart mbp = new javax.mail.internet.MimeBodyPart(getInputStream());
 			isResult = (InputStream) mbp.getContent();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.log(Log.FATAL, "lazyj.mail.Attachment", "Attachment: getDecodedInputStream exception : "+ e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
@@ -98,10 +98,14 @@ public class Attachment extends AttachHeader {
 			while ((i = body.read(bbuff)) != -1) {
 				baos.write(bbuff, 0, i);				
 			}
+			
+			baos.close();
+			
+			body.close();
 
 			return new String(baos.toByteArray(), sEncoding);
 		}
-		catch (Throwable t) {
+		catch (final Throwable t) {
 			Log.log(Log.ERROR, "lazyj.mail.Attachment", "getText exception", t); //$NON-NLS-1$ //$NON-NLS-2$
 			return null;
 		}

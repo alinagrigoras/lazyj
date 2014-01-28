@@ -20,9 +20,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -41,7 +41,7 @@ public class DBFunctions {
 	/**
 	 * List of connections for each known target
 	 */
-	static final HashMap<String, LinkedList<DBConnection>>			hmConn				= new HashMap<String, LinkedList<DBConnection>>();
+	static final HashMap<String, LinkedList<DBConnection>>			hmConn				= new HashMap<>();
 	
 	/**
 	 * Was this the first row ?
@@ -86,12 +86,12 @@ public class DBFunctions {
 	/**
 	 * For statistics: how many queries were executed on each connection.
 	 */
-	public static final ConcurrentHashMap<String, AtomicInteger>	chmQueryCount		= new ConcurrentHashMap<String, AtomicInteger>();
+	public static final ConcurrentHashMap<String, AtomicInteger>	chmQueryCount		= new ConcurrentHashMap<>();
 
 	/**
 	 * For statistics: total time to execute the queries on each of the connections.
 	 */
-	public static final ConcurrentHashMap<String, AtomicLong>		chmQueryTime		= new ConcurrentHashMap<String, AtomicLong>();
+	public static final ConcurrentHashMap<String, AtomicLong>		chmQueryTime		= new ConcurrentHashMap<>();
 
 	/**
 	 * Configuration options
@@ -250,7 +250,7 @@ public class DBFunctions {
 			ll = hmConn.get(sConn);
 
 			if (ll==null){
-				ll = new LinkedList<DBConnection>();
+				ll = new LinkedList<>();
 				hmConn.put(sConn, ll);
 				
 				return null;
@@ -593,7 +593,7 @@ public class DBFunctions {
 
 			try {
 				Class.forName(driverClass);
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				System.err.println("Cannot find driver '" + driverClass + "' : " + e + " (" + e.getMessage() + ")");    //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
 				this.iBusy = 3;
 				return;
@@ -605,7 +605,7 @@ public class DBFunctions {
 				
 				setDescription(this.conn.toString());
 			}
-			catch (SQLException e){
+			catch (final SQLException e){
 				// cannot establish a connection
 				Log.log(Log.ERROR, "lazyj.DBFunctions", "Cannot connect to the target database", e);  //$NON-NLS-1$//$NON-NLS-2$
 				
@@ -635,7 +635,7 @@ public class DBFunctions {
 					try{
 						isValid = this.conn.isValid(10);
 					}
-					catch (SQLException sqle){
+					catch (final SQLException sqle){
 						// ignore
 					}
 					
@@ -693,7 +693,7 @@ public class DBFunctions {
 
 				try {
 					this.conn.close();
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					System.err.println("DBConnection: cannot close " + this.sConn + " (descr: "+getDescription()+") because : " + e + " (" + e.getMessage() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 				}
 
@@ -712,7 +712,7 @@ public class DBFunctions {
 				try {
 					this.conn.close();
 					lClosedOnFinalize++;
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					System.err.println("DBConnection: cannot close " + this.sConn + " on finalize because : " + e + " (" + e.getMessage() + ")");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$
 				}
 			}
@@ -822,7 +822,7 @@ public class DBFunctions {
 
 				try {
 					Thread.sleep(2000);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					// ignore an interruption
 				}
 			}
@@ -849,7 +849,7 @@ public class DBFunctions {
 			tCleanup = new CleanupThread();
 			try {
 				tCleanup.setDaemon(true);
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				// it's highly unlikely for an exception to occur here
 			}
 			tCleanup.start();
@@ -900,7 +900,7 @@ public class DBFunctions {
 		if (this.rsRezultat != null) {
 			try {
 				this.rsRezultat.close();
-			} catch (Throwable t) {
+			} catch (final Throwable t) {
 				// ignore this
 			}
 			
@@ -910,7 +910,7 @@ public class DBFunctions {
 		if (this.stat != null) {
 			try {
 				this.stat.close();
-			} catch (Throwable t) {
+			} catch (final Throwable t) {
 				// ignore this
 			}
 			
@@ -975,7 +975,7 @@ public class DBFunctions {
 		try{
 			return Integer.valueOf(this.lastGeneratedKey);
 		}
-		catch (NumberFormatException nfe){
+		catch (final NumberFormatException nfe){
 			return null;
 		}
 	}
@@ -993,7 +993,7 @@ public class DBFunctions {
 		try{
 			return Long.valueOf(this.lastGeneratedKey);
 		}
-		catch (NumberFormatException nfe){
+		catch (final NumberFormatException nfe){
 			return null;
 		}
 	}
@@ -1038,7 +1038,7 @@ public class DBFunctions {
 		if (this.rsRezultat != null) {
 			try {
 				this.rsRezultat.close();
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				// ignore this
 			}
 
@@ -1048,7 +1048,7 @@ public class DBFunctions {
 		if (this.stat != null) {
 			try {
 				this.stat.close();
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				// ignore this
 			}
 
@@ -1065,7 +1065,7 @@ public class DBFunctions {
 		if (!connect()) {
 			try {
 				throw new SQLException("connection failed"); //$NON-NLS-1$
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				Log.log(Log.ERROR, "lazyj.DBFunctions", sStripPassword + " --> cannot connect for query because "+getConnectFailReason()+" : \n" + sQuery, e);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 
@@ -1119,7 +1119,7 @@ public class DBFunctions {
 				try {
 					if (!this.rsRezultat.next())
 						this.first = false;
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					this.first = false;
 				}
 			} else
@@ -1128,7 +1128,7 @@ public class DBFunctions {
 			this.dbc.free();
 
 			return true;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.rsRezultat = null;
 			this.first = false;
 
@@ -1180,7 +1180,7 @@ public class DBFunctions {
 				this.rsRezultat.absolute(pos);
 
 			return ret;
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			Log.log(Log.ERROR, "lazyj.DBFunctions", "count()", t); //$NON-NLS-1$ //$NON-NLS-2$
 			return -1;
 		}
@@ -1197,7 +1197,7 @@ public class DBFunctions {
 		try{
 			return this.rsRezultat.getRow();
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			return -1;
 		}
 	}
@@ -1219,7 +1219,7 @@ public class DBFunctions {
 			
 			return bResult;
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			return false;
 		}
 	}
@@ -1241,7 +1241,7 @@ public class DBFunctions {
 			
 			return bResult;
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			return false;
 		}
 	}
@@ -1267,7 +1267,7 @@ public class DBFunctions {
 					return false;
 
 				return true;
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return false;
 			}
 		}
@@ -1309,7 +1309,7 @@ public class DBFunctions {
 		try {
 			final String sTemp = this.rsRezultat.getString(sColumnName);
 			return (sTemp == null || this.rsRezultat.wasNull()) ? sDefault : sTemp.trim();
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			return sDefault;
 		}
 	}
@@ -1355,7 +1355,7 @@ public class DBFunctions {
 		try {
 			final String sTemp = this.rsRezultat.getString(iColumn);
 			return sTemp != null ? sTemp : sDefault;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return sDefault;
 		}
 	}
@@ -1398,7 +1398,7 @@ public class DBFunctions {
 
 			if (d != null)
 				return d;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore this
 		}
 
@@ -1407,7 +1407,7 @@ public class DBFunctions {
 
 			if (d != null)
 				return d;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore this
 		}
 
@@ -1454,7 +1454,7 @@ public class DBFunctions {
 
 			if (d != null)
 				return d;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore this
 		}
 
@@ -1463,7 +1463,7 @@ public class DBFunctions {
 
 			if (d != null)
 				return d;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore this
 		}
 
@@ -1500,7 +1500,7 @@ public class DBFunctions {
 		try {
 			final int iTemp = this.rsRezultat.getInt(sColumnName);
 			return this.rsRezultat.wasNull() ? iDefault : iTemp;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return iDefault;
 		}
 	}
@@ -1540,7 +1540,7 @@ public class DBFunctions {
 			if (this.rsRezultat.wasNull())
 				return iDefault;
 			return iTemp;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return iDefault;
 		}
 	}
@@ -1579,7 +1579,7 @@ public class DBFunctions {
 		try {
 			final long lTemp = this.rsRezultat.getLong(sColumnName);
 			return this.rsRezultat.wasNull() ? lDefault : lTemp;
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			return lDefault;
 		}
 	}
@@ -1618,7 +1618,7 @@ public class DBFunctions {
 		try {
 			final long lTemp = this.rsRezultat.getLong(iColCount);
 			return this.rsRezultat.wasNull() ? lDefault : lTemp;
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			return lDefault;
 		}
 	}
@@ -1651,7 +1651,7 @@ public class DBFunctions {
 		try {
 			final float fTemp = this.rsRezultat.getFloat(sColumnName);
 			return this.rsRezultat.wasNull() ? fDefault : fTemp;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return fDefault;
 		}
 	}
@@ -1685,7 +1685,7 @@ public class DBFunctions {
 		try {
 			final float fTemp = this.rsRezultat.getFloat(iColumn);
 			return this.rsRezultat.wasNull() ? fDefault : fTemp;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return fDefault;
 		}
 	}
@@ -1718,7 +1718,7 @@ public class DBFunctions {
 		try {
 			final double dTemp = this.rsRezultat.getDouble(sColumnName);
 			return this.rsRezultat.wasNull() ? dDefault : dTemp;
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			return dDefault;
 		}
 	}
@@ -1751,7 +1751,7 @@ public class DBFunctions {
 		try {
 			final double dTemp = this.rsRezultat.getDouble(iColumn);
 			return this.rsRezultat.wasNull() ? dDefault : dTemp;
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			return dDefault;
 		}
 	}
@@ -1794,7 +1794,7 @@ public class DBFunctions {
 		try{
 			return this.rsRezultat.getBytes(iColumn);
 		}
-		catch (Throwable e){
+		catch (final Throwable e){
 			// ignore
 		}
 		
@@ -1814,7 +1814,7 @@ public class DBFunctions {
 		try{
 			return this.rsRezultat.getBytes(columnName);
 		}
-		catch (Throwable e){
+		catch (final Throwable e){
 			// ignore
 		}
 		
@@ -1875,13 +1875,13 @@ public class DBFunctions {
 	public static List<Integer> decodeToInt(final String sValue){
 		final List<String> lValues = decode(sValue);
 		
-		final ArrayList<Integer> l = new ArrayList<Integer>(lValues.size());
+		final ArrayList<Integer> l = new ArrayList<>(lValues.size());
 		
 		for (final String s: lValues){
 			try{
 				l.add(Integer.valueOf(s));
 			}
-			catch (NumberFormatException nfe){
+			catch (final NumberFormatException nfe){
 				// ignore
 			}
 		}
@@ -1902,7 +1902,7 @@ public class DBFunctions {
 		
 		final StringTokenizer st = new StringTokenizer(sValue.substring(1, sValue.length()-1), ","); //$NON-NLS-1$
 		
-		final ArrayList<String> l = new ArrayList<String>(st.countTokens());
+		final ArrayList<String> l = new ArrayList<>(st.countTokens());
 		
 		while (st.hasMoreTokens()){
 			String s = st.nextToken();
@@ -1958,7 +1958,7 @@ public class DBFunctions {
 
 		try {
 			return this.rsRezultat.getMetaData();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore this
 		}
 
@@ -1985,7 +1985,7 @@ public class DBFunctions {
 				vs[i-1] = rsmd.getColumnName(i);
 
 			return vs;
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			return new String[0];
 		}
 	}
@@ -2049,7 +2049,7 @@ public class DBFunctions {
 	 * @return a map of key - number of active connections
 	 */
 	public static final HashMap<String, Integer> getActiveConnections() {
-		final HashMap<String, Integer> hm = new HashMap<String, Integer>();
+		final HashMap<String, Integer> hm = new HashMap<>();
 
 		synchronized (hmConn) {
 			for (final Entry<String, LinkedList<DBConnection>> me : hmConn.entrySet())
@@ -2097,7 +2097,7 @@ public class DBFunctions {
 		try{
 			final int count = meta.getColumnCount();
 			
-			final Map<String, Object> ret = new HashMap<String, Object>(count);
+			final Map<String, Object> ret = new HashMap<>(count);
 			
 			for (int i = 1; i <= count; i++){
 				final String columnName = meta.getColumnName(i);
@@ -2107,7 +2107,7 @@ public class DBFunctions {
 			
 			return ret;
 		}
-		catch (SQLException e){
+		catch (final SQLException e){
 			return null;
 		}
 	}
@@ -2137,8 +2137,8 @@ public class DBFunctions {
 
 		boolean bFirst = true;
 		
-		for (int i=0; i<columns.length; i++){
-			final int idx = columnNames.indexOf(columns[i]);
+		for (final String column : columns) {
+			final int idx = columnNames.indexOf(column);
 			
 			if (idx<0)
 				continue;
@@ -2150,12 +2150,12 @@ public class DBFunctions {
 			else
 				bFirst = false;
 			
-			sb.append(Format.escSQL(columns[i]));
+			sb.append(Format.escSQL(column));
 			
 			final String sValue;
 			
-			if (overrides!=null && overrides.containsKey(columns[i])){
-				final Object o = overrides.get(columns[i]);
+			if (overrides!=null && overrides.containsKey(column)){
+				final Object o = overrides.get(column);
 				
 				sValue = o!=null ? o.toString() : null;	 
 			}
@@ -2172,7 +2172,7 @@ public class DBFunctions {
 			try{
 				 iType = meta.getColumnType(idx+1);
 			}
-			catch (SQLException sqle){
+			catch (final SQLException sqle){
 				return null;
 			}
 			
@@ -2321,7 +2321,7 @@ public class DBFunctions {
 		
 		boolean bFirst = true;
 		
-		for (Map.Entry<String, ?> me: values.entrySet()){
+		for (final Map.Entry<String, ?> me: values.entrySet()){
 			final String sKey = me.getKey();
 			
 			if (sKey==null || sKey.length()==0)

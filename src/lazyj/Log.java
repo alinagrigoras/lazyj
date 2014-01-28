@@ -69,17 +69,17 @@ public final class Log {
 	/**
 	 * Cache open log files
 	 */
-	private static final Map<String, PrintWriter> mFiles = new ConcurrentHashMap<String, PrintWriter>();
+	private static final Map<String, PrintWriter> mFiles = new ConcurrentHashMap<>();
 
 	/**
 	 * Cache log levels
 	 */
-	private static final Map<String, Integer> mLevel = new ConcurrentHashMap<String, Integer>();
+	private static final Map<String, Integer> mLevel = new ConcurrentHashMap<>();
 
 	/**
 	 * Cache target log dir
 	 */
-	private static final Map<String, String> mDirs = new ConcurrentHashMap<String, String>();
+	private static final Map<String, String> mDirs = new ConcurrentHashMap<>();
 	
 	/**
 	 * Reload configuration properties
@@ -96,7 +96,7 @@ public final class Log {
 	private static boolean useJavaLogger = false;
 	
 	static {
-		String sFolder = Utils.getLazyjConfigFolder();
+		final String sFolder = Utils.getLazyjConfigFolder();
 
 		ExtProperties pTemp;
 
@@ -123,7 +123,7 @@ public final class Log {
 				}
 			}
 		}
-		catch (Throwable t) {
+		catch (final Throwable t) {
 			pTemp = new ExtProperties();
 			
 			System.err.println("Cannot load logging properties because : "+t+ '('+t.getMessage()+')'); //$NON-NLS-1$
@@ -307,7 +307,7 @@ public final class Log {
 			try {
 				pw = new PrintWriter(new FileWriter(sFile, true), true);
 			}
-			catch (IOException ioe) {
+			catch (final IOException ioe) {
 				System.err.println("LazyJ will log to stderr instead of '"+sFile+"' because it cannot write there : "+ioe); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				pw = new PrintWriter(System.err);
@@ -387,7 +387,7 @@ public final class Log {
 	 * @param vst
 	 */
 	private static void append(final StringBuilder sb, final StackTraceElement[] vst){
-		for (StackTraceElement ste : vst)
+		for (final StackTraceElement ste : vst)
 			sb.append("\n  ").append(ste.toString()); //$NON-NLS-1$		
 	}
 	

@@ -54,7 +54,7 @@ public final class DBSession implements Serializable, Delayed {
 	/**
 	 * Cache active sessions.
 	 */
-	static final ConcurrentHashMap<String, DBSession>	mSessions		= new ConcurrentHashMap<String, DBSession>();
+	static final ConcurrentHashMap<String, DBSession>	mSessions		= new ConcurrentHashMap<>();
 	
 	/**
 	 * Database properties.
@@ -102,7 +102,7 @@ public final class DBSession implements Serializable, Delayed {
 			dbProp = new ExtProperties(s, "dbsessions"); //$NON-NLS-1$
 			dbProp.addObserver(new Observer(){
 				@Override
-				public void update(Observable o, Object arg) {
+				public void update(final Observable o, final Object arg) {
 					reload();
 				}
 			});
@@ -146,7 +146,7 @@ public final class DBSession implements Serializable, Delayed {
 	/**
 	 * Actual session values
 	 */
-	private final HashMap<String, Serializable>	mValues		= new HashMap<String, Serializable>();
+	private final HashMap<String, Serializable>	mValues		= new HashMap<>();
 
 	/**
 	 * Session ID
@@ -425,7 +425,7 @@ public final class DBSession implements Serializable, Delayed {
 	 * In this case it is wise to wait a bit before commiting to the database, to do a single operation that will
 	 * reflect all the updates.
 	 */
-	static final DelayQueue<DBSession> dq = new DelayQueue<DBSession>();
+	static final DelayQueue<DBSession> dq = new DelayQueue<>();
 	
 	/**
 	 * Cleanup expired sessions
@@ -460,7 +460,7 @@ public final class DBSession implements Serializable, Delayed {
 						sess.makePersistent();
 					}
 				}
-				catch (InterruptedException ie){
+				catch (final InterruptedException ie){
 					// ignore this, process the rest as usual
 				}
 				
@@ -578,7 +578,7 @@ public final class DBSession implements Serializable, Delayed {
 			
 			db.close();
 		}
-		catch (Throwable e) {
+		catch (final Throwable e) {
 			Log.log(Log.WARNING, "lazyj.DBSession", "exception saving a session into the db", e);
 		}
 	}
@@ -696,7 +696,7 @@ public final class DBSession implements Serializable, Delayed {
 				return ((Number) o).intValue();
 			
 			return Integer.parseInt(o.toString());
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			return iDefault;
 		}
 	}
@@ -725,11 +725,11 @@ public final class DBSession implements Serializable, Delayed {
 		}
 		
 		@Override
-		protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+		protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
 			try{
 				return super.resolveClass(desc);
 			}
-			catch (ClassNotFoundException cnfe){
+			catch (final ClassNotFoundException cnfe){
 				if (this.loader!=null){
 					// we have an alternative class loader, try to use this one, maybe we are lucky this time
 					return Class.forName(desc.getName(), false, this.loader);
@@ -838,9 +838,9 @@ public final class DBSession implements Serializable, Delayed {
 	 * @return a list of active sessions (the ones that are in memory) for this app (or all)  
 	 */
 	public static final List<DBSession> getSessionsList(final int iAppId, final boolean bOnlyLogged) {
-		final List<DBSession> l = new LinkedList<DBSession>();
+		final List<DBSession> l = new LinkedList<>();
 
-		for (DBSession so : mSessions.values()) {
+		for (final DBSession so : mSessions.values()) {
 			if (iAppId == 0 || iAppId == so.iApp && (!bOnlyLogged || so.sUsername != null))
 				l.add(so);
 		}
@@ -857,9 +857,9 @@ public final class DBSession implements Serializable, Delayed {
 	public static final List<String> getPagesList(final int iAppId) {
 		// elements are strings, in the form : username|URL
 
-		final List<String> l = new LinkedList<String>();
+		final List<String> l = new LinkedList<>();
 
-		for (DBSession so : mSessions.values()) {
+		for (final DBSession so : mSessions.values()) {
 			if (iAppId == 0 || iAppId == so.iApp)
 				l.add(so.sUsername + '|' + so.sLastPage);
 		}

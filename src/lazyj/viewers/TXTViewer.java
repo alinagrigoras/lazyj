@@ -15,7 +15,7 @@ public class TXTViewer extends Viewer {
 	 * @param o input to convert
 	 * @see Viewer#Viewer(Object)
 	 */
-	public TXTViewer(Object o) {
+	public TXTViewer(final Object o) {
 		super(o);
 	}
 

@@ -33,7 +33,7 @@ public class EmailSender extends Sender {
 	/**
 	 * Default list of recipients
 	 */
-	private Set<String> sDefaultTo = new TreeSet<String>();
+	private Set<String> sDefaultTo = new TreeSet<>();
 	
 	/**
 	 * Default subject line
@@ -76,7 +76,7 @@ public class EmailSender extends Sender {
 	 * @see lazyj.notifications.Sender#send(lazyj.notifications.Message)
 	 */
 	@Override
-	public boolean send(Message m) {
+	public boolean send(final Message m) {
 		final String sFrom = m.sFrom!=null ? m.sFrom : this.sDefaultFrom;
 		
 		if (sFrom==null)
@@ -84,7 +84,7 @@ public class EmailSender extends Sender {
 		
 		final Sendmail sm = new Sendmail(sFrom, this.sServerHost, this.iServerPort);
 		
-		final TreeSet<String> ts = new TreeSet<String>(this.sDefaultTo);
+		final TreeSet<String> ts = new TreeSet<>(this.sDefaultTo);
 		ts.addAll(m.sTo);
 		
 		if (ts.size()==0)

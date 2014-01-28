@@ -51,23 +51,23 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	public Tree(final TreeProvider<K, V> provider){
 		this(provider.getKey(), provider.getValue());
 	
-		final HashMap<K, Tree<K,V>> parents = new HashMap<K, Tree<K, V>>();
+		final HashMap<K, Tree<K,V>> parents = new HashMap<>();
 		
-		final HashMap<K, List<Tree<K,V>>> flatSpace = new HashMap<K, List<Tree<K, V>>>(); 
+		final HashMap<K, List<Tree<K,V>>> flatSpace = new HashMap<>(); 
 		
 		parents.put(this.key, this);
 		
 		while (provider.moveNext()){
 			final K parent = provider.getParent();
 			final K nodeKey = provider.getKey();
-			final Tree<K, V> node = new Tree<K, V>(nodeKey, provider.getValue());
+			final Tree<K, V> node = new Tree<>(nodeKey, provider.getValue());
 			
 			parents.put(nodeKey, node);
 			
 			List<Tree<K, V>> childrenOf = flatSpace.get(parent);
 			
 			if (childrenOf==null){
-				childrenOf = new ArrayList<Tree<K,V>>();
+				childrenOf = new ArrayList<>();
 				
 				flatSpace.put(parent, childrenOf);
 			}
@@ -75,7 +75,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 			childrenOf.add(node);
 		}
 		
-		for (Map.Entry<K, List<Tree<K,V>>> entry: flatSpace.entrySet()){
+		for (final Map.Entry<K, List<Tree<K,V>>> entry: flatSpace.entrySet()){
 			final Tree<K,V> parent = parents.get(entry.getKey());
 			
 			if (parent!=null){
@@ -83,7 +83,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 			}
 			else{
 				if (this.brothers==null)
-					this.brothers = new ArrayList<Tree<K,V>>();
+					this.brothers = new ArrayList<>();
 				
 				this.brothers.addAll(entry.getValue());
 			}
@@ -123,7 +123,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	 * @return children
 	 */
 	public List<Tree<K, V>> getChildren(){
-		return new ArrayList<Tree<K,V>>(this.children);
+		return new ArrayList<>(this.children);
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		final Collection<Option<K, V>> ret = getOptions(0);
 		
 		if (this.brothers!=null){
-			for (Tree<K, V> brother: this.brothers){
+			for (final Tree<K, V> brother: this.brothers){
 				ret.addAll(brother.getOptions(0));
 			}
 		}
@@ -155,7 +155,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		final Collection<Option<K, String>> ret = getOptionsFullPath(0, "", sSeparator==null ? "" : sSeparator);  //$NON-NLS-1$//$NON-NLS-2$
 		
 		if (this.brothers!=null){
-			for (Tree<K, V> brother: this.brothers){
+			for (final Tree<K, V> brother: this.brothers){
 				ret.addAll(brother.getOptionsFullPath(0, "", sSeparator==null ? "" : sSeparator)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
@@ -202,12 +202,12 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	 * @return options
 	 */
 	private Collection<Option<K,V>> getOptions(final int iLevel){
-		final Collection<Option<K, V>> ret = new ArrayList<Option<K,V>>();
+		final Collection<Option<K, V>> ret = new ArrayList<>();
 		
 		ret.add(new TreeOption(iLevel));
 		
 		if (this.children!=null){
-			for (Tree<K, V> child: this.children){
+			for (final Tree<K, V> child: this.children){
 				ret.addAll(child.getOptions(iLevel+1));
 			}
 		}
@@ -271,7 +271,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	 * @return options with full path
 	 */
 	private Collection<Option<K,String>> getOptionsFullPath(final int iLevel, final String sPrefix, final String sSeparator){
-		final Collection<Option<K, String>> ret = new ArrayList<Option<K, String>>();
+		final Collection<Option<K, String>> ret = new ArrayList<>();
 		
 		String sNewPrefix = sPrefix+getValue().toString();
 		
@@ -280,7 +280,7 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 		if (this.children!=null){
 			sNewPrefix += sSeparator;
 			
-			for (Tree<K, V> child: this.children){
+			for (final Tree<K, V> child: this.children){
 				ret.addAll(child.getOptionsFullPath(iLevel+1, sNewPrefix, sSeparator));
 			}
 		}
@@ -298,6 +298,6 @@ public class Tree<K,V> implements OptionProvider<K,V>{
 	 * @see BasicDBTreeProvider
 	 */
 	public static Tree<Integer, String> getDefaultTree(final DBFunctions db){
-		return new Tree<Integer, String>(new BasicDBTreeProvider(db));
+		return new Tree<>(new BasicDBTreeProvider(db));
 	}
 }

@@ -169,12 +169,12 @@ public final class DateFileWatchdog extends Observable {
 		/**
 		 * Delay queue, used for easy take of the next entry that is about to expire and check it
 		 */
-		final DelayQueue<DFWEntry> queue = new DelayQueue<DFWEntry>();
+		final DelayQueue<DFWEntry> queue = new DelayQueue<>();
 
 		/**
 		 * This structure holds all the file monitors
 		 */
-		final ConcurrentHashMap<Long, DFWEntry>cmap = new ConcurrentHashMap<Long, DFWEntry>();
+		final ConcurrentHashMap<Long, DFWEntry>cmap = new ConcurrentHashMap<>();
 
 		/**
 		 * Set the thread title and make the thread daemon
@@ -185,7 +185,7 @@ public final class DateFileWatchdog extends Observable {
 			try {
 				setDaemon(true);
 			} 
-			catch (Throwable t) {
+			catch (final Throwable t) {
 				// well, we tried :)
 			}
 		}
@@ -207,7 +207,7 @@ public final class DateFileWatchdog extends Observable {
 					dfw.notifyObservers();
 				}
 			} 
-			catch (Throwable t) {
+			catch (final Throwable t) {
 				Log.log(Log.WARNING, "lazyj.DateFileWatchdog", "Got exception trying to monitor for a file change [ "+ dfe.dfw.cannonicalFilePath + " ]", t);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
@@ -260,7 +260,7 @@ public final class DateFileWatchdog extends Observable {
 					try {
 						dfe = this.queue.take();
 					}
-					catch (InterruptedException ie) {
+					catch (final InterruptedException ie) {
 						// if we are interrupted the process will start again
 					}
 					
@@ -268,7 +268,7 @@ public final class DateFileWatchdog extends Observable {
 						try {
 							Thread.sleep(5 * 1000);
 						} 
-						catch (InterruptedException ie) {
+						catch (final InterruptedException ie) {
 							// If the extracted element was null it means that the queue has previously received an
 							// interruption. We are sleeping for a while, and if we are interrupted again ... np :)
 						}
@@ -278,13 +278,13 @@ public final class DateFileWatchdog extends Observable {
 						add(dfe.dfw, System.currentTimeMillis() + dfe.dfw.TIME_TO_SLEEP);
 					}
 				} 
-				catch (Throwable t) {
+				catch (final Throwable t) {
 					Log.log(Log.WARNING, "lazyj.DateFileWatchdog", "Exception processing", t); //$NON-NLS-1$ //$NON-NLS-2$
 					
 					try {
 						Thread.sleep(20 * 1000);
 					}
-					catch (InterruptedException ie) {
+					catch (final InterruptedException ie) {
 						// So what ?
 					}
 				}

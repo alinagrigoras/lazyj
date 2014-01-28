@@ -164,15 +164,15 @@ public final class MailDate implements Comparable<MailDate>{
 	 * 
 	 * @param sHMS
 	 */
-	private void processHMS(String sHMS) {
-		StringTokenizer st = new StringTokenizer(sHMS, ": "); //$NON-NLS-1$
+	private void processHMS(final String sHMS) {
+		final StringTokenizer st = new StringTokenizer(sHMS, ": "); //$NON-NLS-1$
 		try {
 			this.hour = Integer.parseInt(st.nextToken());
 			this.min = Integer.parseInt(st.nextToken());
 			this.sec = 0;
 			if (st.hasMoreTokens())
 				this.sec = Integer.parseInt(st.nextToken());
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			// Log.log(4,"MailDate","processHMS","", "HMS string: " + sHMS);
 		}
 	}
@@ -187,7 +187,7 @@ public final class MailDate implements Comparable<MailDate>{
 		try {
 			int i;
 			int iType;
-			StringTokenizer st = new StringTokenizer(data.toLowerCase(Locale.getDefault()), " ,()"); //$NON-NLS-1$
+			final StringTokenizer st = new StringTokenizer(data.toLowerCase(Locale.getDefault()), " ,()"); //$NON-NLS-1$
 			this.sOrigDate = data;
 			String s;
 
@@ -237,10 +237,10 @@ public final class MailDate implements Comparable<MailDate>{
 
 				processHMS(st.nextToken());
 
-				String sTemp = st.nextToken();
+				final String sTemp = st.nextToken();
 				try {
 					this.year = Integer.parseInt(sTemp);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					this.sDeplasareGMT = sTemp;
 					this.year = Integer.parseInt(st.nextToken());
 				}
@@ -265,7 +265,7 @@ public final class MailDate implements Comparable<MailDate>{
 			this.hour = this.date.getHours();
 			this.min = this.date.getMinutes();
 			this.sec = this.date.getSeconds();
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			// Log.log(Log.WARNING, Log.COMMON, "MailDate", "oldProcessor", data, e.getMessage());
 		}
 	}
@@ -303,7 +303,7 @@ public final class MailDate implements Comparable<MailDate>{
 			this.hour = dateParse.getHours();
 			this.min = dateParse.getMinutes();
 			this.sec = dateParse.getSeconds();
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			oldProcessor(data);
 		}
 	}
@@ -340,7 +340,7 @@ public final class MailDate implements Comparable<MailDate>{
 	@SuppressWarnings({ "deprecation", "nls" })
 	@Override
 	public String toString() {
-		Date dCurrent = new Date();
+		final Date dCurrent = new Date();
 		String sResult;
 
 		if (dCurrent.getYear() + 1900 != this.year) {
@@ -425,7 +425,7 @@ public final class MailDate implements Comparable<MailDate>{
 	 * @param mdParam another MailDate to compare to
 	 */
 	@Override
-	public int compareTo(MailDate mdParam) {
+	public int compareTo(final MailDate mdParam) {
 		if (this.year > mdParam.year)
 			return 1;
 		if (this.year < mdParam.year)
@@ -461,7 +461,7 @@ public final class MailDate implements Comparable<MailDate>{
 	 * @return true, if the given object is a MailDate, with the same time, false otherwise
 	 */
 	@Override
-	public boolean equals(Object mdParam) {
+	public boolean equals(final Object mdParam) {
 		if (mdParam instanceof MailDate)
 			return (compareTo((MailDate)mdParam) == 0);
 		
@@ -492,7 +492,7 @@ public final class MailDate implements Comparable<MailDate>{
 	 * 
 	 * @param args command line arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		final MailDate md = new MailDate(new Date());
 		
 		System.err.println(md.toString());

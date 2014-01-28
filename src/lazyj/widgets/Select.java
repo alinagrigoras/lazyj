@@ -134,8 +134,8 @@ public class Select<K,V> implements Page {
 		
 		final boolean bIndent = this.sIndent!=null && this.sIndent.length()>0;
 		
-		for (Option<K,V> option: this.options){
-			K key = option.getKey(); 
+		for (final Option<K,V> option: this.options){
+			final K key = option.getKey(); 
 			
 			this.pOption.modify("key", key); //$NON-NLS-1$
 			

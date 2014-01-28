@@ -75,7 +75,7 @@ public abstract class Sender {
 		if (sClass==null || sClass.length()==0)
 			return null;
 		
-		for (ClassLoader cl: new ClassLoader[]{
+		for (final ClassLoader cl: new ClassLoader[]{
 				this.loader,
 				Thread.currentThread().getClass().getClassLoader(),
 				Thread.currentThread().getContextClassLoader(),
@@ -83,11 +83,11 @@ public abstract class Sender {
 				null}
 		){
 			try{
-				Object o = Class.forName(sClass, true, cl).newInstance();
+				final Object o = Class.forName(sClass, true, cl).newInstance();
 				Log.log(Log.FINE, "lazyj.notifications.Sender", "Loaded '"+sClass+"' with: "+cl);
 				return o;
 			}
-			catch (Throwable t){
+			catch (final Throwable t){
 				Log.log(Log.FINE, "lazyj.notifications.Sender", "Failed to load '"+sClass+"' with: "+cl);
 			}
 		}

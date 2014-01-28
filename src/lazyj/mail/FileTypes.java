@@ -14,7 +14,7 @@ public final class FileTypes {
 	/**
 	 * All file extensions
 	 */
-	private static final HashMap<String, String>	d = new HashMap<String, String>(500, 0.95f); 
+	private static final HashMap<String, String>	d = new HashMap<>(500, 0.95f); 
 
 	static {
 		// The contents below was obtained with this command:

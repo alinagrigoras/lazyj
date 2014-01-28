@@ -34,7 +34,7 @@ public abstract class Viewer {
 			// System.err.println("String");
 			try {
 				this.isSource = new FileInputStream((String) o);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				System.err.println("Exception opening file " + (String) o + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
@@ -66,18 +66,18 @@ public abstract class Viewer {
 		BufferedOutputStream child_out = null;
 		
 		try {
-			Runtime rt = Runtime.getRuntime();
+			final Runtime rt = Runtime.getRuntime();
 
 			// System.err.println("Program = " + sProgram);
 
-			String comanda[] = new String[1];
+			final String comanda[] = new String[1];
 			comanda[0] = sProgram;
 
 			Process child = null;
 			try {
 				child = rt.exec(comanda);
 				// Thread.sleep(1);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				System.err.println("IOException " + e + " (" + e.getMessage() + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 				return null;
 			}
@@ -85,12 +85,12 @@ public abstract class Viewer {
 			child_out = new BufferedOutputStream(child.getOutputStream());
 			int iVal = -1;
 
-			byte buff[] = new byte[10240];
+			final byte buff[] = new byte[10240];
 
 			while ((iVal = this.isSource.read(buff)) >= 0) {
 				try {
 					child_out.write(buff, 0, iVal);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					System.err.println("Child write exception " + e.getMessage()); //$NON-NLS-1$
 					return null;
 				}
@@ -99,10 +99,10 @@ public abstract class Viewer {
 			child_out.close();
 			child_out = null;
 
-			InputStream isCh = child.getInputStream();
+			final InputStream isCh = child.getInputStream();
 
-			StringBuilder sb = new StringBuilder(2000);
-			char cbuff[] = new char[10240];
+			final StringBuilder sb = new StringBuilder(2000);
+			final char cbuff[] = new char[10240];
 			int iCount = 0;
 
 			do {
@@ -114,21 +114,23 @@ public abstract class Viewer {
 							cbuff[i] = (char) buff[i];
 						sb.append(cbuff, 0, iCount);
 					}
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					System.err.println("Exception ?!? " + e.getMessage()); //$NON-NLS-1$
 					break;
 				}
 
 			} while (iCount > 0);
 
+			isCh.close();
+			
 			try {
 				child.waitFor();
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				System.err.println("Interrupted! " + e.getMessage()); //$NON-NLS-1$
 				return null;
 			}
 
-			int ev = child.exitValue();
+			final int ev = child.exitValue();
 
 			if (ev != 0) {
 				System.err.println("Exit value = " + ev); //$NON-NLS-1$
@@ -137,7 +139,7 @@ public abstract class Viewer {
 			// Log.log("Program output string", sb.toString());
 
 			return sb.toString();
-		} catch (Throwable e) {			
+		} catch (final Throwable e) {			
 			System.err.println("Unexpected exception " + e.getMessage()); //$NON-NLS-1$
 			return null;
 		}
@@ -146,7 +148,7 @@ public abstract class Viewer {
 				if (child_out!=null)
 					child_out.close();
 			}
-			catch (IOException ioe){
+			catch (final IOException ioe){
 				// ignore
 			}
 		}

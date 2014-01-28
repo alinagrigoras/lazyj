@@ -70,7 +70,7 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 	 * If one page had a lot of accesses (more than {@link PageCache#BONUS_LIMIT}) in its lifetime it will receive a bonus at the next run
 	 * (eg. it will receive twice as much lifetime as it should normally have).
 	 */
-	static final ConcurrentHashMap<String, String>	bonus		= new ConcurrentHashMap<String, String>();
+	static final ConcurrentHashMap<String, String>	bonus		= new ConcurrentHashMap<>();
 	
 	/**
 	 * Create a caching structure with all the possible fields. This constructor is package protected
@@ -90,7 +90,7 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 		if (vbContent.length>3000){
 			this.content = Utils.compress(vbContent);
 			this.isCompressed = true;
-			this.wrUncompressed = new WeakReference<byte[]>(vbContent);
+			this.wrUncompressed = new WeakReference<>(vbContent);
 		}
 		else{
 			this.content = vbContent;
@@ -114,7 +114,7 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 			
 			uncompressed = Utils.uncompress(this.content);
 			
-			this.wrUncompressed = new WeakReference<byte[]>(uncompressed);
+			this.wrUncompressed = new WeakReference<>(uncompressed);
 			
 			return uncompressed;
 		}
@@ -145,7 +145,7 @@ public final class CachingStructure implements Comparable<CachingStructure> {
 		
 		if (this.wrStringContent==null || (sContent = this.wrStringContent.get())==null){
 			sContent = new String(getContent());
-			this.wrStringContent = new WeakReference<String>(sContent); 
+			this.wrStringContent = new WeakReference<>(sContent); 
 		}
 		
 		return sContent;

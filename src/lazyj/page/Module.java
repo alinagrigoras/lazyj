@@ -21,7 +21,7 @@ public abstract class Module {
 	 * @param s arguments, the rest of the tag after the class name
 	 * @return a BasePage with the contents to put in the final page
 	 */
-	public Page getContent(String s) {
+	public Page getContent(final String s) {
 		return getContent(parse(s));
 	}
 
@@ -47,7 +47,7 @@ public abstract class Module {
 	 * @return  a default wrapper for all the modules
 	 */
 	public TemplatePage getWrapper() {
-		ModulePage p = new ModulePage("modules/wrapper.res"); //$NON-NLS-1$
+		final ModulePage p = new ModulePage("modules/wrapper.res"); //$NON-NLS-1$
 		p.modify("module_name", getModuleName()); //$NON-NLS-1$
 
 		return p;
@@ -64,7 +64,7 @@ public abstract class Module {
 	protected static final int geti(final Map<String, String> m, final String s, final int i) {
 		try {
 			return Integer.parseInt(m.get(s));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return i;
 		}
 	}
@@ -93,7 +93,7 @@ public abstract class Module {
 	 * @return parsed key-value mapping
 	 */
 	public static final Map<String, String> parse(final String s) {
-		final HashMap<String, String> hm = new HashMap<String, String>();
+		final HashMap<String, String> hm = new HashMap<>();
 
 		if (s != null && s.length() > 0) {
 			boolean bQ = false;

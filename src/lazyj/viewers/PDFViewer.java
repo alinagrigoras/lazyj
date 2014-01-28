@@ -14,7 +14,7 @@ public class PDFViewer extends Viewer {
 	 * @param o input to convert
 	 * @see Viewer#Viewer(Object)
 	 */
-	public PDFViewer(Object o) {
+	public PDFViewer(final Object o) {
 		super(o);
 	}
 

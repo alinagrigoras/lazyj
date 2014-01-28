@@ -93,7 +93,7 @@ public class Cache extends Thread {
 	}
 
 	static {
-		Cache cache = new Cache();
+		final Cache cache = new Cache();
 		cache.setDaemon(true);
 		cache.start();
 	}
@@ -101,12 +101,12 @@ public class Cache extends Thread {
 	/**
 	 * This is the actual registry for the cache entries. It maps a unique key to a cache entry. 
 	 */
-	private static final Hashtable<String, Container>	htRegistry	= new Hashtable<String, Container>();
+	private static final Hashtable<String, Container>	htRegistry	= new Hashtable<>();
 	
 	/**
 	 * The DelayQueue is used to watch for expired cache entries that need to be refreshed
 	 */
-	private static final DelayQueue<Container> queue = new DelayQueue<Container>();
+	private static final DelayQueue<Container> queue = new DelayQueue<>();
 
 	/**
 	 * Register an element into the Cache. <b>Make sure that the key you give here is unique between all applications!</b>
@@ -144,7 +144,7 @@ public class Cache extends Thread {
 				Log.log(Log.FINE, "lazyj.cache.Cache", "Successfully registered '"+sKey+"'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			Log.log(Log.WARNING, "lazyj.cache.Cache", "Cannot register '"+sKey+"' because", t);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
@@ -187,7 +187,7 @@ public class Cache extends Thread {
 			
 			Log.log(Log.FINEST, "lazyj.cache.Cache", "Successfully refreshed '"+c.ce.getClass().getName()+"'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			Log.log(Log.WARNING, "lazyj.cache.Cache", "Cannot refresh '"+c.ce.getClass().getName()+"' because", t); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}		
 	}
@@ -218,7 +218,7 @@ public class Cache extends Thread {
 	 * @return the Set of registered keys
 	 */
 	public static final Set<String> getKeySet() {
-		return new TreeSet<String>(htRegistry.keySet());
+		return new TreeSet<>(htRegistry.keySet());
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class Cache extends Thread {
 				if (c!=null)
 					refreshAndQueue(c);
 			}
-			catch (InterruptedException ie){
+			catch (final InterruptedException ie){
 				// ignore interruption signals
 			}
 		}

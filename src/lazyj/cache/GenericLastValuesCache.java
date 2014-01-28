@@ -26,6 +26,7 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 	 * 
 	 * @return 1000 in the default implementation, override for a custom cache size
 	 */
+	@SuppressWarnings("static-method")
 	protected int getMaximumSize(){
 		return 1000;
 	}
@@ -38,6 +39,7 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 	 * 
 	 * @return <code>true</code> to enable <code>null</code> caching, <code>false</code> to disable it.
 	 */
+	@SuppressWarnings("static-method")
 	protected boolean cacheNulls(){
 		return true;
 	}
@@ -91,7 +93,7 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 	 * 
 	 * @param key key to remove
 	 */
-	public void remove(K key){
+	public void remove(final K key){
 		if (this.cache.remove(key)==null && this.nullCache!=null)
 			this.nullCache.remove(key);
 	}

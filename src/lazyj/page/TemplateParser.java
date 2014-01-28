@@ -88,7 +88,7 @@ final class TemplateParser implements Observer {
 		try{
 			this.bOk = parse(sText);
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			Log.log(Log.ERROR, "lazyj.page.TemplateParser", "Cannot parse contents because", t); //$NON-NLS-1$ //$NON-NLS-2$
 			this.bOk = false;
 			return;
@@ -102,7 +102,7 @@ final class TemplateParser implements Observer {
 				this.dfw = new DateFileWatchdog(sTemplateFileName, 1*60*1000);
 				this.dfw.addObserver(this);
 			}
-			catch (Exception e){
+			catch (final Exception e){
 				this.dfw = null;
 			}
 		}
@@ -120,7 +120,7 @@ final class TemplateParser implements Observer {
 		try{
 			this.bOk = parse(sTemplate);
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			Log.log(Log.ERROR, "lazyj.page.TemplateParser", "Cannot parse contents because", t); //$NON-NLS-1$ //$NON-NLS-2$
 			this.bOk = false;
 		}
@@ -148,9 +148,9 @@ final class TemplateParser implements Observer {
 		final int defaultDBTags = this.hsDBTags!=null ? this.hsDBTags.size()+1 : 8;
 		final int defaultNonDBTags = this.hsNonDBTags!=null ? this.hsNonDBTags.size()+1 : 8;
 		
-		final LinkedList<Object> llParseElements = new LinkedList<Object>();
-		final HashSet<String> hsParseDBTags = new HashSet<String>(defaultDBTags);
-		final HashSet<String> hsParseNonDBTags = new HashSet<String>(defaultNonDBTags);
+		final LinkedList<Object> llParseElements = new LinkedList<>();
+		final HashSet<String> hsParseDBTags = new HashSet<>(defaultDBTags);
+		final HashSet<String> hsParseNonDBTags = new HashSet<>(defaultNonDBTags);
 		
 		int i = 0;
 		int iOld = 0;
@@ -166,7 +166,7 @@ final class TemplateParser implements Observer {
 
 			j = sText.indexOf(":>>", i); //$NON-NLS-1$
 
-			final LinkedList<Object> llTag = new LinkedList<Object>();
+			final LinkedList<Object> llTag = new LinkedList<>();
 			
 			if (j > i) {
 				sTag = sText.substring(i + 3, j);
@@ -237,7 +237,7 @@ final class TemplateParser implements Observer {
 		else if (iOld < sText.length())
 			llParseElements.add(sText.substring(iOld));
 		
-		final HashSet<String> hsParseAllTags = new HashSet<String>(hsParseNonDBTags);
+		final HashSet<String> hsParseAllTags = new HashSet<>(hsParseNonDBTags);
 		hsParseAllTags.addAll(hsParseDBTags);
 		
 		// first make all collections read-only
@@ -370,7 +370,7 @@ final class TemplateParser implements Observer {
 						try{
 							cp = (Module) Class.forName(sTag).newInstance();
 						}
-						catch (Throwable t){
+						catch (final Throwable t){
 							ex = t;
 						}
 						
@@ -380,7 +380,7 @@ final class TemplateParser implements Observer {
 							try{
 								cp = (Module) Class.forName(sTag, true, loader).newInstance();
 							}
-							catch (Throwable t){
+							catch (final Throwable t){
 								ex = t;
 							}
 						}

@@ -33,7 +33,7 @@ public final class StringFactory {
 	/**
 	 * Actual cache, the WeakHashMap
 	 */
-	private static Map<String, WeakReference<String>> 	hmCache = new WeakHashMap<String, WeakReference<String>>(1024);
+	private static Map<String, WeakReference<String>> 	hmCache = new WeakHashMap<>(1024);
 	
 	/**
 	 * Get the global string pointer for this byte array
@@ -78,7 +78,7 @@ public final class StringFactory {
         String sRet;
         
         if (t == null || (sRet = t.get()) == null) {
-            hmCache.put(s, new WeakReference<String>(s));
+            hmCache.put(s, new WeakReference<>(s));
             lCacheMiss++;
             return s;
         }

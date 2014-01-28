@@ -204,7 +204,7 @@ public final class Format {
 		String s = null;
 		
 		while (st.hasMoreTokens()) {
-			String sTemp = st.nextToken();
+			final String sTemp = st.nextToken();
 			
 			if (sTemp.indexOf('@')>0)
 				s = sTemp.trim();
@@ -266,7 +266,7 @@ public final class Format {
 	public static String encode(final String text) {
 		try {
 			return URLEncoder.encode(text, "UTF-8"); //$NON-NLS-1$
-		} catch (UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException e) {
 			return null;
 		}
 	}
@@ -280,7 +280,7 @@ public final class Format {
 	public static String decode(final String text) {
 		try {
 			return URLDecoder.decode(text, "UTF-8"); //$NON-NLS-1$
-		} catch (UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException e) {
 			return null;
 		}
 	}
@@ -530,7 +530,7 @@ public final class Format {
 		try{
 			return new Date(s);
 		}
-		catch (IllegalArgumentException ile){
+		catch (final IllegalArgumentException ile){
 			//System.err.println("Date parser didn't work");
 		}
 		
@@ -542,15 +542,15 @@ public final class Format {
 
             return new Date(l);
 		}
-		catch (NumberFormatException nfe){
+		catch (final NumberFormatException nfe){
 			// ignore
 		}
 		
 		// try all the date formats
-		for (int i = 0; i < sdfFormats.length; i++) {
+		for (final SimpleDateFormat sdfFormat : sdfFormats) {
 			try {
-				synchronized (sdfFormats[i]){
-					final Date d = sdfFormats[i].parse(s);
+				synchronized (sdfFormat){
+					final Date d = sdfFormat.parse(s);
 				
 					//System.err.println("Parser ok : "+i);
 				
@@ -581,10 +581,10 @@ public final class Format {
 					return sdfFormats[i].parse(sNew);
 				}
 			}
-			catch (ParseException e) {
+			catch (final ParseException e) {
 				// ignore this
 			}
-			catch (NumberFormatException nfe){
+			catch (final NumberFormatException nfe){
 				// ignore this too
 			}
 			catch (final ArrayIndexOutOfBoundsException aioobe){
@@ -602,7 +602,7 @@ public final class Format {
 	 * @param i the number to format
 	 * @return 0-padded string representation
 	 */
-	public static final String show0(int i) {
+	public static final String show0(final int i) {
 		if (i < 10)
 			return "0" + i; //$NON-NLS-1$
 		
@@ -834,15 +834,15 @@ public final class Format {
 		else {
 			l /= 1000;
 
-			long s = l % 60;
+			final long s = l % 60;
 			l /= 60;
-			long m = l % 60;
+			final long m = l % 60;
 			l /= 60;
-			long h = l % 24;
+			final long h = l % 24;
 			l /= 24;
-			long d = l % 365;
+			final long d = l % 365;
 			l /= 365;
-			long y = l;
+			final long y = l;
 
 			if (y > 0){
 				sRez = y+"y"; //$NON-NLS-1$
@@ -890,7 +890,7 @@ public final class Format {
 	 * @param val 
 	 * @return the 2 hexa digit representation
 	 */
-	public static final String byteToHex(byte val) {
+	public static final String byteToHex(final byte val) {
 		return "" + hexChar((val >>> 4) & 0x0F) + hexChar(val & 0x0F); //$NON-NLS-1$
 	}
 

@@ -14,7 +14,7 @@ public class HTMLViewer extends Viewer {
 	 * @param o input to convert
 	 * @see Viewer#Viewer(Object)
 	 */
-	public HTMLViewer(Object o) {
+	public HTMLViewer(final Object o) {
 		super(o);
 	}
 

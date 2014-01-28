@@ -181,7 +181,7 @@ public class BasePage implements TemplatePage {
 			
 			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not correctly parse '"+sFile+"'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
-		catch (Exception e){
+		catch (final Exception e){
 			Log.log(Log.WARNING, "lazyj.page.BasePage", "could not load '"+sFile+"' because ", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		
@@ -195,6 +195,7 @@ public class BasePage implements TemplatePage {
 	 * 
 	 * @return the full path to the base folder where the templates can be found
 	 */
+	@SuppressWarnings("static-method")
 	protected String getResDir(){
 		return ""; //$NON-NLS-1$
 	}
@@ -210,13 +211,13 @@ public class BasePage implements TemplatePage {
 		
 		final TemplateParser tp = new TemplateParser("some <<:res.res res:>> text with <<:tag1 esc:>> and <<:tag2 enc:>> <<:strip stripBR:>> tags <<:com_start:>> this <<:tag1:>> section should not <<:tag2:>> be visible <<:com_end:>>. <<:number size:>> asdds");
 		
-		final HashMap<String, StringBuilder> m = new HashMap<String, StringBuilder>();
+		final HashMap<String, StringBuilder> m = new HashMap<>();
 		m.put("tag1", new StringBuilder("html escape : <>&"));
 		m.put("tag2", new StringBuilder("url encode: <>&"));
 		m.put("number", new StringBuilder("123456"));
 		m.put("strip", new StringBuilder("aaa<BR>bbb<A>cccc"));
 		
-		final Set<String> s = new HashSet<String>();
+		final Set<String> s = new HashSet<>();
 		s.add("com");
 		
 		System.out.println(tp.process(m, s, null));
@@ -225,7 +226,7 @@ public class BasePage implements TemplatePage {
 	/**
 	 * Values for the tags
 	 */
-	public final Map<String, StringBuilder>	mValues				= new HashMap<String, StringBuilder>();
+	public final Map<String, StringBuilder>	mValues				= new HashMap<>();
 	
 	/**
 	 * Common values across iterations
@@ -236,7 +237,7 @@ public class BasePage implements TemplatePage {
 	 * What are the sections that are commented out?
 	 * @see #comment(String, boolean)
 	 */
-	public final Set<String> sComments 							= new HashSet<String>(8);
+	public final Set<String> sComments 							= new HashSet<>(8);
 
 	/**
 	 * The actual template behind this page
@@ -348,7 +349,7 @@ public class BasePage implements TemplatePage {
 	 */
 	public Object set(final String sTag, final Object oValue){
 		if (this.commonValues==null){
-			this.commonValues = new HashMap<String, Object>();
+			this.commonValues = new HashMap<>();
 		}
 		
 		return this.commonValues.put(sTag, oValue);
@@ -525,7 +526,7 @@ public class BasePage implements TemplatePage {
 				pwOut.print(sOutput);
 				pwOut.flush();
 				return true;
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				return false;
 			}
 		}
@@ -535,7 +536,7 @@ public class BasePage implements TemplatePage {
 				this.writer.write(sOutput);
 				this.writer.flush();
 			}
-			catch (IOException e){
+			catch (final IOException e){
 				return false;
 			}
 		}
@@ -583,7 +584,7 @@ public class BasePage implements TemplatePage {
 		if (this.tp==null)
 			return;
 		
-		for (String sTag : this.tp.getDBTags()){
+		for (final String sTag : this.tp.getDBTags()){
 			modify(sTag, db.gets(sTag));
 		}
 	}
@@ -617,7 +618,7 @@ public class BasePage implements TemplatePage {
 			try {
 				final ExtProperties pTemp = new ExtProperties(s, "basepage"); //$NON-NLS-1$
 				sDir = pTemp.gets("includes.default.dir"); //$NON-NLS-1$
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				Log.log(Log.WARNING, "lazyj.page.BasePage", "could not read properties file", e);  //$NON-NLS-1$//$NON-NLS-2$
 			}
 			
@@ -651,7 +652,7 @@ public class BasePage implements TemplatePage {
 		 * @param s file name. If it doesn't start with "/" then it's assumed to be relative to the default path.
 		 * @see #getResDir()
 		 */
-		public InternalPage(String s) {
+		public InternalPage(final String s) {
 			super(null, s.startsWith("/") ? s : BASE_PAGE_DIR+s, true); //$NON-NLS-1$
 		}
 	}
@@ -681,7 +682,7 @@ public class BasePage implements TemplatePage {
 	/**
 	 * A mapping of exact formatting tags to the corresponding formatting class.
 	 */
-	static final ConcurrentHashMap<String, StringFormat> exactTags = new ConcurrentHashMap<String, StringFormat>(32);
+	static final ConcurrentHashMap<String, StringFormat> exactTags = new ConcurrentHashMap<>(32);
 	
 	/**
 	 * This allows the programmer to implement new formatting options and to dynamically make them visible by registering them here.
@@ -697,7 +698,7 @@ public class BasePage implements TemplatePage {
 	/**
 	 * A mapping of regular expressions to formatting classes.
 	 */
-	static final ConcurrentHashMap<Pattern, StringFormat> regexpTags = new ConcurrentHashMap<Pattern, StringFormat>(8);
+	static final ConcurrentHashMap<Pattern, StringFormat> regexpTags = new ConcurrentHashMap<>(8);
 	
 	/**
 	 * This allows the programmer to implement new formatting options and to dynamically make them visible by registering them here.
@@ -715,7 +716,7 @@ public class BasePage implements TemplatePage {
 			
 			return true;
 		}
-		catch (PatternSyntaxException pse){
+		catch (final PatternSyntaxException pse){
 			return false;
 		}
 	}
@@ -767,7 +768,7 @@ public class BasePage implements TemplatePage {
 
 		@Override
 		protected StringFormat resolve(final String sKey) {
-			for (Map.Entry<Pattern, StringFormat> me: regexpTags.entrySet()){
+			for (final Map.Entry<Pattern, StringFormat> me: regexpTags.entrySet()){
 				final Matcher m = me.getKey().matcher(sKey);
 				
 				if (m.matches())

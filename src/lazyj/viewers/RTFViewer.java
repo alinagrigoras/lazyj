@@ -14,7 +14,7 @@ public class RTFViewer extends Viewer {
 	 * @param o input to convert
 	 * @see Viewer#Viewer(Object)
 	 */
-	public RTFViewer(Object o) {
+	public RTFViewer(final Object o) {
 		super(o);
 	}
 

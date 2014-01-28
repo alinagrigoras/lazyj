@@ -42,7 +42,7 @@ public final class Notifier implements Observer {
 	/**
 	 * What are the actual notification methods
 	 */
-	private final ArrayList<Sender> senders = new ArrayList<Sender>();
+	private final ArrayList<Sender> senders = new ArrayList<>();
 	
 	/**
 	 * Class loader for the modules
@@ -99,7 +99,7 @@ public final class Notifier implements Observer {
 	private Sender getSender(final ExtProperties prop, final int idx) {
 		final String sClass = prop.gets("sender_"+idx+".class");
 		
-		for (ClassLoader cl: new ClassLoader[]{
+		for (final ClassLoader cl: new ClassLoader[]{
 				this.loader,
 				Thread.currentThread().getClass().getClassLoader(),
 				Thread.currentThread().getContextClassLoader(),
@@ -114,7 +114,7 @@ public final class Notifier implements Observer {
 				
 				return s;
 			}
-			catch (Throwable t){
+			catch (final Throwable t){
 				Log.log(Log.FINE, "lazyj.notifications.Notifier", "Failed to load '"+sClass+"' with: "+cl);
 			}
 		}
@@ -132,7 +132,7 @@ public final class Notifier implements Observer {
 	public synchronized boolean send(final Message m){
 		boolean bOk = true;
 		
-		for (Sender s: this.senders){
+		for (final Sender s: this.senders){
 			bOk = s.send(m) && bOk;
 		}
 		

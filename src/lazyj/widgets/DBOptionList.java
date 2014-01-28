@@ -92,7 +92,7 @@ public abstract class DBOptionList<K,V> implements OptionProvider<K, V>{
 	
 	@Override
 	public Collection<Option<K,V>> getOptions(){
-		final Collection<Option<K, V>> ret = new ArrayList<Option<K,V>>();
+		final Collection<Option<K, V>> ret = new ArrayList<>();
 		
 		while (this.db.moveNext()){
 			ret.add(new DBOption(getKey(this.db), getValue(this.db)));

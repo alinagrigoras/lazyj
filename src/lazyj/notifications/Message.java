@@ -24,7 +24,7 @@ public class Message {
 	/**
 	 * Recipients of this message. Any default recipients from the Notifier will be added to this set.
 	 */
-	public Set<String> sTo = new TreeSet<String>();
+	public Set<String> sTo = new TreeSet<>();
 	
 	/**
 	 * Subject / short version of the message
@@ -89,7 +89,7 @@ public class Message {
 		
 		final StringBuilder sb = new StringBuilder();
 		
-		for (String s: set){
+		for (final String s: set){
 			if (sb.length()>0)
 				sb.append(',');
 			
@@ -112,7 +112,7 @@ public class Message {
 	 * @return set of unique names from this comma-separated list of names
 	 */
 	public static Set<String> listToSet(final String s){
-		final Set<String> set = new TreeSet<String>();
+		final Set<String> set = new TreeSet<>();
 		
 		if (s==null)
 			return set;

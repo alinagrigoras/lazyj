@@ -96,6 +96,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * 
 	 * @return some string that is appended to the caching key. 
 	 */
+	@SuppressWarnings("static-method")
 	protected String getCacheKeyModifier() {
 		return ""; //$NON-NLS-1$
 	}
@@ -144,6 +145,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * 
 	 * @return number of seconds for which the contents is valid, default is 0 (cache disabled)
 	 */
+	@SuppressWarnings("static-method")
 	protected long getCacheTimeout() {
 		return 0; // default cache policy : disabled
 	}
@@ -154,6 +156,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * 
 	 * @return the domain for which the cookies will be set by default
 	 */
+	@SuppressWarnings("static-method")
 	protected String getDomain() {
 		assert false : "Override getDomain() to return a meaningfull value for your application"; //$NON-NLS-1$
 		return ".unset.domain.do"; //$NON-NLS-1$
@@ -171,6 +174,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 *  
 	 * @return the maximum run time, in seconds, for the current page.
 	 */
+	@SuppressWarnings("static-method")
 	protected int getMaxRunTime() {
 		return 60;
 	}
@@ -196,6 +200,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * 
 	 * @return application unique number
 	 */
+	@SuppressWarnings("static-method")
 	protected int getApp() {
 		assert false : "Override getApp() to return a meaningfull value for your application"; //$NON-NLS-1$
 		return 0;
@@ -207,6 +212,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 	 * 
 	 * @return true by default, but can be overriden by actual implementations
 	 */
+	@SuppressWarnings("static-method")
 	public boolean isSessionIPProtected(){
 		return true;
 	}
@@ -241,20 +247,20 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 				
 				try {
 					this.osOut.write(cs.getContent());
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// ignore
 				}
 				
 				try {
 					this.osOut.flush();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// ignore
 				}
 				
 				try {
 					this.osOut.close();
 				}
-				catch (Exception e) {
+				catch (final Exception e) {
 					// ignore
 				}
 
@@ -332,7 +338,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		 *  @param b data to write
 		 */
 		@Override
-		public void write(int b) throws IOException {
+		public void write(final int b) throws IOException {
 			this.baos.write(b);
 		}
 
@@ -516,7 +522,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			this.bRedirect = true; // disable caching no matter what happens
 			this.response.sendRedirect(sURL);
 			return true;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.log(Log.FATAL, "lazyj.ExtendedServlet", "ServletExtension (" + this.sZone + '/' + this.sPage + "), redirect('" + sURL + "'), exception: " + e);  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 			return false;
 		}
@@ -604,7 +610,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			this.response.addCookie(c);
 
 			return true;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log(Log.WARNING, "setCookie exception", e); //$NON-NLS-1$
 
 			return false;
@@ -671,14 +677,14 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		try{
 			sOldName = Thread.currentThread().getName();
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			sOldName = null;
 		}
 		
 		try {
 			Thread.currentThread().setName(sName);
 		}
-		catch (Throwable t){
+		catch (final Throwable t){
 			// ignore
 		}		
 		
@@ -732,12 +738,12 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 						this.sPage = this.sPage.substring(1);
 				}
 			}
-			catch (NoSuchMethodException nsme){
+			catch (final NoSuchMethodException nsme){
 				bServlet21Plus = false;
 				this.sZone = null;
 				this.sPage = null;
 			}
-			catch (Throwable _){
+			catch (final Throwable _){
 				this.sZone = null;
 				this.sPage = null;
 			}
@@ -757,7 +763,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 					this.sZone = ""; //$NON-NLS-1$
 				}
 			}
-			catch (Throwable t){
+			catch (final Throwable t){
 				this.sZone = null;
 				this.sPage = null;				
 			}
@@ -783,7 +789,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		try {
 			executeRequest();
 		}
-		catch (Throwable t) {
+		catch (final Throwable t) {
 			Log.log(Log.FATAL, "lazyj.ExtendedServlet", "Execution exception: "+(isGet?"GET":"POST")+" "+this.sZone+'/'+this.sPage, t); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		}
 		finally{
@@ -831,7 +837,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 
 			this.osOut = this.response.getOutputStream();
 			this.pwOut = new PrintWriter(this.osOut);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log(Log.ERROR, "exception geting the streams", e); //$NON-NLS-1$
 		}
 		
@@ -847,14 +853,14 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 				execGet();
 			else
 				execPost();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log(Log.ERROR, "Execution exception (get:" + this.bGet + ')', e); //$NON-NLS-1$
 		}
 
 		try {
 			this.osOut.flush();
 			this.osOut.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// ignore
 		}
 
@@ -868,12 +874,12 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 					
 					try {
 						this.mpRequest.getFile(sFieldName).delete();
-					} catch (Exception ee) {
+					} catch (final Exception ee) {
 						// ignore
 					}
 				}
 			}
-			catch (Throwable t) {
+			catch (final Throwable t) {
 				System.err.println("ThreadedPage.run(): cannot delete from multipartrequest: " + t + '(' + t.getMessage() + ')'); //$NON-NLS-1$
 			}
 	}
@@ -909,7 +915,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			hostName = host.getHostName();
 			if (hostName == null)
 				hostName = this.request.getRemoteAddr();
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			hostName = this.request.getRemoteAddr();
 		}
 
@@ -950,11 +956,11 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 			sParam = (String) e.nextElement();
 			vs = this.request.getParameterValues(sParam);
 
-			for (int i = 0; i < vs.length; i++) {
+			for (final String element : vs) {
 				if (!bFirst)
 					sb.append('&');
 
-				sb.append(Format.encode(sParam) + '=' + Format.encode(vs[i]));
+				sb.append(Format.encode(sParam) + '=' + Format.encode(element));
 
 				bFirst = false;
 			}

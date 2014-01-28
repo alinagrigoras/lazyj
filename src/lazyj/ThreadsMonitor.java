@@ -14,7 +14,7 @@ public final class ThreadsMonitor extends Thread {
 	/**
 	 * Thread watch queue
 	 */
-	private static final DelayQueue<BoundedThreadContainer> queue = new DelayQueue<BoundedThreadContainer>();
+	private static final DelayQueue<BoundedThreadContainer> queue = new DelayQueue<>();
 	
 	/**
 	 * The monitoring thread
@@ -49,7 +49,7 @@ public final class ThreadsMonitor extends Thread {
 					btc.getThread().interrupt();
 				}
 			}
-			catch (Throwable t){
+			catch (final Throwable t){
 				// ignore all the badness in the world
 			}
 		}

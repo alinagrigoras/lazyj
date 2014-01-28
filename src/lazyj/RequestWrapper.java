@@ -53,7 +53,7 @@ public final class RequestWrapper {
 	public MultipartRequest initMultipartRequest(final String sTempDir, final int iFileSizeLimit) {
 		try {
 			this.mpRequest = new MultipartRequest(this.request, sTempDir, iFileSizeLimit);
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			Log.log(Log.FINE, "lazyj.RequestWrapper", "initMultipartRequest", ioe); //$NON-NLS-1$ //$NON-NLS-2$
 			this.mpRequest = null;
 		}
@@ -126,7 +126,7 @@ public final class RequestWrapper {
 			
 			return sValue;
 		}
-		catch (UnsupportedEncodingException e) {
+		catch (final UnsupportedEncodingException e) {
 			return sDefault;
 		}
 	}
@@ -146,7 +146,7 @@ public final class RequestWrapper {
 		try {
 			return Integer.parseInt(s.trim());
 		}
-		catch (NumberFormatException e) {
+		catch (final NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -176,7 +176,7 @@ public final class RequestWrapper {
 		try {
 			return Long.parseLong(s.trim());
 		}
-		catch (NumberFormatException e) {
+		catch (final NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -206,7 +206,7 @@ public final class RequestWrapper {
 		try {
 			return Float.parseFloat(s.trim());
 		}
-		catch (NumberFormatException e) {
+		catch (final NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -236,7 +236,7 @@ public final class RequestWrapper {
 		try {
 			return Double.parseDouble(s.trim());
 		}
-		catch (NumberFormatException e) {
+		catch (final NumberFormatException e) {
 			return defaultVal;
 		}
 	}
@@ -264,7 +264,7 @@ public final class RequestWrapper {
 					return Format.decode(c.getValue());
 			}
 		}
-		catch (RuntimeException re){
+		catch (final RuntimeException re){
 			// ignore
 		}
 

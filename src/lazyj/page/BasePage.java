@@ -38,6 +38,7 @@ import lazyj.page.tags.Interval;
 import lazyj.page.tags.JS;
 import lazyj.page.tags.NiceDate;
 import lazyj.page.tags.NtoBR;
+import lazyj.page.tags.Round;
 import lazyj.page.tags.Size;
 import lazyj.page.tags.Strip;
 import lazyj.page.tags.Time;
@@ -75,6 +76,7 @@ import lazyj.page.tags.Under;
  * <li>uenc : {@link UEnc} : URL-decoded version of the string</li>
  * <li>ntobr : {@link NtoBR}) : convert text new lines to html new lines</li>
  * <li>csv : {@link CSV}) : escape double quotes for CSV-safe string representation</li>
+ * <li>round : {@link Round} : rounds floating point numbers</li>
  * <li>res : (internal class) : the HTML template (.res file) indicated by the tag is loaded</li>
  * </ul>
  * <br>
@@ -749,6 +751,7 @@ public class BasePage implements TemplatePage {
 		registerExactTag("interval", interval); //$NON-NLS-1$
 		registerExactTag("ntobr", new NtoBR()); //$NON-NLS-1$
 		registerExactTag("csv", new CSV()); //$NON-NLS-1$
+		registerExactTag("round", new Round()); //$NON-NLS-1$
 		
 		registerRegexpTag("date.+", date); //$NON-NLS-1$
 		registerRegexpTag("cut[0-9]+", new Cut()); //$NON-NLS-1$

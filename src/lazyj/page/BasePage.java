@@ -25,6 +25,7 @@ import lazyj.Log;
 import lazyj.StringFactory;
 import lazyj.Utils;
 import lazyj.cache.GenericLastValuesCache;
+import lazyj.page.tags.CSV;
 import lazyj.page.tags.Checked;
 import lazyj.page.tags.Cut;
 import lazyj.page.tags.DDot;
@@ -73,6 +74,7 @@ import lazyj.page.tags.Under;
  * <li>size : {@link Size} : consider that the value is a file size, in bytes, display it in a human readable format</li>
  * <li>uenc : {@link UEnc} : URL-decoded version of the string</li>
  * <li>ntobr : {@link NtoBR}) : convert text new lines to html new lines</li>
+ * <li>csv : {@link CSV}) : escape double quotes for CSV-safe string representation</li>
  * <li>res : (internal class) : the HTML template (.res file) indicated by the tag is loaded</li>
  * </ul>
  * <br>
@@ -746,6 +748,7 @@ public class BasePage implements TemplatePage {
 		registerExactTag("res", new Res()); //$NON-NLS-1$
 		registerExactTag("interval", interval); //$NON-NLS-1$
 		registerExactTag("ntobr", new NtoBR()); //$NON-NLS-1$
+		registerExactTag("csv", new CSV()); //$NON-NLS-1$
 		
 		registerRegexpTag("date.+", date); //$NON-NLS-1$
 		registerRegexpTag("cut[0-9]+", new Cut()); //$NON-NLS-1$

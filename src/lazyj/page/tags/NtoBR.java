@@ -27,7 +27,7 @@ public final class NtoBR implements StringFormat {
 		if (s==null || s.length()==0)
 			return s;
 		
-		return Format.replace(s, "\n", "<BR>");  //$NON-NLS-1$//$NON-NLS-2$
+		return Format.replace(Format.replace(s, "\n", "<BR>"), "\r", "");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
 }

@@ -2,6 +2,7 @@ package lazyj.cache;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import lazyj.LRUMap;
@@ -78,6 +79,20 @@ public abstract class GenericLastValuesCache<K, V> implements CacheElement<K, V>
 		}
 		
 		return oVal;
+	}
+	
+	/**
+	 * @return a copy of the full contents of the cache
+	 */
+	public Map<K, V> getContents(){
+		final Map<K, V> ret = new HashMap<>(this.cache);
+		
+		if (cacheNulls() && this.nullCache!=null){
+			for (final K key: this.nullCache.keySet())
+				ret.put(key, null);
+		}
+		
+		return ret;
 	}
 	
 	/**

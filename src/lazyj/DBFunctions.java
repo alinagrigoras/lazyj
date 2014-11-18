@@ -1,7 +1,7 @@
 package lazyj;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -114,13 +114,19 @@ public class DBFunctions {
 	final String													uniqueKey;
 	
 	/**
+	 * Set to <code>true</code> to signal that the following query is read-only and, if available, a slave could be used to execute it
+	 */
+	private boolean													readOnlyQuery = false;
+	
+	/**
 	 * Create a connection to the database using the parameters in this properties file. The
 	 * following keys are extracted:<br>
 	 * <ul>
 	 * <li><b>driver</b> : (required) one of org.postgresql.Driver, com.mysql.jdbc.Driver or com.microsoft.jdbc.sqlserver.SQLServerDriver</li>
+	 * <li><b>url</b> : (required) full JDBC URL. If found it would be preferred instead of the following keys (database, host and port)</li>
+	 * <li><b>database</b> : (required; alternative) name of the database to connect to</li>
 	 * <li><b>host</b> : (optional) server's ip address, defaults to 127.0.0.1</li>
 	 * <li><b>port</b> : (optional) tcp port to connect to on the <i>host</i>, if it is missing the default port for each database type is used</li>
-	 * <li><b>database</b> : (required) name of the database to connect to</li>
 	 * <li><b>user</b> : (recommended) supply this account name when connecting</li>
 	 * <li><b>password</b> : (recommended) password for the account</li>
 	 * </ul>
@@ -132,7 +138,7 @@ public class DBFunctions {
 	 * <li><b>useCompression</b> : true/false, default false</li>
 	 * </ul>
 	 * </li>
-	 * <li><a href="http://jdbc.postgresql.org/documentation/83/connect.html" target=_blank>PostgreSQL</a>:
+	 * <li><a href="http://jdbc.postgresql.org/documentation/93/connect.html" target=_blank>PostgreSQL</a>:
 	 *   <ul>
 	 *     <li><b>ssl</b> : present=true for now</li>
 	 *     <li><b>charSet</b> : string</li>
@@ -275,17 +281,32 @@ public class DBFunctions {
 	 * @return unique key
 	 */
 	private String getKey() {
-		if (this.prop == null)
-			return this.jdbcConnectionString;
+		return this.jdbcConnectionString;
+	}
+	
+	/**
+	 * Signal that the following query is read-only and, if available, a database slave could be used to execute it. 
+	 * 
+	 * @param readOnly if <code>true</code> then the query can potentially go to a slave, if <code>false</code> then only the master can execute it 
+	 * @return previous value of the read-only flag
+	 */
+	public boolean setReadOnly(final boolean readOnly){
+		boolean previousValue = this.readOnlyQuery;
 		
-		return this.prop.getProperty("driver", "") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
-				this.prop.getProperty("host", "127.0.0.1") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
-				this.prop.getProperty("port", "") + '/' +   //$NON-NLS-1$//$NON-NLS-2$
-				this.prop.getProperty("database", "") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
-				this.prop.getProperty("user", "") + '/' +  //$NON-NLS-1$ //$NON-NLS-2$
-				this.prop.getProperty("password", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		this.readOnlyQuery = readOnly;
+		
+		return previousValue;
 	}
 
+	/**
+	 * Get the current value of the read-only flag
+	 * 
+	 * @return read-only flag
+	 */
+	public boolean isReadOnly(){
+		return this.readOnlyQuery;
+	}
+	
 	/**
 	 * Check if this connection is done to a PostgreSQL database (if we are using the PG JDBC driver)
 	 * 
@@ -406,6 +427,11 @@ public class DBFunctions {
 	 * @return JDBC URL connection string, or <code>null</code> if for any reason it cannot be built (unknown driver?)
 	 */
 	public static final String propToJDBC(final Properties prop){
+		final String url = prop.getProperty("url", "");  //$NON-NLS-1$//$NON-NLS-2$
+		
+		if (url.startsWith("jdbc:")) //$NON-NLS-1$
+			return url;
+		
 		/*
 		 * See here for JDBC URL examples:
 		 * http://www.petefreitag.com/articles/jdbc_urls/
@@ -562,7 +588,7 @@ public class DBFunctions {
 				return;
 			}
 			
-			init(driver , propToJDBC(prop), prop);
+			init(driver, sURL, prop);
 		}
 
 		/**
@@ -591,8 +617,10 @@ public class DBFunctions {
 
 			lOpened++;
 
+			final Driver driver;
+			
 			try {
-				Class.forName(driverClass);
+				driver = (Driver) Class.forName(driverClass).newInstance();
 			} catch (final Throwable e) {
 				System.err.println("Cannot find driver '" + driverClass + "' : " + e + " (" + e.getMessage() + ")");    //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
 				this.iBusy = 3;
@@ -600,7 +628,7 @@ public class DBFunctions {
 			}
 			
 			try{
-				this.conn = prop!=null ? DriverManager.getConnection(jdbcURL, prop) : DriverManager.getConnection(jdbcURL);
+				this.conn = driver.connect(jdbcURL, prop!=null ? prop : new Properties());
 				this.iBusy = 1;
 				
 				setDescription(this.conn.toString());
@@ -1032,8 +1060,6 @@ public class DBFunctions {
 			al = new AtomicLong(0);
 			chmQueryTime.put(sConnection, al);
 		}
-
-		final String sStripPassword = sConnection.substring(0, sConnection.lastIndexOf('/'));
 		
 		if (this.rsRezultat != null) {
 			try {
@@ -1066,7 +1092,7 @@ public class DBFunctions {
 			try {
 				throw new SQLException("connection failed"); //$NON-NLS-1$
 			} catch (final Exception e) {
-				Log.log(Log.ERROR, "lazyj.DBFunctions", sStripPassword + " --> cannot connect for query because "+getConnectFailReason()+" : \n" + sQuery, e);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> cannot connect for query because "+getConnectFailReason()+" : \n" + sQuery, e);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 
 			al.addAndGet(System.currentTimeMillis() - lStartTime);
@@ -1074,8 +1100,14 @@ public class DBFunctions {
 			return false;
 		}
 		
+		boolean wasReadOnly = false;
+		
 		try {
 			final boolean execResult;
+			
+			wasReadOnly = this.dbc.getConnection().isReadOnly();
+			
+			this.dbc.getConnection().setReadOnly(isReadOnly());
 			
 			if (values!=null && values.length>0){
 				final PreparedStatement prepStat = this.dbc.getConnection().prepareStatement(sQuery, this.generatedKeyRequest);
@@ -1124,6 +1156,8 @@ public class DBFunctions {
 				}
 			} else
 				this.first = false;
+			
+			this.dbc.getConnection().setReadOnly(wasReadOnly);
 
 			this.dbc.free();
 
@@ -1135,12 +1169,18 @@ public class DBFunctions {
 			final String s = e.getMessage();
 
 			if (!bIgnoreErrors && s.indexOf("duplicate key") < 0 && s.indexOf("drop table") < 0) {  //$NON-NLS-1$//$NON-NLS-2$
-				Log.log(Log.ERROR, "lazyj.DBFunctions", sStripPassword + " --> Error executing '" + sQuery + "'", e);  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+				Log.log(Log.ERROR, "lazyj.DBFunctions", sConnection + " --> Error executing '" + sQuery + "'", e);  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 				// in case of an error, close the connection
 				this.dbc.close();
 			} else {
-				// if the error is expected, or not fatal, silently free the connection for later
-				// use
+				try{
+					this.dbc.getConnection().setReadOnly(wasReadOnly);
+				}
+				catch (final SQLException sqle){
+					// ignore
+				}
+				
+				// if the error is expected, or not fatal, silently free the connection for later use
 				this.dbc.free();
 			}
 

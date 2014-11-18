@@ -119,6 +119,11 @@ public class DBFunctions {
 	private boolean													readOnlyQuery = false;
 	
 	/**
+	 * Cursor type, defaulting to FORWARD_ONLY.
+	 */
+	private int														cursorType = ResultSet.TYPE_FORWARD_ONLY;
+	
+	/**
 	 * Create a connection to the database using the parameters in this properties file. The
 	 * following keys are extracted:<br>
 	 * <ul>
@@ -291,7 +296,7 @@ public class DBFunctions {
 	 * @return previous value of the read-only flag
 	 */
 	public boolean setReadOnly(final boolean readOnly){
-		boolean previousValue = this.readOnlyQuery;
+		final boolean previousValue = this.readOnlyQuery;
 		
 		this.readOnlyQuery = readOnly;
 		
@@ -305,6 +310,27 @@ public class DBFunctions {
 	 */
 	public boolean isReadOnly(){
 		return this.readOnlyQuery;
+	}
+	
+	/**
+	 * Set the cursor type to one of the ResultSet.TYPE_FORWARD_ONLY (default), ResultSet.TYPE_SCROLL_INSENSITIVE (when you need {@link #count()} or such) and so on.
+	 * 
+	 * @param type new cursor type
+	 * @return previous cursor type
+	 */
+	public int setCursorType(final int type){
+		final int previousType = this.cursorType;
+		
+		this.cursorType = type;
+		
+		return previousType;
+	}
+	
+	/**
+	 * @return cursor type
+	 */
+	public int getCursorType(){
+		return this.cursorType;
 	}
 	
 	/**
@@ -1120,7 +1146,7 @@ public class DBFunctions {
 				execResult = prepStat.execute();
 			}
 			else{
-				this.stat = this.dbc.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				this.stat = this.dbc.getConnection().createStatement(getCursorType(), ResultSet.CONCUR_READ_ONLY);
 				
 				execResult = this.stat.execute(sQuery, this.generatedKeyRequest);
 			}	
@@ -1192,7 +1218,7 @@ public class DBFunctions {
 	
 
 	/**
-	 * Get the number of rows that were selected by the previous query.
+	 * Get the number of rows that were selected by the previous query. Will only work if you have previously called {@link #setCursorType(int)} with one of the ResultSet.TYPE_SCROLL_* constants.
 	 * 
 	 * @return number of rows, or -1 if the query was not a select one or there was an error
 	 */

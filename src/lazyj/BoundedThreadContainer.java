@@ -94,10 +94,7 @@ final class BoundedThreadContainer implements Delayed {
 	 */
 	@Override
 	public boolean equals(final Object o){
-		if (o==null || !(o instanceof Delayed))
-			return false;
-		
-		return compareTo((Delayed) o)==0;
+		return this == o;
 	}
 	
 	/**

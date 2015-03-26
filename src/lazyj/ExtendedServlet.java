@@ -779,9 +779,9 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 		this.response.setHeader("P3P", "CP=\"NOI DSP COR LAW CURa DEVa TAIa PSAa PSDa OUR BUS UNI COM NAV\""); //$NON-NLS-1$ //$NON-NLS-2$
 		this.response.setHeader("Connection", "keep-alive");  //$NON-NLS-1$//$NON-NLS-2$
 
-		final long lMaxRunTime = getMaxRunTime();
+		final int iMaxRunTime = getMaxRunTime();
 		
-		final BoundedThreadContainer btc = lMaxRunTime > 0 ? new BoundedThreadContainer(getMaxRunTime(), Thread.currentThread(), this.sZone + '/' + this.sPage) : null;
+		final BoundedThreadContainer btc = iMaxRunTime > 0 ? new BoundedThreadContainer(iMaxRunTime, Thread.currentThread(), this.sZone + '/' + this.sPage) : null;
 
 		if (btc!=null)
 			ThreadsMonitor.register(btc);

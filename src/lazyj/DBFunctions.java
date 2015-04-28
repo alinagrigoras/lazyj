@@ -1,5 +1,6 @@
 package lazyj;
 
+import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
@@ -36,7 +37,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author costing
  * @since Oct 15, 2006
  */
-public class DBFunctions {
+public class DBFunctions implements Closeable {
 
 	/**
 	 * List of connections for each known target
@@ -950,6 +951,7 @@ public class DBFunctions {
 	/**
 	 * Explicitly close the allocated resources 
 	 */
+	@Override
 	public void close(){
 		if (this.rsRezultat != null) {
 			try {

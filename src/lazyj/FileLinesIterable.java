@@ -1,6 +1,7 @@
 package lazyj;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -9,7 +10,7 @@ import java.util.Iterator;
  * 
  * @author costing
  */
-public class FileLinesIterable implements Iterable<String> {
+public class FileLinesIterable implements Iterable<String>, Closeable {
 	/**
 	 * The buffer
 	 */
@@ -31,6 +32,11 @@ public class FileLinesIterable implements Iterable<String> {
 	
 	@Override
 	protected void finalize() throws Throwable {
+		close();
+	}
+
+	@Override
+	public void close() throws IOException {
 		try{
 			this.br.close();
 		}

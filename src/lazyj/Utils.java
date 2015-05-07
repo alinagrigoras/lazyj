@@ -459,28 +459,18 @@ public final class Utils {
 			return null;
 		}
 
-		FileInputStream fis = null;
-
-		try {
+		try (FileInputStream fis = new FileInputStream(f)){
 			final long len = f.length();
 			final byte b[] = new byte[(int) len];
-			fis = new FileInputStream(f);
-			final int readLen = fis.read(b);
+			final int readLen = fis.read(b, 0, (int) len);
 
-			if (len != readLen)
+			if (readLen > 0)
 				return null;
 
-			return new String(b, charSet);
+			return new String(b, 0, readLen, charSet);
 		} catch (final IOException ioe) {
 			Log.log(Log.WARNING, "lazyj.Utils", "exception reading from '" + sFileName + "'", ioe); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return null;
-		} finally {
-			if (fis != null)
-				try {
-					fis.close();
-				} catch (final IOException e) {
-					// ignore
-				}
 		}
 	}
 

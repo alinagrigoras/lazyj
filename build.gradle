@@ -1,0 +1,41 @@
+// Adding provided and optional dependencies configuration
+buildscript {
+	repositories { jcenter() }
+
+	dependencies {
+		classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'provided-base'
+
+version = 20150598
+
+// Creating the JAliEn jar
+jar {
+	manifest {
+		attributes 'Implementation-Title': 'lazyj',
+				   'Implementation-Version': version
+	}
+}
+
+// Dependencies or publishing repositories
+repositories {
+	mavenCentral()
+	
+	flatDir {
+		dirs 'src/main/resources'
+	}
+}
+
+dependencies {
+	provided 'javax.servlet:javax.servlet-api:3+'
+	
+	compile 'javax.servlet:javax.servlet-api:3+'
+	compile 'javax.mail:javax.mail-api:1+'
+	compile 'ymsg:ymsg-network:0+'
+	
+	compile name:'cos'
+}

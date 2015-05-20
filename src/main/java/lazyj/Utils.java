@@ -464,7 +464,7 @@ public final class Utils {
 			final byte b[] = new byte[(int) len];
 			final int readLen = fis.read(b, 0, (int) len);
 
-			if (readLen > 0)
+			if (readLen == 0)
 				return null;
 
 			return new String(b, 0, readLen, charSet);

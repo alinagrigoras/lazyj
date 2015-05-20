@@ -2,31 +2,39 @@
 buildscript {
 	repositories {
 		mavenCentral()
-		//Needed only for SNAPSHOT versions
-		//maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 	}
 	dependencies {
-		classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.1"
 		classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
-		classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'provided-base'
-apply plugin: 'com.bmuschko.nexus'
-apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
-version = '20150518'
 description = "LazyJ is a rapid development framework for Java WEB applications"
+version = "20150519"
 
-// Creating the JAliEn jar
+// Task: Creating the JAliEn jar
 jar {
 	manifest {
 		attributes 'Implementation-Title': 'lazyj',
 		'Implementation-Version': version
 	}
+}
+
+// Task: Creating the JavaDoc
+task javadocJar(type: Jar) {
+	classifier = 'javadoc'
+	from javadoc
+}
+
+// Task: Creating the sources jar
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
 }
 
 // Dependencies or publishing repositories
@@ -39,47 +47,66 @@ repositories {
 }
 
 dependencies {
-	provided 'javax.servlet:javax.servlet-api:3+'
+	provided 'javax.servlet:javax.servlet-api:3.1.0'
 
-	compile 'javax.servlet:javax.servlet-api:3+'
-	compile 'javax.mail:javax.mail-api:1+'
-	compile 'ymsg:ymsg-network:0+'
-
-	compile name:'cos'
+	compile 'javax.servlet:javax.servlet-api:3.1.0'
+	compile 'javax.mail:javax.mail-api:1.5.3'
+	compile 'ymsg:ymsg-network:0.6.1'
+	compile 'com.servlets:cos:09May2002'
 }
 
+// Adding the artifact to archives to be uploaded
+artifacts {
+	archives javadocJar, sourcesJar
+}
 
-// Publishing to Maven Central maven.org
-// http://central.sonatype.org/pages/ossrh-guide.html
-// Credentials inside  ~/.gradle/gradle.properties  or prompt
-// 	nexusUsername = yourUsername
-// 	nexusPassword = yourPassword
-modifyPom {
-	project {
-		name 'LazyJ'
-		description 'LazyJ is a rapid development framework for Java WEB applications' 
-		url 'https://github.com/costing/lazyj'
-		inceptionYear '2005'
+// Signing the artifacts
+signing {
+	sign configurations.archives
+}
 
-		scm {
-			url 'https://github.com/costing/lazyj'
-			connection 'scm:https://github.com/costing/lazyj.git'
-			developerConnection 'scm:git://github.com/lazyj/lazyj.git'
-		}
+group = "com.github.costing"
+archivesBaseName = "lazyj"
 
-		licenses {
-			license {
-				name 'GNU LESSER GENERAL PUBLIC LICENSE V3'
-				url 'http://www.gnu.org/licenses/lgpl.html'
-				distribution 'repo'
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: ossrhUsername, password: ossrhPassword)
 			}
-		}
 
-		developers {
-			developer {
-				id 'costing'
-				name 'Costin Grigoras'
-				email 'costing@gmail.com'
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+				authentication(userName: ossrhUsername, password: ossrhPassword)
+			}
+
+			pom.project {
+				name 'LazyJ'
+				packaging 'jar'
+				description 'A rapid development framework for Java WEB applications'
+				url 'https://github.com/costing/lazyj'
+
+				scm {
+					connection 'scm:https://github.com/costing/lazyj.git'
+					developerConnection 'scm:https://github.com/costing/lazyj.git'
+					url 'https://github.com/costing/lazyj'
+				}
+
+				licenses {
+					license {
+						name 'GNU LESSER GENERAL PUBLIC LICENSE V3'
+						url 'http://www.gnu.org/licenses/lgpl.html'
+					}
+				}
+
+				developers {
+					developer {
+						id 'costing'
+						name 'Costin Grigoras'
+						email 'costing@gmail.com'
+					}
+				}
 			}
 		}
 	}

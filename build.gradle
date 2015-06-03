@@ -15,7 +15,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 description = "LazyJ is a rapid development framework for Java WEB applications"
-version = "20150519"
+version = "20150603"
 
 // Task: Creating the JAliEn jar
 jar {

@@ -133,7 +133,7 @@ public final class Strip implements StringFormat {
 	/**
 	 * Debug method
 	 * 
-	 * @param args
+	 * @param args Main method arguments, for debug purpose only
 	 */
 	public static void main(String[] args) {
 		Strip strip = new Strip();

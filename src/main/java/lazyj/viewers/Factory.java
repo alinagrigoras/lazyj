@@ -16,7 +16,7 @@ public class Factory {
 	 * Factory to build a viewer for the given file name. It will look at the file extension and select an appropriate viewer for
 	 * this file and if 
 	 * 
-	 * @param sFileName
+	 * @param sFileName File name including extension
 	 * @param o where to read this file from. This object can be either String (a path to the file on the disk) or an InputStream with the contents.
 	 * @return an instance of the specialized viewer for this file, or null if there's no viewer that can handle this file
 	 */

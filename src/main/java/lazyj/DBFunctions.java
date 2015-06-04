@@ -504,7 +504,7 @@ public class DBFunctions implements Closeable {
 	 * <br>
 	 * Here is a sample code:<br>
 	 * <br>
-	 * <code><pre>
+	 * <code>
 	 * // set the connection parameters <br>
 	 * ExtProperties dbProp = new ExtProperties(); 
 	 * dbProp.set("driver", "org.postgresql.Driver");	// mandatory
@@ -559,7 +559,7 @@ public class DBFunctions implements Closeable {
 	 * 		
 	 * 		<b>conn.free();</b>
 	 * }
-	 * </pre></code>
+	 * </code>
 	 * 
 	 * @author costing
 	 * @since Jan 17, 2009
@@ -2152,9 +2152,9 @@ public class DBFunctions implements Closeable {
 	}
 	
 	/**
-	 * Convert the result set in a column name -> value mapping
+	 * Convert the result set in a column name -&gt; value mapping
 	 * 
-	 * @return the column name -> value mapping
+	 * @return the column name -&gt; value mapping
 	 */
 	public final Map<String, Object> getValuesMap(){
 		final ResultSetMetaData meta = getMetaData();

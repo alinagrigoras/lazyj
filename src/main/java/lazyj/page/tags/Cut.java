@@ -22,7 +22,7 @@ public class Cut implements StringFormat {
 	 * Cuts a string, leaving only the first N characters from it, jumping over tags.
 	 * 
 	 * @param sTag ignored
-	 * @param sOption tag option, in the form "cutN", with N>0
+	 * @param sOption tag option, in the form "cutN", with N &gt; 0
 	 * @param sValue original string
 	 * @return the first N visible characters from the string
 	 */
@@ -39,8 +39,8 @@ public class Cut implements StringFormat {
 	/**
 	 * Cuts a string, leaving only the first N characters from it, jumping over tags.
 	 * 
-	 * @param sValue
-	 * @param iCut
+	 * @param sValue The string value that needs to be cut up to iCut characters
+	 * @param iCut number of characters to be kept
 	 * @return the first N visible characters from the string
 	 */
 	@SuppressWarnings("nls")
@@ -131,7 +131,7 @@ public class Cut implements StringFormat {
 	/**
 	 * Debug method
 	 * 
-	 * @param args
+	 * @param args Main method parameters, for debug purpose only
 	 */
 	public static void main(String args[]){
 		String sTest = "string to <a blabla>test</a>"; //$NON-NLS-1$

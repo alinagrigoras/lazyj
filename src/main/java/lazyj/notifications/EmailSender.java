@@ -16,8 +16,8 @@ import lazyj.mail.Sendmail;
  * <li>[prefix].to=<i>list of comma separated email addresses, complementary to what is defined in the {@link Message}</i></li>
  * <li>[prefix].subject=<i>default subject</i></li>
  * <li>[prefix].message=<i>default message</i></li>
- * <li>[prefix].smtp_ip=<i>IP/name of the SMTP server, default <code>127.0.0.1</code></li>
- * <li>[prefix].smtp_port=<i>TCP port of the SMTP server, default <code>25</code></li>
+ * <li>[prefix].smtp_ip=<i>IP/name of the SMTP server, default <code>127.0.0.1</code></i></li>
+ * <li>[prefix].smtp_port=<i>TCP port of the SMTP server, default <code>25</code></i></li>
  * </ul> 
  * 
  * @author costing

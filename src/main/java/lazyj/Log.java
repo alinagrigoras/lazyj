@@ -224,11 +224,11 @@ public final class Log {
 	 * Check if a message of a given level for a given component will be actually logged. If it would not
 	 * be logged then it makes no sense to try to log the message in the first place. You should use the logger
 	 * with constructions like this when the log message is complicated to build:<br>
-	 * <code><pre>
+	 * <code>
 	 * if (Log.isLoggable(Log.DEBUG, "class.name")){
 	 *     Log.log(Log.DEBUG, "class.name", "Some complicated message here : "+object.toString());
 	 * }
-	 * </pre></code>
+	 * </code>
 	 * 
 	 * @param level desired logging level
 	 * @param sComponent component

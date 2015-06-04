@@ -15,7 +15,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 description = "LazyJ is a rapid development framework for Java WEB applications"
-version = "20150603"
+version = "20150604"
 
 // Task: Creating the JAliEn jar
 jar {
@@ -68,6 +68,8 @@ signing {
 group = "com.github.costing"
 archivesBaseName = "lazyj"
 
+// The task is only staging, not releasing
+// For full deployment go to https://oss.sonatype.org/ and follow instructions
 uploadArchives {
 	repositories {
 		mavenDeployer {

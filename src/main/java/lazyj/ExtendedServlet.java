@@ -743,7 +743,7 @@ public abstract class ExtendedServlet extends HttpServlet implements SingleThrea
 				this.sZone = null;
 				this.sPage = null;
 			}
-			catch (final Throwable _){
+			catch (final Throwable exception){
 				this.sZone = null;
 				this.sPage = null;
 			}

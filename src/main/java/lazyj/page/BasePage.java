@@ -67,7 +67,7 @@ import lazyj.page.tags.Under;
  * <li>js : {@link JS} : JS-escaped version of the string</li>
  * <li>dash : {@link Dash} : the same string with any sequence of non-alphanumeric characters replaced by a single dash</li>
  * <li>under : {@link Under} : the same string with any sequence of non-alphanumeric characters replaced by a single underscore</li>
- * <li>checked : {@link Checked} : "checked" if the value is >=1</li>
+ * <li>checked : {@link Checked} : "checked" if the value is &gt;=1</li>
  * <li>nicedate : {@link NiceDate} : nice representation of the date only</li>
  * <li>date : {@link Date} : nicely formatted date</li>
  * <li>time : {@link Time} : show only the time from the given date</li>

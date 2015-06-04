@@ -171,7 +171,7 @@ public final class Format {
 
 	
 	/**
-	 * From a full mail address (eg. "Full Name <account@server.com>") try to extract the full name. If it
+	 * From a full mail address (eg. "Full Name &lt;account@server.com&gt;") try to extract the full name. If it
 	 * cannot extract the full name it will return the mail address.
 	 * 
 	 * @param address full address 
@@ -476,7 +476,7 @@ public final class Format {
 	 * Put HTML line breaks in the place of normal text line breaks.
 	 * 
 	 * @param text original text
-	 * @return text with &lt;BR&gr; instead of the \n in the original text
+	 * @return text with &lt;BR&gt; instead of the \n in the original text
 	 */
 	public static final String formatBR(final String text) {
 		return replace(replace(text, "\r", ""), "\n", "<BR>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

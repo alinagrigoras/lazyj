@@ -245,7 +245,7 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	/**
 	 * Remove an entry from the expiration queue
 	 * 
-	 * @param key
+	 * @param key The key that is mapping the entry
 	 * @return old value, if any
 	 */
 	public V remove(final K key) {
@@ -284,9 +284,9 @@ public class ExpirationCache<K, V> implements CacheElement<K, V>{
 	 * Add a new value in the cache for the given key, overwriting if necessary the previous entry. This will prevent the old entry from expiring, so
 	 * {@link #callbackOnExpiry(Object, Object)} will never be called for the entry that is forcefully removed.
 	 * 
-	 * @param key
-	 * @param value
-	 * @param lLifetime
+	 * @param key Cache entry key
+	 * @param value Cache entry value
+	 * @param lLifetime Cache entry lifetime
 	 * @see #put(Object, Object, long)
 	 */
 	public void overwrite(final K key, final V value, final long lLifetime){

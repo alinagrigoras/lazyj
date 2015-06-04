@@ -153,7 +153,7 @@ public final class Utils {
 				folders.add(sPath);
 			}
 		}
-		catch (final IOException _){
+		catch (final IOException ioe){
 			// ignore
 		}
 		
@@ -1211,7 +1211,7 @@ public final class Utils {
 	}
 	
 	/**
-	 * @author costing / from http://forums.sun.com/thread.jspa?threadID=477461&start=15&tstart=0
+	 * @author costing / from http://forums.sun.com/thread.jspa?threadID=477461&amp;start=15&amp;tstart=0
 	 * @since Nov 6, 2010
 	 */
 	public static class Base64Coder extends AbstractPreferences {

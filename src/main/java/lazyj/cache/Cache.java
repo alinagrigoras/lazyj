@@ -17,7 +17,7 @@ import lazyj.Log;
  * To register something into this repository you need to have:<ul>
  * <li>an unique name  for the stored structure</li>
  * <li>a class that implements {@link lazyj.cache.CacheElement}</li>
- * <ul>
+ * </ul>
  *
  * @author costing
  * @since 2006-10-03
@@ -156,7 +156,7 @@ public class Cache extends Thread {
 	 *     if (ce!=null){
 	 *         SomeObject so = (SomeObject) ce.get("internal name");
 	 *     } 
-	 * </pre></br> 
+	 * </pre>
 	 * 
 	 * @param sKey the unique key given at registration
 	 * @return the CacheElement that was last registered for this key

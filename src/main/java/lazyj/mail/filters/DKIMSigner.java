@@ -47,7 +47,7 @@ import lazyj.mail.Sendmail;
  * </ul>
  * <br>
  * And then the code is simple:<br>
- * <code><pre>
+ * <code>
  * Mail mail = new Mail();
  * //fill in the mail
  * 
@@ -55,7 +55,7 @@ import lazyj.mail.Sendmail;
  * Sendmail sendmail = new Sendmail(m.sFrom);
  * sendmail.registerFilter(signer);
  * sendmail.send(mail);
- * </pre></code>
+ * </code>
  * <br>
  * <br>
  * References:

@@ -143,7 +143,7 @@ public class Mail extends MailHeader {
 	 * Find out if the mail has some attachments. It will return true if either one of these is true:<br><ul>
 	 * <li>An received email had some attached files. These can be then accessed via {@link #lAttachments}.</li>
 	 * <li>The mail you intend to send wants some files to be attached to it : {@link #sAttachedFiles}</li>
-	 * <ul>
+	 * </ul>
 	 * 
 	 * @return true if the mail has attachments, false if not.
 	 */

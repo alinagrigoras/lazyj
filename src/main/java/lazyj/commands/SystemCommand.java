@@ -131,19 +131,20 @@ public final class SystemCommand extends Thread{
     /**
      * Have the command executed via a bash interpreter 
      * 
-     * @param command
-     * @return the output
+     * @param command Full command as a string 
+     * @return the output The result of the command after running
      */
     public static CommandOutput bash(final String command){
     	return bash(command, false);
     }
     
+    // TODO Implement RedirectStderr 
     /**
      * Have the command executed via a bash interpreter 
      * 
-     * @param command
-     * @param bRedirectStderr
-     * @return the output
+     * @param command Full command to run
+     * @param bRedirectStderr Redirect standard error output
+     * @return the output The output of the command
      */
     @SuppressWarnings("nls")
 	public static CommandOutput bash(final String command, final boolean bRedirectStderr){

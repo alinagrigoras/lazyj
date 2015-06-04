@@ -21,7 +21,7 @@ public final class DDot implements StringFormat {
 	 * Show nice double values, with a given number of digits after the point.
 	 * 
 	 * @param sTag ignored
-	 * @param sOption "ddotN", with N>0 or simply "ddot" and N is assumed = 2 
+	 * @param sOption "ddotN", with N &gt; 0 or simply "ddot" and N is assumed = 2 
 	 * @param s string to format, should be a double
 	 * @return the formatted value
 	 * @see Format#showDottedDouble(double, int)
